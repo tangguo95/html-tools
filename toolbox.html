@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>糖糖工具箱</title>
+    <title>工具箱</title>
     <style>
         * {
             margin: 0;
@@ -245,7 +245,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>糖糖工具箱</h1>
+        <h1>工具箱</h1>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="password">密码生成器</button>
@@ -254,6 +254,8 @@
             <button class="tab-btn" data-tab="base64">Base64编码</button>
             <button class="tab-btn" data-tab="md5">MD5加密</button>
             <button class="tab-btn" data-tab="aes">AES加密</button>
+            <button class="tab-btn" data-tab="file-base64">文件Base64</button>
+            <button class="tab-btn" data-tab="url">URL编解码</button>
         </div>
 
         <!-- 密码生成器 -->
@@ -421,6 +423,54 @@
                 <textarea id="aes-output" readonly placeholder="结果将显示在这里..."></textarea>
             </div>
             <div id="aes-error" class="alert alert-error"></div>
+        </div>
+
+        <!-- 文件Base64转换 -->
+        <div class="tool-panel" id="file-base64-panel">
+            <h2 class="tool-title">文件Base64转换</h2>
+            <div class="form-group">
+                <label>文件转Base64</label>
+                <input type="file" id="file-to-base64-input" style="padding: 8px 0;">
+                <button class="btn btn-primary" style="margin-top: 10px;" onclick="fileToBase64()">转换为Base64</button>
+            </div>
+            <div class="form-group">
+                <label>输出Base64</label>
+                <textarea id="file-base64-output" readonly placeholder="文件的Base64编码将显示在这里..."></textarea>
+                <button class="btn btn-secondary copy-btn" style="margin-top: 10px;" onclick="copyResult('file-base64-output', this)">复制</button>
+            </div>
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+            <div class="form-group">
+                <label>Base64转文件</label>
+                <textarea id="base64-to-file-input" placeholder="请输入Base64编码..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>文件名</label>
+                <input type="text" id="base64-filename" placeholder="例如: image.png">
+            </div>
+            <button class="btn btn-primary" onclick="base64ToFile()">下载文件</button>
+            <div id="file-base64-error" class="alert alert-error"></div>
+        </div>
+
+        <!-- URL编解码 -->
+        <div class="tool-panel" id="url-panel">
+            <h2 class="tool-title">URL编码/解码</h2>
+            <div class="form-group">
+                <label>输入内容</label>
+                <textarea id="url-input" placeholder="请输入要编码或解码的内容..."></textarea>
+            </div>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="url-component" checked> 使用encodeURIComponent (编码所有特殊字符)</label>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="urlEncode()">编码</button>
+            <button class="btn btn-primary" onclick="urlDecode()">解码</button>
+            <button class="btn btn-secondary copy-btn" onclick="copyResult('url-output', this)">复制结果</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>输出结果</label>
+                <textarea id="url-output" readonly placeholder="结果将显示在这里..."></textarea>
+            </div>
+            <div id="url-error" class="alert alert-error"></div>
         </div>
     </div>
 
@@ -1085,6 +1135,107 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // ==================== 文件Base64转换 ====================
+        function fileToBase64() {
+            const fileInput = document.getElementById('file-to-base64-input');
+            const errorDiv = document.getElementById('file-base64-error');
+            
+            if (!fileInput.files || !fileInput.files[0]) {
+                errorDiv.textContent = '请先选择文件！';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                document.getElementById('file-base64-output').value = e.target.result;
+                errorDiv.classList.remove('show');
+            };
+            
+            reader.onerror = function() {
+                errorDiv.textContent = '文件读取失败！';
+                errorDiv.classList.add('show');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function base64ToFile() {
+            const base64Input = document.getElementById('base64-to-file-input').value.trim();
+            const filename = document.getElementById('base64-filename').value.trim() || 'download';
+            const errorDiv = document.getElementById('file-base64-error');
+            
+            if (!base64Input) {
+                errorDiv.textContent = '请输入Base64编码！';
+                errorDiv.classList.add('show');
+                return;
+            }
+
+            try {
+                let base64Data = base64Input;
+                let mimeType = 'application/octet-stream';
+                
+                if (base64Input.includes(',')) {
+                    const parts = base64Input.split(',');
+                    const mimeMatch = parts[0].match(/:(.*?);/);
+                    if (mimeMatch) mimeType = mimeMatch[1];
+                    base64Data = parts[1];
+                }
+                
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: mimeType });
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                
+                errorDiv.classList.remove('show');
+            } catch (e) {
+                errorDiv.textContent = 'Base64解码失败: ' + e.message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        // ==================== URL编解码 ====================
+        function urlEncode() {
+            const input = document.getElementById('url-input').value;
+            const useComponent = document.getElementById('url-component').checked;
+            const errorDiv = document.getElementById('url-error');
+            
+            try {
+                const result = useComponent ? encodeURIComponent(input) : encodeURI(input);
+                document.getElementById('url-output').value = result;
+                errorDiv.classList.remove('show');
+            } catch (e) {
+                errorDiv.textContent = '编码失败: ' + e.message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function urlDecode() {
+            const input = document.getElementById('url-input').value;
+            const useComponent = document.getElementById('url-component').checked;
+            const errorDiv = document.getElementById('url-error');
+            
+            try {
+                const result = useComponent ? decodeURIComponent(input) : decodeURI(input);
+                document.getElementById('url-output').value = result;
+                errorDiv.classList.remove('show');
+            } catch (e) {
+                errorDiv.textContent = '解码失败: ' + e.message;
+                errorDiv.classList.add('show');
+            }
         }
     </script>
 </body>

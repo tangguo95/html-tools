@@ -12,6 +12,8 @@
 | Base64编码 | Base64编解码 | 无 |
 | MD5加密 | 生成MD5哈希 | 无 |
 | AES加密 | AES加解密 | Web Crypto API |
+| 文件Base64 | 文件与Base64互转 | 无 |
+| URL编解码 | URL编码/解码 | 无 |
 
 ## 使用方式
 
@@ -51,3 +53,12 @@
 - 支持GCM/CBC/CTR模式
 - PBKDF2密钥派生
 - 随机密钥生成
+
+### 7. 文件Base64
+- 文件转Base64编码
+- Base64转文件下载
+- 支持任意文件类型
+
+### 8. URL编解码
+- 支持encodeURI/encodeURIComponent
+- 编码/解码切换
