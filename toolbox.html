@@ -268,6 +268,7 @@
             <button class="tab-btn" data-tab="file-base64">文件Base64</button>
             <button class="tab-btn" data-tab="url">URL编解码</button>
             <button class="tab-btn" data-tab="sql-in">SQL IN助手</button>
+            <button class="tab-btn" data-tab="timestamp">时间戳转换</button>
         </div>
 
         <!-- 密码生成器 -->
@@ -510,6 +511,61 @@
                 <label>输出结果</label>
                 <textarea id="sql-in-output" readonly placeholder="例如: '1001','1002','1003'"></textarea>
             </div>
+        </div>
+        <!-- 时间戳转换 -->
+        <div class="tool-panel" id="timestamp-panel">
+            <h2 class="tool-title">时间戳转换器</h2>
+            <div class="form-group">
+                <label>当前时间戳</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="ts-current" readonly placeholder="点击获取当前时间戳">
+                    <button class="btn btn-primary" onclick="refreshTimestamp()">刷新</button>
+                    <button class="btn btn-secondary copy-btn" onclick="copyResult('ts-current', this)">复制</button>
+                </div>
+            </div>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+            <div class="form-group">
+                <label>时间戳转日期</label>
+                <input type="text" id="ts-to-date-input" placeholder="输入Unix时间戳（秒或毫秒）">
+                <p class="helper-text">支持秒级(10位)和毫秒级(13位)时间戳</p>
+            </div>
+            <button class="btn btn-primary" onclick="timestampToDate()">转换为日期</button>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>转换结果</label>
+                <div id="ts-date-result" class="result-box" style="font-family: monospace;">
+                    <div id="ts-local"></div>
+                    <div id="ts-utc" style="color: #666; font-size: 13px; margin-top: 8px;"></div>
+                    <div id="ts-relative" style="color: #888; font-size: 13px; margin-top: 8px;"></div>
+                </div>
+            </div>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+            <div class="form-group">
+                <label>日期转时间戳</label>
+                <input type="datetime-local" id="date-to-ts-input" style="width: 100%;">
+            </div>
+            <div class="form-group">
+                <label>时区</label>
+                <select id="ts-timezone">
+                    <option value="local">本地时区</option>
+                    <option value="UTC">UTC</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="dateToTimestamp()">转换为时间戳</button>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>时间戳结果</label>
+                <div class="result-box">
+                    <div>秒级: <span id="ts-seconds" style="font-family: monospace; cursor: pointer;" onclick="copyToClipboard(this.textContent, this)" title="点击复制"></span></div>
+                    <div style="margin-top: 8px;">毫秒级: <span id="ts-milliseconds" style="font-family: monospace; cursor: pointer;" onclick="copyToClipboard(this.textContent, this)" title="点击复制"></span></div>
+                </div>
+            </div>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+            <div class="form-group">
+                <label>多时区显示</label>
+                <input type="datetime-local" id="tz-input" style="width: 100%;">
+                <p class="helper-text">输入时间后显示全球主要时区</p>
+            </div>
+            <button class="btn btn-primary" onclick="showAllTimezones()">显示时区</button>
+            <div id="tz-result" style="margin-top: 15px; font-family: monospace; font-size: 14px;"></div>
         </div>
     </div>
 
@@ -1316,6 +1372,142 @@
             document.getElementById('sql-in-input').value = '';
             document.getElementById('sql-in-output').value = '';
             document.getElementById('sql-in-stats').textContent = '';
+        }
+
+        // ==================== 时间戳转换器 ====================
+        function refreshTimestamp() {
+            const now = Date.now();
+            document.getElementById('ts-current').value = now;
+        }
+
+        // 自动刷新时间戳
+        setInterval(refreshTimestamp, 1000);
+        refreshTimestamp();
+
+        function timestampToDate() {
+            const input = document.getElementById('ts-to-date-input').value.trim();
+            if (!input) {
+                document.getElementById('ts-local').textContent = '请输入时间戳';
+                document.getElementById('ts-utc').textContent = '';
+                document.getElementById('ts-relative').textContent = '';
+                return;
+            }
+
+            let ts = parseInt(input);
+            // 自动判断秒级还是毫秒级
+            if (ts < 1e12) {
+                ts *= 1000; // 秒级转毫秒级
+            }
+
+            const date = new Date(ts);
+            
+            // 本地时间
+            const localStr = date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            document.getElementById('ts-local').textContent = '本地时间: ' + localStr;
+
+            // UTC时间
+            const utcStr = date.toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, '');
+            document.getElementById('ts-utc').textContent = 'UTC时间: ' + utcStr;
+
+            // 相对时间
+            const now = Date.now();
+            const diff = now - ts;
+            const relativeStr = formatRelativeTime(diff);
+            document.getElementById('ts-relative').textContent = '相对: ' + relativeStr;
+        }
+
+        function formatRelativeTime(diff) {
+            const absDiff = Math.abs(diff);
+            const future = diff < 0;
+            
+            const seconds = Math.floor(absDiff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            let str;
+            if (years > 0) str = years + '年';
+            else if (months > 0) str = months + '个月';
+            else if (days > 0) str = days + '天';
+            else if (hours > 0) str = hours + '小时';
+            else if (minutes > 0) str = minutes + '分钟';
+            else str = seconds + '秒';
+
+            return future ? str + '后' : str + '前';
+        }
+
+        function dateToTimestamp() {
+            const input = document.getElementById('date-to-ts-input').value;
+            if (!input) {
+                document.getElementById('ts-seconds').textContent = '请选择日期时间';
+                document.getElementById('ts-milliseconds').textContent = '';
+                return;
+            }
+
+            const timezone = document.getElementById('ts-timezone').value;
+            let date;
+
+            if (timezone === 'UTC') {
+                date = new Date(input + 'Z');
+            } else {
+                date = new Date(input);
+            }
+
+            const ms = date.getTime();
+            const seconds = Math.floor(ms / 1000);
+
+            document.getElementById('ts-seconds').textContent = seconds;
+            document.getElementById('ts-milliseconds').textContent = ms;
+        }
+
+        function showAllTimezones() {
+            const input = document.getElementById('tz-input').value;
+            if (!input) {
+                document.getElementById('tz-result').innerHTML = '<div style="color: #999;">请选择日期时间</div>';
+                return;
+            }
+
+            const date = new Date(input);
+            const timezones = [
+                { name: '北京 (UTC+8)', offset: 8 },
+                { name: '东京 (UTC+9)', offset: 9 },
+                { name: '纽约 (UTC-5)', offset: -5 },
+                { name: '洛杉矶 (UTC-8)', offset: -8 },
+                { name: '伦敦 (UTC+0)', offset: 0 },
+                { name: '巴黎 (UTC+1)', offset: 1 },
+                { name: '悉尼 (UTC+10)', offset: 10 },
+                { name: '莫斯科 (UTC+3)', offset: 3 },
+                { name: '新加坡 (UTC+8)', offset: 8 },
+                { name: '印度 (UTC+5:30)', offset: 5.5 },
+            ];
+
+            let html = '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<tr style="border-bottom: 1px solid #ddd;"><th style="padding: 8px; text-align: left;">时区</th><th style="padding: 8px; text-align: right;">时间</th></tr>';
+
+            timezones.forEach(tz => {
+                const offsetMs = tz.offset * 3600000;
+                const tzDate = new Date(date.getTime() + offsetMs + (date.getTimezoneOffset() * 60000));
+                const timeStr = tzDate.toLocaleTimeString('zh-CN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                html += '<tr style="border-bottom: 1px solid #eee;"><td style="padding: 8px;">' + tz.name + '</td><td style="padding: 8px; text-align: right;">' + timeStr + '</td></tr>';
+            });
+
+            html += '</table>';
+            document.getElementById('tz-result').innerHTML = html;
         }
     </script>
 </body>
