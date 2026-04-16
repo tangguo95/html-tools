@@ -269,7 +269,7 @@
             <button class="tab-btn" data-tab="url">URL编解码</button>
             <button class="tab-btn" data-tab="sql-in">SQL IN助手</button>
             <button class="tab-btn" data-tab="timestamp">时间戳转换</button>
-            <button class="tab-btn" data-tab="regex">正则测试</button>
+            <button class="tab-btn" data-tab="html-extractor">HTML提取器</button>
         </div>
 
         <!-- 密码生成器 -->
@@ -567,6 +567,43 @@
             </div>
             <button class="btn btn-primary" onclick="showAllTimezones()">显示时区</button>
             <div id="tz-result" style="margin-top: 15px; font-family: monospace; font-size: 14px;"></div>
+        </div>
+
+        <!-- HTML文本提取器 -->
+        <div class="tool-panel" id="html-extractor-panel">
+            <h2 class="tool-title">HTML文本提取器</h2>
+            <div class="form-group">
+                <label>输入HTML</label>
+                <textarea id="html-input" placeholder="粘贴HTML代码，如从网页复制的内容..." style="min-height: 200px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label>提取类型</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="html-extract-text" checked> 提取纯文本</label>
+                    <label><input type="checkbox" id="html-extract-links" checked> 提取所有链接</label>
+                    <label><input type="checkbox" id="html-extract-images"> 提取图片URL</label>
+                    <label><input type="checkbox" id="html-clean-whitespace"> 清理多余空白</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>文本处理选项</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="html-remove-scripts" checked> 移除 script/style 标签</label>
+                    <label><input type="checkbox" id="html-keep-newlines"> 保留换行</label>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="extractHTML()">开始提取</button>
+            <button class="btn btn-secondary" onclick="clearHTMLExtractor()">清空</button>
+            <button class="btn btn-secondary" onclick="demoHTML()">示例HTML</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>提取结果</label>
+                <textarea id="html-output" readonly placeholder="提取结果将显示在这里..." style="min-height: 200px;"></textarea>
+            </div>
+            <div id="html-stats" class="stats-text"></div>
+            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary copy-btn" onclick="copyResult('html-output', this)">复制结果</button>
+                <button class="btn btn-secondary" onclick="downloadHTMLResult()">下载为TXT文件</button>
+            </div>
         </div>
 
         <!-- 正则表达式测试 -->
@@ -1652,6 +1689,144 @@
         function setRegex(pattern) {
             document.getElementById('regex-pattern').value = pattern;
             testRegex();
+        }
+
+        // ==================== HTML文本提取器 ====================
+        function extractHTML() {
+            const html = document.getElementById('html-input').value;
+            if (!html.trim()) {
+                alert('请输入HTML内容！');
+                return;
+            }
+
+            const extractText = document.getElementById('html-extract-text').checked;
+            const extractLinks = document.getElementById('html-extract-links').checked;
+            const extractImages = document.getElementById('html-extract-images').checked;
+            const cleanWhitespace = document.getElementById('html-clean-whitespace').checked;
+            const removeScripts = document.getElementById('html-remove-scripts').checked;
+            const keepNewlines = document.getElementById('html-keep-newlines').checked;
+
+            let result = '';
+            let stats = [];
+
+            // 创建临时DOM元素
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // 移除 script 和 style 标签
+            if (removeScripts) {
+                doc.querySelectorAll('script, style, noscript, meta, link').forEach(el => el.remove());
+            }
+
+            if (extractText) {
+                // 提取纯文本
+                const text = doc.body.textContent || doc.body.innerText || '';
+                let formattedText = text;
+
+                // 清理空白
+                if (cleanWhitespace) {
+                    formattedText = formattedText.split('\n').map(line => line.trim()).join('\n');
+                    // 去除连续空行
+                    formattedText = formattedText.replace(/\n{3,}/g, '\n\n').trim();
+                }
+
+                // 保留换行
+                if (!keepNewlines) {
+                    formattedText = formattedText.replace(/\n/g, ' ');
+                }
+
+                if (formattedText) {
+                    result += '【纯文本内容】\n' + formattedText;
+                    stats.push(`文本: ${formattedText.length} 字符, ${formattedText.split('\n').length} 行`);
+                }
+            }
+
+            if (extractLinks) {
+                // 提取所有链接
+                const links = Array.from(doc.querySelectorAll('a[href]'))
+                    .map(a => {
+                        const text = (a.textContent || '').trim() || a.href;
+                        return `[${text}](${a.href})`;
+                    });
+
+                if (links.length > 0) {
+                    result += (result ? '\n\n' : '') + '【所有链接】\n' + links.join('\n');
+                    stats.push(`链接: ${links.length} 个`);
+                }
+            }
+
+            if (extractImages) {
+                // 提取图片URL
+                const images = Array.from(doc.querySelectorAll('img[src]'))
+                    .map(img => `![${img.alt || '图片'}](${img.src})`);
+
+                if (images.length > 0) {
+                    result += (result ? '\n\n' : '') + '【图片URL】\n' + images.join('\n');
+                    stats.push(`图片: ${images.length} 张`);
+                }
+            }
+
+            if (!result) {
+                result = '未提取到内容，请选择至少一项提取类型。';
+            }
+
+            document.getElementById('html-output').value = result;
+            document.getElementById('html-stats').innerHTML = 
+                stats.join(' | ') || '请选择提取类型';
+        }
+
+        function clearHTMLExtractor() {
+            document.getElementById('html-input').value = '';
+            document.getElementById('html-output').value = '';
+            document.getElementById('html-stats').innerHTML = '';
+            document.getElementById('html-extract-text').checked = true;
+            document.getElementById('html-extract-links').checked = true;
+            document.getElementById('html-extract-images').checked = false;
+            document.getElementById('html-clean-whitespace').checked = true;
+            document.getElementById('html-remove-scripts').checked = true;
+            document.getElementById('html-keep-newlines').checked = false;
+        }
+
+        function demoHTML() {
+            const demo = `<!DOCTYPE html>
+<html>
+<head>
+    <title>示例页面</title>
+</head>
+<body>
+    <h1>欢迎来到我的网站</h1>
+    <p>这是一个<strong>示例HTML</strong>内容，用于演示HTML文本提取器的功能。</p>
+    <a href="https://example.com">访问 Example.com</a>
+    <p>更多相关内容：</p>
+    <ul>
+        <li><a href="/about">关于我们</a></li>
+        <li><a href="/contact">联系我们</a></li>
+    </ul>
+    <img src="https://example.com/image.png" alt="示例图片">
+    <script>
+        // 这个脚本内容将被移除
+        console.log('This will be removed');
+    </script>
+</body>
+</html>`;
+            document.getElementById('html-input').value = demo;
+        }
+
+        function downloadHTMLResult() {
+            const content = document.getElementById('html-output').value;
+            if (!content) {
+                alert('没有可下载的内容！');
+                return;
+            }
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'html-extractor-result.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
