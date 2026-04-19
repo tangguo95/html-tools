@@ -674,6 +674,80 @@
                 <label>转换结果</label>
                 <div id="color-result" class="result-box" style="min-height: 150px;"></div>
             </div>
+        
+        <!-- UUID 生成器 -->
+        <div class="tool-panel" id="uuid-panel">
+            <h2 class="tool-title">UUID/GUID 生成器</h2>
+            <div class="form-group">
+                <label>生成数量</label>
+                <input type="number" id="uuid-count" value="5" min="1" max="50">
+            </div>
+            <div class="form-group">
+                <label>UUID 版本</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="uuid-version" value="v4" checked> UUID v4 (随机)</label>
+                    <label><input type="radio" name="uuid-version" value="v7"> UUID v7 (时间序，实验性)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>格式选项</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="uuid-uppercase"> 大写字母</label>
+                    <label><input type="checkbox" id="uuid-no-hyphen"> 移除连字符</label>
+                    <label><input type="checkbox" id="uuid-braces"> 添加花括号 {}</label>
+                    <label><input type="checkbox" id="uuid-quotes"> 添加引号 ''</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>前缀/后缀 (可选)</label>
+                <input type="text" id="uuid-prefix" placeholder="前缀，如：id_">
+                <input type="text" id="uuid-suffix" placeholder="后缀，如：_id" style="margin-top: 8px;">
+            </div>
+            <button class="btn btn-primary" onclick="generateUUIDs()">生成 UUID</button>
+            <button class="btn btn-secondary" onclick="copyAllUUIDs()">复制全部</button>
+            <button class="btn btn-secondary" onclick="clearUUIDs()">清空</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>生成结果</label>
+                <div id="uuid-result" class="result-box" style="min-height: 100px;"></div>
+            </div>
+            <div id="uuid-stats" class="stats-text"></div>
+        
+        <!-- UUID 生成器 -->
+        <div class="tool-panel" id="uuid-panel">
+            <h2 class="tool-title">UUID/GUID 生成器</h2>
+            <div class="form-group">
+                <label>生成数量</label>
+                <input type="number" id="uuid-count" value="5" min="1" max="50">
+            </div>
+            <div class="form-group">
+                <label>UUID 版本</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="uuid-version" value="v4" checked> UUID v4 (随机)</label>
+                    <label><input type="radio" name="uuid-version" value="v7"> UUID v7 (时间序，实验性)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>格式选项</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="uuid-uppercase"> 大写字母</label>
+                    <label><input type="checkbox" id="uuid-no-hyphen"> 移除连字符</label>
+                    <label><input type="checkbox" id="uuid-braces"> 添加花括号 {}</label>
+                    <label><input type="checkbox" id="uuid-quotes"> 添加引号 ''</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>前缀/后缀 (可选)</label>
+                <input type="text" id="uuid-prefix" placeholder="前缀，如：id_">
+                <input type="text" id="uuid-suffix" placeholder="后缀，如：_id" style="margin-top: 8px;">
+            </div>
+            <button class="btn btn-primary" onclick="generateUUIDs()">生成 UUID</button>
+            <button class="btn btn-secondary" onclick="copyAllUUIDs()">复制全部</button>
+            <button class="btn btn-secondary" onclick="clearUUIDs()">清空</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>生成结果</label>
+                <div id="uuid-result" class="result-box" style="min-height: 100px;"></div>
+            </div>
+            <div id="uuid-stats" class="stats-text"></div>
         </div>
 
         
@@ -1833,6 +1907,192 @@
     <script>
         // 杩欎釜鑴氭湰鍐呭灏嗚绉婚櫎
         console.log('This will be removed');
+        // ==================== UUID 生成器 ====================
+        function generateUUIDv4() {
+            if (crypto.randomUUID) {
+                return crypto.randomUUID();
+            }
+            // Fallback for older browsers
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDv7() {
+            // UUID v7: 48-bit timestamp + random
+            const now = Date.now();
+            const timestamp = Math.floor(now);
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            
+            // Set timestamp (first 6 bytes)
+            for (let i = 5; i >= 0; i--) {
+                bytes[i] = timestamp & 0xff;
+                timestamp /= 256;
+            }
+            
+            // Set version (byte 6) and variant (byte 8)
+            bytes[6] = (bytes[6] & 0x0f) | 0x70;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDs() {
+            const count = parseInt(document.getElementById('uuid-count').value) || 5;
+            const version = document.querySelector('input[name="uuid-version"]:checked').value;
+            const uppercase = document.getElementById('uuid-uppercase').checked;
+            const noHyphen = document.getElementById('uuid-no-hyphen').checked;
+            const braces = document.getElementById('uuid-braces').checked;
+            const quotes = document.getElementById('uuid-quotes').checked;
+            const prefix = document.getElementById('uuid-prefix').value || '';
+            const suffix = document.getElementById('uuid-suffix').value || '';
+
+            const uuids = [];
+            for (let i = 0; i < count; i++) {
+                let uuid = version === 'v7' ? generateUUIDv7() : generateUUIDv4();
+                if (uppercase) uuid = uuid.toUpperCase();
+                if (noHyphen) uuid = uuid.replace(/-/g, '');
+                if (braces) uuid = '{' + uuid + '}';
+                if (quotes) uuid = "'" + uuid + "'";
+                uuids.push(prefix + uuid + suffix);
+            }
+
+            const resultDiv = document.getElementById('uuid-result');
+            resultDiv.innerHTML = uuids.map((u, i) => 
+                '<div style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">' +
+                '<span style="color: #999; margin-right: 10px;">' + (i + 1) + '.</span>' +
+                '<span style="font-family: monospace; flex: 1;">' + u + '</span>' +
+                '<button class="btn btn-secondary copy-btn" style="padding: 4px 12px; margin-left: 10px;" ' +
+                'onclick="copyToClipboard(\'' + u.replace(/'/g, "\\'") + '\', this)">复制</button>' +
+                '</div>'
+            ).join('');
+
+            document.getElementById('uuid-stats').textContent = '已生成 ' + count + ' 个 UUID ' + version.toUpperCase();
+        }
+
+        function copyAllUUIDs() {
+            const uuids = [...document.querySelectorAll('#uuid-result span[style*="monospace"]')]
+                .map(el => el.textContent).join('\n');
+            if (uuids) {
+                navigator.clipboard.writeText(uuids);
+                const btn = event.target;
+                btn.classList.add('copied');
+                setTimeout(() => btn.classList.remove('copied'), 1500);
+            }
+        }
+
+        function clearUUIDs() {
+            document.getElementById('uuid-result').innerHTML = '';
+            document.getElementById('uuid-stats').textContent = '';
+            document.getElementById('uuid-count').value = 5;
+            document.getElementById('uuid-uppercase').checked = false;
+            document.getElementById('uuid-no-hyphen').checked = false;
+            document.getElementById('uuid-braces').checked = false;
+            document.getElementById('uuid-quotes').checked = false;
+            document.getElementById('uuid-prefix').value = '';
+            document.getElementById('uuid-suffix').value = '';
+            document.querySelector('input[name="uuid-version"][value="v4"]').checked = true;
+        }
+
+
+        // ==================== UUID 生成器 ====================
+        function generateUUIDv4() {
+            if (crypto.randomUUID) {
+                return crypto.randomUUID();
+            }
+            // Fallback for older browsers
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDv7() {
+            // UUID v7: 48-bit timestamp + random
+            const now = Date.now();
+            const timestamp = Math.floor(now);
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            
+            // Set timestamp (first 6 bytes)
+            for (let i = 5; i >= 0; i--) {
+                bytes[i] = timestamp & 0xff;
+                timestamp /= 256;
+            }
+            
+            // Set version (byte 6) and variant (byte 8)
+            bytes[6] = (bytes[6] & 0x0f) | 0x70;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDs() {
+            const count = parseInt(document.getElementById('uuid-count').value) || 5;
+            const version = document.querySelector('input[name="uuid-version"]:checked').value;
+            const uppercase = document.getElementById('uuid-uppercase').checked;
+            const noHyphen = document.getElementById('uuid-no-hyphen').checked;
+            const braces = document.getElementById('uuid-braces').checked;
+            const quotes = document.getElementById('uuid-quotes').checked;
+            const prefix = document.getElementById('uuid-prefix').value || '';
+            const suffix = document.getElementById('uuid-suffix').value || '';
+
+            const uuids = [];
+            for (let i = 0; i < count; i++) {
+                let uuid = version === 'v7' ? generateUUIDv7() : generateUUIDv4();
+                if (uppercase) uuid = uuid.toUpperCase();
+                if (noHyphen) uuid = uuid.replace(/-/g, '');
+                if (braces) uuid = '{' + uuid + '}';
+                if (quotes) uuid = "'" + uuid + "'";
+                uuids.push(prefix + uuid + suffix);
+            }
+
+            const resultDiv = document.getElementById('uuid-result');
+            resultDiv.innerHTML = uuids.map((u, i) => 
+                '<div style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">' +
+                '<span style="color: #999; margin-right: 10px;">' + (i + 1) + '.</span>' +
+                '<span style="font-family: monospace; flex: 1;">' + u + '</span>' +
+                '<button class="btn btn-secondary copy-btn" style="padding: 4px 12px; margin-left: 10px;" ' +
+                'onclick="copyToClipboard(\'' + u.replace(/'/g, "\\'") + '\', this)">复制</button>' +
+                '</div>'
+            ).join('');
+
+            document.getElementById('uuid-stats').textContent = '已生成 ' + count + ' 个 UUID ' + version.toUpperCase();
+        }
+
+        function copyAllUUIDs() {
+            const uuids = [...document.querySelectorAll('#uuid-result span[style*="monospace"]')]
+                .map(el => el.textContent).join('\n');
+            if (uuids) {
+                navigator.clipboard.writeText(uuids);
+                const btn = event.target;
+                btn.classList.add('copied');
+                setTimeout(() => btn.classList.remove('copied'), 1500);
+            }
+        }
+
+        function clearUUIDs() {
+            document.getElementById('uuid-result').innerHTML = '';
+            document.getElementById('uuid-stats').textContent = '';
+            document.getElementById('uuid-count').value = 5;
+            document.getElementById('uuid-uppercase').checked = false;
+            document.getElementById('uuid-no-hyphen').checked = false;
+            document.getElementById('uuid-braces').checked = false;
+            document.getElementById('uuid-quotes').checked = false;
+            document.getElementById('uuid-prefix').value = '';
+            document.getElementById('uuid-suffix').value = '';
+            document.querySelector('input[name="uuid-version"][value="v4"]').checked = true;
+        }
+
+
     </script>
 </body>
 </html>`;
@@ -2047,6 +2307,192 @@
             link.target = '_blank';
             link.click();
         }
+
+        // ==================== UUID 生成器 ====================
+        function generateUUIDv4() {
+            if (crypto.randomUUID) {
+                return crypto.randomUUID();
+            }
+            // Fallback for older browsers
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDv7() {
+            // UUID v7: 48-bit timestamp + random
+            const now = Date.now();
+            const timestamp = Math.floor(now);
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            
+            // Set timestamp (first 6 bytes)
+            for (let i = 5; i >= 0; i--) {
+                bytes[i] = timestamp & 0xff;
+                timestamp /= 256;
+            }
+            
+            // Set version (byte 6) and variant (byte 8)
+            bytes[6] = (bytes[6] & 0x0f) | 0x70;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDs() {
+            const count = parseInt(document.getElementById('uuid-count').value) || 5;
+            const version = document.querySelector('input[name="uuid-version"]:checked').value;
+            const uppercase = document.getElementById('uuid-uppercase').checked;
+            const noHyphen = document.getElementById('uuid-no-hyphen').checked;
+            const braces = document.getElementById('uuid-braces').checked;
+            const quotes = document.getElementById('uuid-quotes').checked;
+            const prefix = document.getElementById('uuid-prefix').value || '';
+            const suffix = document.getElementById('uuid-suffix').value || '';
+
+            const uuids = [];
+            for (let i = 0; i < count; i++) {
+                let uuid = version === 'v7' ? generateUUIDv7() : generateUUIDv4();
+                if (uppercase) uuid = uuid.toUpperCase();
+                if (noHyphen) uuid = uuid.replace(/-/g, '');
+                if (braces) uuid = '{' + uuid + '}';
+                if (quotes) uuid = "'" + uuid + "'";
+                uuids.push(prefix + uuid + suffix);
+            }
+
+            const resultDiv = document.getElementById('uuid-result');
+            resultDiv.innerHTML = uuids.map((u, i) => 
+                '<div style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">' +
+                '<span style="color: #999; margin-right: 10px;">' + (i + 1) + '.</span>' +
+                '<span style="font-family: monospace; flex: 1;">' + u + '</span>' +
+                '<button class="btn btn-secondary copy-btn" style="padding: 4px 12px; margin-left: 10px;" ' +
+                'onclick="copyToClipboard(\'' + u.replace(/'/g, "\\'") + '\', this)">复制</button>' +
+                '</div>'
+            ).join('');
+
+            document.getElementById('uuid-stats').textContent = '已生成 ' + count + ' 个 UUID ' + version.toUpperCase();
+        }
+
+        function copyAllUUIDs() {
+            const uuids = [...document.querySelectorAll('#uuid-result span[style*="monospace"]')]
+                .map(el => el.textContent).join('\n');
+            if (uuids) {
+                navigator.clipboard.writeText(uuids);
+                const btn = event.target;
+                btn.classList.add('copied');
+                setTimeout(() => btn.classList.remove('copied'), 1500);
+            }
+        }
+
+        function clearUUIDs() {
+            document.getElementById('uuid-result').innerHTML = '';
+            document.getElementById('uuid-stats').textContent = '';
+            document.getElementById('uuid-count').value = 5;
+            document.getElementById('uuid-uppercase').checked = false;
+            document.getElementById('uuid-no-hyphen').checked = false;
+            document.getElementById('uuid-braces').checked = false;
+            document.getElementById('uuid-quotes').checked = false;
+            document.getElementById('uuid-prefix').value = '';
+            document.getElementById('uuid-suffix').value = '';
+            document.querySelector('input[name="uuid-version"][value="v4"]').checked = true;
+        }
+
+
+        // ==================== UUID 生成器 ====================
+        function generateUUIDv4() {
+            if (crypto.randomUUID) {
+                return crypto.randomUUID();
+            }
+            // Fallback for older browsers
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            bytes[6] = (bytes[6] & 0x0f) | 0x40;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDv7() {
+            // UUID v7: 48-bit timestamp + random
+            const now = Date.now();
+            const timestamp = Math.floor(now);
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            
+            // Set timestamp (first 6 bytes)
+            for (let i = 5; i >= 0; i--) {
+                bytes[i] = timestamp & 0xff;
+                timestamp /= 256;
+            }
+            
+            // Set version (byte 6) and variant (byte 8)
+            bytes[6] = (bytes[6] & 0x0f) | 0x70;
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            
+            const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0'));
+            return hex[0]+hex[1]+hex[2]+hex[3]+'-'+hex[4]+hex[5]+'-'+hex[6]+hex[7]+'-'+hex[8]+hex[9]+'-'+hex[10]+hex[11]+hex[12]+hex[13]+hex[14]+hex[15];
+        }
+
+        function generateUUIDs() {
+            const count = parseInt(document.getElementById('uuid-count').value) || 5;
+            const version = document.querySelector('input[name="uuid-version"]:checked').value;
+            const uppercase = document.getElementById('uuid-uppercase').checked;
+            const noHyphen = document.getElementById('uuid-no-hyphen').checked;
+            const braces = document.getElementById('uuid-braces').checked;
+            const quotes = document.getElementById('uuid-quotes').checked;
+            const prefix = document.getElementById('uuid-prefix').value || '';
+            const suffix = document.getElementById('uuid-suffix').value || '';
+
+            const uuids = [];
+            for (let i = 0; i < count; i++) {
+                let uuid = version === 'v7' ? generateUUIDv7() : generateUUIDv4();
+                if (uppercase) uuid = uuid.toUpperCase();
+                if (noHyphen) uuid = uuid.replace(/-/g, '');
+                if (braces) uuid = '{' + uuid + '}';
+                if (quotes) uuid = "'" + uuid + "'";
+                uuids.push(prefix + uuid + suffix);
+            }
+
+            const resultDiv = document.getElementById('uuid-result');
+            resultDiv.innerHTML = uuids.map((u, i) => 
+                '<div style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">' +
+                '<span style="color: #999; margin-right: 10px;">' + (i + 1) + '.</span>' +
+                '<span style="font-family: monospace; flex: 1;">' + u + '</span>' +
+                '<button class="btn btn-secondary copy-btn" style="padding: 4px 12px; margin-left: 10px;" ' +
+                'onclick="copyToClipboard(\'' + u.replace(/'/g, "\\'") + '\', this)">复制</button>' +
+                '</div>'
+            ).join('');
+
+            document.getElementById('uuid-stats').textContent = '已生成 ' + count + ' 个 UUID ' + version.toUpperCase();
+        }
+
+        function copyAllUUIDs() {
+            const uuids = [...document.querySelectorAll('#uuid-result span[style*="monospace"]')]
+                .map(el => el.textContent).join('\n');
+            if (uuids) {
+                navigator.clipboard.writeText(uuids);
+                const btn = event.target;
+                btn.classList.add('copied');
+                setTimeout(() => btn.classList.remove('copied'), 1500);
+            }
+        }
+
+        function clearUUIDs() {
+            document.getElementById('uuid-result').innerHTML = '';
+            document.getElementById('uuid-stats').textContent = '';
+            document.getElementById('uuid-count').value = 5;
+            document.getElementById('uuid-uppercase').checked = false;
+            document.getElementById('uuid-no-hyphen').checked = false;
+            document.getElementById('uuid-braces').checked = false;
+            document.getElementById('uuid-quotes').checked = false;
+            document.getElementById('uuid-prefix').value = '';
+            document.getElementById('uuid-suffix').value = '';
+            document.querySelector('input[name="uuid-version"][value="v4"]').checked = true;
+        }
+
 
     </script>
 </body>
