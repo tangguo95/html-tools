@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>工具箱</title>
+    <title>工具�?/title>
     <script src="qr-code-generator.js"></script>
     <style>
         * {
@@ -211,7 +211,7 @@
             position: relative;
         }
         .copy-btn.copied::after {
-            content: '已复制';
+            content: '已复�?;
             position: absolute;
             top: -30px;
             left: 50%;
@@ -265,30 +265,31 @@
 </head>
 <body>
     <div class="container">
-        <h1>工具箱</h1>
+        <h1>工具�?/h1>
         
         <div class="tabs">
-            <button class="tab-btn active" data-tab="password">密码生成器</button>
+            <button class="tab-btn active" data-tab="password">密码生成�?/button>
             <button class="tab-btn" data-tab="diff">文本比对</button>
-            <button class="tab-btn" data-tab="json">JSON格式化</button>
+            <button class="tab-btn" data-tab="json">JSON格式�?/button>
             <button class="tab-btn" data-tab="base64">Base64编码</button>
             <button class="tab-btn" data-tab="md5">MD5加密</button>
             <button class="tab-btn" data-tab="aes">AES加密</button>
             <button class="tab-btn" data-tab="file-base64">文件Base64</button>
-            <button class="tab-btn" data-tab="url">URL编解码</button>
+            <button class="tab-btn" data-tab="url">URL编解�?/button>
             <button class="tab-btn" data-tab="sql-in">SQL IN助手</button>
-            <button class="tab-btn" data-tab="timestamp">时间戳转换</button>
-            <button class="tab-btn" data-tab="html-extractor">HTML提取器</button>
+            <button class="tab-btn" data-tab="timestamp">时间戳转�?/button>
+            <button class="tab-btn" data-tab="html-extractor">HTML提取�?/button>
             <button class="tab-btn" data-tab="regex">正则测试</button>
             <button class="tab-btn" data-tab="color">颜色转换</button>
             <button class="tab-btn" data-tab="text-splitter">文本分隔</button>
             <button class="tab-btn" data-tab="text-statistics">文本统计</button>
-            <button class="tab-btn" data-tab="qr-code">QR码生成</button>
+            <button class="tab-btn" data-tab="qr-code">QR码生�?/button>
+            <button class="tab-btn" data-tab="sha">SHA 鍝堝笇</button>
         </div>
 
-        <!-- 密码生成器 -->
+        <!-- 密码生成�?-->
         <div class="tool-panel active" id="password-panel">
-            <h2 class="tool-title">密码生成器</h2>
+            <h2 class="tool-title">密码生成�?/h2>
             <div class="form-group">
                 <label>密码长度</label>
                 <input type="number" id="pwd-length" value="16" min="4" max="128">
@@ -328,49 +329,49 @@
             <div class="diff-container">
                 <div class="form-group">
                     <label>原始文件</label>
-                    <textarea id="diff-text1" placeholder="请输入原始文本..."></textarea>
+                    <textarea id="diff-text1" placeholder="请输入原始文�?.."></textarea>
                 </div>
                 <div class="form-group">
                     <label>比较文件</label>
-                    <textarea id="diff-text2" placeholder="请输入比较文本..."></textarea>
+                    <textarea id="diff-text2" placeholder="请输入比较文�?.."></textarea>
                 </div>
             </div>
             <div class="form-group">
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="diff-ignore-case"> 忽略大小写</label>
+                    <label><input type="checkbox" id="diff-ignore-case"> 忽略大小�?/label>
                     <label><input type="checkbox" id="diff-ignore-space"> 忽略空白字符</label>
-                    <label><input type="checkbox" id="diff-trim-lines"> 去除行首尾空格</label>
+                    <label><input type="checkbox" id="diff-trim-lines"> 去除行首尾空�?/label>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="compareText()">开始比对</button>
+            <button class="btn btn-primary" onclick="compareText()">开始比�?/button>
             <button class="btn btn-secondary" onclick="swapTexts()">交换文件</button>
             <button class="btn btn-secondary" onclick="clearDiff()">清空</button>
             <div id="diff-stats" style="margin-top: 15px; color: #666;"></div>
             <div id="diff-result" class="diff-result" style="margin-top: 15px; display: none;"></div>
         </div>
 
-        <!-- JSON格式化工具 -->
+        <!-- JSON格式化工�?-->
         <div class="tool-panel" id="json-panel">
-            <h2 class="tool-title">JSON格式化工具</h2>
+            <h2 class="tool-title">JSON格式化工�?/h2>
             <div class="form-group">
                 <label>输入JSON</label>
                 <textarea id="json-input" placeholder='请输入JSON字符串，例如: {"name": "test", "value": 123}'></textarea>
             </div>
             <div class="form-group">
-                <label>缩进空格数</label>
+                <label>缩进空格�?/label>
                 <select id="json-indent">
-                    <option value="2">2个空格</option>
-                    <option value="4" selected>4个空格</option>
+                    <option value="2">2个空�?/option>
+                    <option value="4" selected>4个空�?/option>
                     <option value="tab">Tab缩进</option>
                 </select>
             </div>
-            <button class="btn btn-primary" onclick="formatJSON()">格式化</button>
+            <button class="btn btn-primary" onclick="formatJSON()">格式�?/button>
             <button class="btn btn-secondary" onclick="compressJSON()">压缩</button>
             <button class="btn btn-secondary" onclick="validateJSON()">验证</button>
             <button class="btn btn-secondary copy-btn" onclick="copyResult('json-output', this)">复制结果</button>
             <div class="form-group" style="margin-top: 20px;">
                 <label>输出结果</label>
-                <textarea id="json-output" readonly placeholder="格式化结果将显示在这里..."></textarea>
+                <textarea id="json-output" readonly placeholder="格式化结果将显示在这�?.."></textarea>
             </div>
             <div id="json-error" class="alert alert-error"></div>
         </div>
@@ -384,7 +385,7 @@
             </div>
             <div class="form-group">
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="base64-url-safe"> URL安全模式 (替换 +/ 为 -_)</label>
+                    <label><input type="checkbox" id="base64-url-safe"> URL安全模式 (替换 +/ �?-_)</label>
                     <label><input type="checkbox" id="base64-no-padding"> 去除填充字符 (=)</label>
                 </div>
             </div>
@@ -403,12 +404,12 @@
             <h2 class="tool-title">MD5加密</h2>
             <div class="form-group">
                 <label>输入文本</label>
-                <textarea id="md5-input" placeholder="请输入要加密的文本.."></textarea>
+                <textarea id="md5-input" placeholder="请输入要加密的文�?."></textarea>
             </div>
             <div class="form-group">
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="md5-uppercase"> 大写输出</label>
-                    <label><input type="checkbox" id="md5-16bit"> 16位MD5 (取中间16位)</label>
+                    <label><input type="checkbox" id="md5-16bit"> 16位MD5 (取中�?6�?</label>
                 </div>
             </div>
             <button class="btn btn-primary" onclick="generateMD5()">生成MD5</button>
@@ -423,7 +424,7 @@
         <div class="tool-panel" id="aes-panel">
             <h2 class="tool-title">AES加密/解密</h2>
             <div id="aes-warning" class="alert alert-warning">
-                注意：此功能使用Web Crypto API，需要浏览器支持。如果您看到此消息，请确保使用现代浏览器。
+                注意：此功能使用Web Crypto API，需要浏览器支持。如果您看到此消息，请确保使用现代浏览器�?
             </div>
             <div class="form-group">
                 <label>输入文本</label>
@@ -431,7 +432,7 @@
             </div>
             <div class="form-group">
                 <label>密钥 (建议16/24/32字符对应AES-128/192/256)</label>
-                <input type="password" id="aes-key" placeholder="请输入密钥..">
+                <input type="password" id="aes-key" placeholder="请输入密�?.">
                 <button class="btn btn-secondary" style="margin-top: 10px;" onclick="toggleKeyVisibility()">显示/隐藏密钥</button>
                 <button class="btn btn-secondary" style="margin-top: 10px;" onclick="generateAESKey()">生成随机密钥</button>
             </div>
@@ -468,18 +469,18 @@
             </div>
             <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
             <div class="form-group">
-                <label>Base64转文件</label>
+                <label>Base64转文�?/label>
                 <textarea id="base64-to-file-input" placeholder="请输入Base64编码..."></textarea>
             </div>
             <div class="form-group">
-                <label>文件名</label>
+                <label>文件�?/label>
                 <input type="text" id="base64-filename" placeholder="例如: image.png">
             </div>
             <button class="btn btn-primary" onclick="base64ToFile()">下载文件</button>
             <div id="file-base64-error" class="alert alert-error"></div>
         </div>
 
-        <!-- URL编解码 -->
+        <!-- URL编解�?-->
         <div class="tool-panel" id="url-panel">
             <h2 class="tool-title">URL编码/解码</h2>
             <div class="form-group">
@@ -488,7 +489,7 @@
             </div>
             <div class="form-group">
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="url-component" checked> 使用encodeURIComponent (编码所有特殊字符)</label>
+                    <label><input type="checkbox" id="url-component" checked> 使用encodeURIComponent (编码所有特殊字�?</label>
                 </div>
             </div>
             <button class="btn btn-primary" onclick="urlEncode()">编码</button>
@@ -506,13 +507,13 @@
             <h2 class="tool-title">SQL IN 助手</h2>
             <div class="form-group">
                 <label>粘贴原始数据</label>
-                <textarea id="sql-in-input" placeholder="可直接粘贴 Excel 中复制的内容，支持多行多列.."></textarea>
-                <p class="helper-text">会自动按换行符、制表符拆分，清洗空值，并对单引号进行 SQL 转义。</p>
+                <textarea id="sql-in-input" placeholder="可直接粘�?Excel 中复制的内容，支持多行多�?."></textarea>
+                <p class="helper-text">会自动按换行符、制表符拆分，清洗空值，并对单引号进�?SQL 转义�?/p>
             </div>
             <div class="form-group">
                 <label>输出格式</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="sql-in-quote" checked> 单引号包裹</label>
+                    <label><input type="checkbox" id="sql-in-quote" checked> 单引号包�?/label>
                     <label><input type="checkbox" id="sql-in-distinct" checked> 去重</label>
                     <label><input type="checkbox" id="sql-in-trim" checked> 去除首尾空格</label>
                     <label><input type="checkbox" id="sql-in-wrap"> 包含外层括号</label>
@@ -529,24 +530,24 @@
         </div>
         
         
-        <!-- JSON 转 CSV 工具 -->
+        <!-- JSON �?CSV 工具 -->
         <div class="tool-panel" id="json-csv-panel">
-            <h2 class="tool-title">JSON 转 CSV 工具</h2>
+            <h2 class="tool-title">JSON �?CSV 工具</h2>
             <div class="form-group">
                 <label>输入 JSON 数组</label>
-                <textarea id="json-csv-input" placeholder="请输入 JSON 数组" rows="5"></textarea>
+                <textarea id="json-csv-input" placeholder="请输�?JSON 数组" rows="5"></textarea>
             </div>
             <div class="form-group">
-                <label>CSV 分隔符</label>
+                <label>CSV 分隔�?/label>
                 <select id="json-csv-delimiter">
                     <option value=",">逗号 (,)</option>
                     <option value=";">分号 (;)</option>
-                    <option value="&#9;">制表符 (Tab)</option>
+                    <option value="&#9;">制表�?(Tab)</option>
                     <option value="|">竖线 (|)</option>
                 </select>
             </div>
             <div class="form-group">
-                <label><input type="checkbox" id="json-csv-bom" checked> 添加 BOM 头（支持 Excel 中文）</label>
+                <label><input type="checkbox" id="json-csv-bom" checked> 添加 BOM 头（支持 Excel 中文�?/label>
             </div>
             <button class="btn btn-primary" onclick="convertJsonToCsv()">转换</button>
             <button class="btn btn-secondary" onclick="copyCsvResult()">复制 CSV</button>
@@ -562,9 +563,9 @@
         <div class="tool-panel" id="timestamp-panel">
             <h2 class="tool-title">时间戳转换器</h2>
             <div class="form-group">
-                <label>当前时间戳</label>
+                <label>当前时间�?/label>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="text" id="ts-current" readonly placeholder="点击获取当前时间戳">
+                    <input type="text" id="ts-current" readonly placeholder="点击获取当前时间�?>
                     <button class="btn btn-primary" onclick="refreshTimestamp()">刷新</button>
                     <button class="btn btn-secondary copy-btn" onclick="copyResult('ts-current', this)">复制</button>
                 </div>
@@ -572,10 +573,10 @@
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
             <div class="form-group">
                 <label>时间戳转日期</label>
-                <input type="text" id="ts-to-date-input" placeholder="输入Unix时间戳（秒或毫秒）">
-                <p class="helper-text">支持秒级(10位)和毫秒级(13位)时间戳</p>
+                <input type="text" id="ts-to-date-input" placeholder="输入Unix时间戳（秒或毫秒�?>
+                <p class="helper-text">支持秒级(10�?和毫秒级(13�?时间�?/p>
             </div>
-            <button class="btn btn-primary" onclick="timestampToDate()">转换为日期</button>
+            <button class="btn btn-primary" onclick="timestampToDate()">转换为日�?/button>
             <div class="form-group" style="margin-top: 15px;">
                 <label>转换结果</label>
                 <div id="ts-date-result" class="result-box" style="font-family: monospace;">
@@ -598,34 +599,34 @@
             </div>
             <button class="btn btn-primary" onclick="dateToTimestamp()">转换为时间戳</button>
             <div class="form-group" style="margin-top: 15px;">
-                <label>时间戳结果</label>
+                <label>时间戳结�?/label>
                 <div class="result-box">
                     <div>秒级: <span id="ts-seconds" style="font-family: monospace; cursor: pointer;" onclick="copyToClipboard(this.textContent, this)" title="点击复制"></span></div>
-                    <div style="margin-top: 8px;">毫秒级 <span id="ts-milliseconds" style="font-family: monospace; cursor: pointer;" onclick="copyToClipboard(this.textContent, this)" title="点击复制"></span></div>
+                    <div style="margin-top: 8px;">毫秒�?<span id="ts-milliseconds" style="font-family: monospace; cursor: pointer;" onclick="copyToClipboard(this.textContent, this)" title="点击复制"></span></div>
                 </div>
             </div>
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
             <div class="form-group">
-                <label>多时区显示</label>
+                <label>多时区显�?/label>
                 <input type="datetime-local" id="tz-input" style="width: 100%;">
-                <p class="helper-text">输入时间后显示全球主要时区</p>
+                <p class="helper-text">输入时间后显示全球主要时�?/p>
             </div>
             <button class="btn btn-primary" onclick="showAllTimezones()">显示时区</button>
             <div id="tz-result" style="margin-top: 15px; font-family: monospace; font-size: 14px;"></div>
         </div>
 
-        <!-- HTML文件提取器 -->
+        <!-- HTML文件提取�?-->
         <div class="tool-panel" id="html-extractor-panel">
-            <h2 class="tool-title">HTML文件提取器</h2>
+            <h2 class="tool-title">HTML文件提取�?/h2>
             <div class="form-group">
                 <label>输入HTML</label>
-                <textarea id="html-input" placeholder="粘贴HTML代码，例如从网页复制的内容..." style="min-height: 200px;"></textarea>
+                <textarea id="html-input" placeholder="粘贴HTML代码，例如从网页复制的内�?.." style="min-height: 200px;"></textarea>
             </div>
             <div class="form-group">
                 <label>提取类型</label>
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="html-extract-text" checked> 提取纯文本</label>
-                    <label><input type="checkbox" id="html-extract-links" checked> 提取所有链接</label>
+                    <label><input type="checkbox" id="html-extract-text" checked> 提取纯文�?/label>
+                    <label><input type="checkbox" id="html-extract-links" checked> 提取所有链�?/label>
                     <label><input type="checkbox" id="html-extract-images"> 提取图片URL</label>
                     <label><input type="checkbox" id="html-clean-whitespace"> 清理多余空白</label>
                 </div>
@@ -637,7 +638,7 @@
                     <label><input type="checkbox" id="html-keep-newlines"> 保持换行</label>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="extractHTML()">开始提取</button>
+            <button class="btn btn-primary" onclick="extractHTML()">开始提�?/button>
             <button class="btn btn-secondary" onclick="clearHTMLExtractor()">清空</button>
             <button class="btn btn-secondary" onclick="demoHTML()">示例HTML</button>
             <div class="form-group" style="margin-top: 20px;">
@@ -651,11 +652,11 @@
             </div>
         </div>
 
-        <!-- 正则表达式测试 -->
+        <!-- 正则表达式测�?-->
         <div class="tool-panel" id="regex-panel">
-            <h2 class="tool-title">正则表达式测试</h2>
+            <h2 class="tool-title">正则表达式测�?/h2>
             <div class="form-group">
-                <label>正则表达式</label>
+                <label>正则表达�?/label>
                 <div style="display: flex; gap: 10px;">
                     <span style="padding: 10px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px 0 0 6px; border-right: none; color: #666;">/</span>
                     <input type="text" id="regex-pattern" placeholder="输入正则表达式，例如: \d+" style="border-radius: 0; flex: 1;">
@@ -663,12 +664,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>标志位(Flags)</label>
+                <label>标志�?Flags)</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="regex-global" checked> g - 全局匹配</label>
-                    <label><input type="checkbox" id="regex-ignore-case"> i - 忽略大小写</label>
+                    <label><input type="checkbox" id="regex-ignore-case"> i - 忽略大小�?/label>
                     <label><input type="checkbox" id="regex-multiline"> m - 多行模式</label>
-                    <label><input type="checkbox" id="regex-dotall"> s - 点号匹配所有</label>
+                    <label><input type="checkbox" id="regex-dotall"> s - 点号匹配所�?/label>
                 </div>
             </div>
             <div class="form-group">
@@ -690,7 +691,7 @@
                     <button class="btn btn-secondary" onclick="setRegex('[\\u4e00-\\u9fa5]+')">中文</button>
                     <button class="btn btn-secondary" onclick="setRegex('\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b')">邮箱</button>
                     <button class="btn btn-secondary" onclick="setRegex('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?')">URL</button>
-                    <button class="btn btn-secondary" onclick="setRegex('^1[3-9]\\d{9}$')">手机号</button>
+                    <button class="btn btn-secondary" onclick="setRegex('^1[3-9]\\d{9}$')">手机�?/button>
                     <button class="btn btn-secondary" onclick="setRegex('\\d{4}-\\d{2}-\\d{2}')">日期</button>
                 </div>
             </div>
@@ -700,14 +701,14 @@
         <div class="tool-panel" id="color-panel">
             <h2 class="tool-title">颜色转换工具</h2>
             <div class="form-group">
-                <label>输入颜色值</label>
-                <input type="text" id="color-input" placeholder="#3498db 或 rgb(52,152,219) 或 hsl(204,70%,53%)" style="width: 100%;">
+                <label>输入颜色�?/label>
+                <input type="text" id="color-input" placeholder="#3498db �?rgb(52,152,219) �?hsl(204,70%,53%)" style="width: 100%;">
                 <p class="helper-text">支持 HEX (#RGB/#RRGGBB)、RGB (rgb(r,g,b))、HSL (hsl(h,s%,l%)) 格式</p>
             </div>
             <button class="btn btn-primary" onclick="colorConvert()">转换</button>
             <button class="btn btn-secondary" onclick="clearColor()">清空</button>
             <div class="form-group" style="margin-top: 20px;">
-                <label>快速示例</label>
+                <label>快速示�?/label>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                     <button class="btn btn-secondary" onclick="setColor('hex')">HEX</button>
                     <button class="btn btn-secondary" onclick="setColor('rgb')">RGB</button>
@@ -731,13 +732,13 @@
                 <label>操作模式</label>
                 <div class="checkbox-group">
                     <label><input type="radio" name="splitter-mode" value="split" checked> 按分隔符拆分</label>
-                    <label><input type="radio" name="splitter-mode" value="merge"> 合并为一行</label>
+                    <label><input type="radio" name="splitter-mode" value="merge"> 合并为一�?/label>
                     <label><input type="radio" name="splitter-mode" value="unique"> 去重</label>
                 </div>
             </div>
             <div class="form-group" id="split-options">
-                <label>分隔符</label>
-                <input type="text" id="text-splitter-delimiter" placeholder="例如: , ; | \n_space (空格) _tab (制表符)" value=",">
+                <label>分隔�?/label>
+                <input type="text" id="text-splitter-delimiter" placeholder="例如: , ; | \n_space (空格) _tab (制表�?" value=",">
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="text-splitter-trim"> 去除每项首尾空格</label>
                     <label><input type="checkbox" id="text-splitter-empty" checked> 移除空项</label>
@@ -746,10 +747,10 @@
                 <p class="helper-text">支持使用特殊代码：_space 表示空格，_tab 表示制表符，_newline 表示换行</p>
             </div>
             <div class="form-group" id="merge-options" style="display: none;">
-                <label>合并分隔符</label>
-                <input type="text" id="text-splitter-merge-delimiter" placeholder="例如: , 或 ; 或 空格" value=",">
+                <label>合并分隔�?/label>
+                <input type="text" id="text-splitter-merge-delimiter" placeholder="例如: , �?; �?空格" value=",">
                 <div class="checkbox-group">
-                    <label><input type="checkbox" id="text-splitter-merge-trim"> 合并前去除空格</label>
+                    <label><input type="checkbox" id="text-splitter-merge-trim"> 合并前去除空�?/label>
                 </div>
             </div>
             <button class="btn btn-primary" onclick="processTextSplitter()">处理文本</button>
@@ -757,7 +758,7 @@
             <button class="btn btn-secondary" onclick="loadTextSplitterDemo()">示例文本</button>
             <div id="text-splitter-stats" class="stats-text"></div>
             <div class="form-group" style="margin-top: 20px;">
-                <label>预览 (前20项)</label>
+                <label>预览 (�?0�?</label>
                 <div id="text-splitter-preview" class="preview-box" style="max-height: 150px; overflow-y: auto;"></div>
             </div>
             <div class="form-group" style="margin-top: 20px;">
@@ -772,7 +773,7 @@
             <h2 class="tool-title">文本统计工具</h2>
             <div class="form-group">
                 <label>输入文本</label>
-                <textarea id="text-stat-input" placeholder="请输入要统计的文本..." style="min-height: 200px;"></textarea>
+                <textarea id="text-stat-input" placeholder="请输入要统计的文�?.." style="min-height: 200px;"></textarea>
             </div>
             <div class="form-group">
                 <label>统计选项</label>
@@ -794,10 +795,10 @@
             <h2 class="tool-title">QR码生成器</h2>
             <div class="form-group">
                 <label>输入内容</label>
-                <textarea id="qr-input" placeholder="请输入要生成QR码的内容（URL、文本、联系方式等）..." style="min-height: 120px;"></textarea>
+                <textarea id="qr-input" placeholder="请输入要生成QR码的内容（URL、文本、联系方式等�?.." style="min-height: 120px;"></textarea>
             </div>
             <div class="form-group">
-                <label>二维码尺寸</label>
+                <label>二维码尺�?/label>
                 <select id="qr-size">
                     <option value="200">200x200 像素</option>
                     <option value="300" selected>300x300 像素</option>
@@ -809,31 +810,31 @@
                 <label>颜色设置</label>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
                     <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px;">前景色</label>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px;">前景�?/label>
                         <input type="color" id="qr-foreground" value="#000000" style="width: 60px; height: 30px; border: 1px solid #ddd; border-radius: 4px;">
                     </div>
                     <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 13px;">背景色</label>
+                        <label style="display: block; margin-bottom: 5px; font-size: 13px;">背景�?/label>
                         <input type="color" id="qr-background" value="#ffffff" style="width: 60px; height: 30px; border: 1px solid #ddd; border-radius: 4px;">
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="generateQRCode()">生成QR码</button>
+            <button class="btn btn-primary" onclick="generateQRCode()">生成QR�?/button>
             <button class="btn btn-secondary" onclick="clearQRCode()">清空</button>
             <button class="btn btn-secondary" onclick="downloadQRCode()">下载图片</button>
             <div class="form-group" style="margin-top: 20px;">
                 <label>生成结果</label>
                 <div id="qr-result" style="text-align: center; padding: 20px; background: #fafafa; border-radius: 8px; border: 1px solid #e0e0e0; min-height: 220px; display: flex; align-items: center; justify-content: center;">
-                    <div style="color: #999;">点击“生成QR码”开始</div>
+                    <div style="color: #999;">点击“生成QR码”开�?/div>
                 </div>
             </div>
             <div id="qr-error" class="alert alert-error"></div>
-            <p class="helper-text" style="margin-top: 15px;">💡 提示：可以输入网址、文本、电话号码、邮箱地址等内容。扫描生成的QR码即可快速访问或复制内容。</p>
+            <p class="helper-text" style="margin-top: 15px;">💡 提示：可以输入网址、文本、电话号码、邮箱地址等内容。扫描生成的QR码即可快速访问或复制内容�?/p>
         </div>
 
-        <!-- UUID 生成器 -->
+        <!-- UUID 生成�?-->
         <div class="tool-panel" id="uuid-panel">
-            <h2 class="tool-title">UUID/GUID 生成器</h2>
+            <h2 class="tool-title">UUID/GUID 生成�?/h2>
             <div class="form-group">
                 <label>生成数量</label>
                 <input type="number" id="uuid-count" value="5" min="1" max="50">
@@ -842,20 +843,20 @@
                 <label>UUID 版本</label>
                 <div class="checkbox-group">
                     <label><input type="radio" name="uuid-version" value="v4" checked> UUID v4 (随机)</label>
-                    <label><input type="radio" name="uuid-version" value="v7"> UUID v7 (时间序，实验性)</label>
+                    <label><input type="radio" name="uuid-version" value="v7"> UUID v7 (时间序，实验�?</label>
                 </div>
             </div>
             <div class="form-group">
                 <label>格式选项</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" id="uuid-uppercase"> 大写字母</label>
-                    <label><input type="checkbox" id="uuid-no-hyphen"> 移除连字符</label>
-                    <label><input type="checkbox" id="uuid-braces"> 添加花括号 {}</label>
+                    <label><input type="checkbox" id="uuid-no-hyphen"> 移除连字�?/label>
+                    <label><input type="checkbox" id="uuid-braces"> 添加花括�?{}</label>
                     <label><input type="checkbox" id="uuid-quotes"> 添加引号 ''</label>
                 </div>
             </div>
             <div class="form-group">
-                <label>前缀/后缀 (可选)</label>
+                <label>前缀/后缀 (可�?</label>
                 <input type="text" id="uuid-prefix" placeholder="前缀，如：id_">
                 <input type="text" id="uuid-suffix" placeholder="后缀，如：_id" style="margin-top: 8px;">
             </div>
@@ -866,13 +867,48 @@
                 <label>生成结果</label>
                 <div id="uuid-result" class="result-box" style="min-height: 100px;"></div>
             </div>
-            <div id="uuid-stats" class="stats-text"></div>
+
+        <!-- SHA 鍝堝笇宸ュ叿 -->
+        <div class="tool-panel" id="sha-panel">
+            <h2 class="tool-title">SHA 鍝堝笇鐢熸垚鍣?/h2>
+            <div class="form-group">
+                <label>杈撳叆鏂囨湰</label>
+                <textarea id="sha-input" placeholder="璇疯緭鍏ヨ璁＄畻鍝堝笇鐨勬枃鏈?.." style="min-height: 120px;"></textarea>
+            </div>
+            <div class="form-group">
+                <label>鍝堝笇绠楁硶</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="sha-algorithm" value="SHA-1"> SHA-1</label>
+                    <label><input type="radio" name="sha-algorithm" value="SHA-256" checked> SHA-256</label>
+                    <label><input type="radio" name="sha-algorithm" value="SHA-384"> SHA-384</label>
+                    <label><input type="radio" name="sha-algorithm" value="SHA-512"> SHA-512</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>杈撳嚭鏍煎紡</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="sha-uppercase"> 澶у啓杈撳嚭</label>
+                    <label><input type="checkbox" id="sha-colon"> 鍐掑彿鍒嗛殧鏍煎紡 (姣?2 瀛楃)</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>鏂囦欢鍝堝笇 (鍙€?</label>
+                <input type="file" id="sha-file-input" style="padding: 8px 0;">
+                <p class="helper-text">濡傛灉閫夋嫨浜嗘枃浠讹紝灏嗗拷鐣ユ枃鏈緭鍏ワ紝鐩存帴璁＄畻鏂囦欢鍝堝笇</p>
+            </div>
+            <button class="btn btn-primary" onclick="generateSHA()">鐢熸垚 SHA 鍝堝笇</button>
+            <button class="btn btn-secondary" onclick="clearSHA()">娓呯┖</button>
+            <button class="btn btn-secondary copy-btn" onclick="copyResult('sha-output', this)">澶嶅埗缁撴灉</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>鍝堝笇缁撴灉</label>
+                <input type="text" id="sha-output" readonly placeholder="SHA 鍝堝笇缁撴灉灏嗘樉绀哄湪杩欓噷..." style="font-family: monospace;">
+            </div>
+            <div id="sha-error" class="alert alert-error"></div>
+            <p class="helper-text" style="margin-top: 15px;">馃挕 鎻愮ず锛歋HA-256 鍜?SHA-512 鏄帹鑽愮殑瀹夊叏绠楁硶锛孲HA-1 宸蹭笉鎺ㄨ崘鐢ㄤ簬瀹夊叏鍦烘櫙銆?/p>
         </div>
-        
-    </div>
 
     <script>
-        // ==================== 标签页切换 =====================
+        // ==================== 标签页切�?=====================
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -882,7 +918,7 @@
             });
         });
 
-        // 文本分隔合并工具的模式切换
+        // 文本分隔合并工具的模式切�?
         document.querySelectorAll('input[name="splitter-mode"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const mode = this.value;
@@ -897,7 +933,7 @@
             element.addEventListener(eventName, convertSqlIn);
         });
 
-        // ==================== 密码生成器 =====================
+        // ==================== 密码生成�?=====================
         function generatePasswords() {
             const length = parseInt(document.getElementById('pwd-length').value);
             const count = parseInt(document.getElementById('pwd-count').value);
@@ -966,20 +1002,20 @@
             
             let strength, color, text;
             if (entropy < 28) {
-                strength = 20; color = '#dc3545'; text = '非常弱';
+                strength = 20; color = '#dc3545'; text = '非常�?;
             } else if (entropy < 36) {
-                strength = 40; color = '#fd7e14'; text = '弱';
+                strength = 40; color = '#fd7e14'; text = '�?;
             } else if (entropy < 60) {
                 strength = 60; color = '#ffc107'; text = '中等';
             } else if (entropy < 80) {
-                strength = 80; color = '#28a745'; text = '强';
+                strength = 80; color = '#28a745'; text = '�?;
             } else {
-                strength = 100; color = '#20c997'; text = '非常强';
+                strength = 100; color = '#20c997'; text = '非常�?;
             }
 
             strengthBar.style.width = strength + '%';
             strengthBar.style.background = color;
-            strengthText.innerHTML = `密码强度: <strong style="color: ${color}">${text}</strong> (熵: ${entropy.toFixed(1)} bits)`;
+            strengthText.innerHTML = `密码强度: <strong style="color: ${color}">${text}</strong> (�? ${entropy.toFixed(1)} bits)`;
         }
 
         function copyAllPasswords() {
@@ -1093,7 +1129,7 @@
             document.getElementById('diff-stats').innerHTML = '';
         }
 
-        // ==================== JSON格式化工具 =====================
+        // ==================== JSON格式化工�?=====================
         function formatJSON() {
             const input = document.getElementById('json-input').value;
             const indent = document.getElementById('json-indent').value;
@@ -1130,7 +1166,7 @@
             
             try {
                 JSON.parse(input);
-                errorDiv.textContent = 'JSON格式正确！';
+                errorDiv.textContent = 'JSON格式正确�?;
                 errorDiv.className = 'alert alert-warning show';
                 errorDiv.style.background = '#d4edda';
                 errorDiv.style.color = '#155724';
@@ -1415,7 +1451,7 @@
             }
 
             if (!window.crypto || !window.crypto.subtle) {
-                errorDiv.textContent = '您的浏览器不支持Web Crypto API，无法使用AES加密功能！';
+                errorDiv.textContent = '您的浏览器不支持Web Crypto API，无法使用AES加密功能�?;
                 errorDiv.classList.add('show');
                 return;
             }
@@ -1469,7 +1505,7 @@
             }
 
             if (!window.crypto || !window.crypto.subtle) {
-                errorDiv.textContent = '您的浏览器不支持Web Crypto API，无法使用AES解密功能！';
+                errorDiv.textContent = '您的浏览器不支持Web Crypto API，无法使用AES解密功能�?;
                 errorDiv.classList.add('show');
                 return;
             }
@@ -1555,7 +1591,7 @@
             const errorDiv = document.getElementById('file-base64-error');
             
             if (!fileInput.files || !fileInput.files[0]) {
-                errorDiv.textContent = '请先选择文件！';
+                errorDiv.textContent = '请先选择文件�?;
                 errorDiv.classList.add('show');
                 return;
             }
@@ -1569,7 +1605,7 @@
             };
             
             reader.onerror = function() {
-                errorDiv.textContent = '文件读取失败！';
+                errorDiv.textContent = '文件读取失败�?;
                 errorDiv.classList.add('show');
             };
             
@@ -1582,7 +1618,7 @@
             const errorDiv = document.getElementById('file-base64-error');
             
             if (!base64Input) {
-                errorDiv.textContent = '请输入Base64编码！';
+                errorDiv.textContent = '请输入Base64编码�?;
                 errorDiv.classList.add('show');
                 return;
             }
@@ -1619,7 +1655,7 @@
             }
         }
 
-        // ==================== URL编解码 ====================
+        // ==================== URL编解�?====================
         function urlEncode() {
             const input = document.getElementById('url-input').value;
             const useComponent = document.getElementById('url-component').checked;
@@ -1675,8 +1711,8 @@
             const result = wrapIn ? `(${formatted.join(',')})` : formatted.join(',');
             output.value = result;
             stats.textContent = values.length
-                ? `共解析${rawItems.length}项，输出 ${values.length} 项。`
-                : '未识别到可用数据。';
+                ? `共解�?{rawItems.length}项，输出 ${values.length} 项。`
+                : '未识别到可用数据�?;
         }
 
         function clearSqlIn() {
@@ -1691,7 +1727,7 @@
             document.getElementById('ts-current').value = now;
         }
 
-        // 自动刷新时间戳
+        // 自动刷新时间�?
         setInterval(refreshTimestamp, 1000);
         refreshTimestamp();
 
@@ -1705,7 +1741,7 @@
             }
 
             let ts = parseInt(input);
-            // 自动判断秒级还是毫秒级
+            // 自动判断秒级还是毫秒�?
             if (ts < 1e12) {
                 ts *= 1000; // 秒级转毫秒级
             }
@@ -1747,14 +1783,14 @@
             const years = Math.floor(days / 365);
 
             let str;
-            if (years > 0) str = years + '年';
+            if (years > 0) str = years + '�?;
             else if (months > 0) str = months + '个月';
-            else if (days > 0) str = days + '天';
+            else if (days > 0) str = days + '�?;
             else if (hours > 0) str = hours + '小时';
             else if (minutes > 0) str = minutes + '分钟';
-            else str = seconds + '秒';
+            else str = seconds + '�?;
 
-            return future ? str + '后' : str + '前';
+            return future ? str + '�? : str + '�?;
         }
 
         function dateToTimestamp() {
@@ -1793,11 +1829,11 @@
                 { name: '北京 (UTC+8)', offset: 8 },
                 { name: '东京 (UTC+9)', offset: 9 },
                 { name: '纽约 (UTC-5)', offset: -5 },
-                { name: '洛杉矶 (UTC-8)', offset: -8 },
+                { name: '洛杉�?(UTC-8)', offset: -8 },
                 { name: '伦敦 (UTC+0)', offset: 0 },
                 { name: '柏林 (UTC+1)', offset: 1 },
                 { name: '悉尼 (UTC+10)', offset: 10 },
-                { name: '新加坡 (UTC+8)', offset: 8 },
+                { name: '新加�?(UTC+8)', offset: 8 },
                 { name: '迪拜 (UTC+3)', offset: 3 },
                 { name: '孟买 (UTC+5:30)', offset: 5.5 },
             ];
@@ -1821,7 +1857,7 @@
             document.getElementById('tz-result').innerHTML = html;
         }
 
-        // ==================== 正则表达式测试 ====================
+        // ==================== 正则表达式测�?====================
         function testRegex() {
             const pattern = document.getElementById('regex-pattern').value;
             const input = document.getElementById('regex-input').value;
@@ -1842,7 +1878,7 @@
                 const regex = new RegExp(pattern, flags);
                 
                 if (!input) {
-                    resultDiv.innerHTML = '<span style="color: #999;">请输入测试文本</span>';
+                    resultDiv.innerHTML = '<span style="color: #999;">请输入测试文�?/span>';
                     return;
                 }
 
@@ -1874,13 +1910,13 @@
                 if (matches.length === 0) {
                     resultDiv.innerHTML = '<span style="color: #dc2626;">未匹配到任何结果</span>';
                 } else {
-                    let html = `<div style="margin-bottom: 10px; color: #28a745;">共找到 ${matches.length} 个匹配</div>`;
+                    let html = `<div style="margin-bottom: 10px; color: #28a745;">共找�?${matches.length} 个匹�?/div>`;
                     matches.forEach((m, i) => {
                         html += `<div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px;">`;
                         html += `<div style="color: #333; font-weight: 500;">匹配 ${i + 1}: <span style="color: #0066cc;">${escapeHtml(m.text)}</span></div>`;
                         html += `<div style="color: #666; font-size: 13px; margin-top: 5px;">位置: ${m.index}</div>`;
                         if (m.groups.length > 0) {
-                            html += `<div style="color: #666; font-size: 13px; margin-top: 5px;">捕获组 ${m.groups.map((g, gi) => `[${gi + 1}] ${escapeHtml(g || '(空)')}`).join(', ')}</div>`;
+                            html += `<div style="color: #666; font-size: 13px; margin-top: 5px;">捕获�?${m.groups.map((g, gi) => `[${gi + 1}] ${escapeHtml(g || '(�?')}`).join(', ')}</div>`;
                         }
                         html += `</div>`;
                     });
@@ -1900,7 +1936,7 @@
                     resultDiv.innerHTML = html;
                 }
             } catch (e) {
-                resultDiv.innerHTML = `<span style="color: #dc2626;">正则表达式错误: ${e.message}</span>`;
+                resultDiv.innerHTML = `<span style="color: #dc2626;">正则表达式错�? ${e.message}</span>`;
             }
         }
 
@@ -1919,11 +1955,11 @@
             testRegex();
         }
 
-        // ==================== HTML文件提取器 ====================
+        // ==================== HTML文件提取�?====================
         function extractHTML() {
             const html = document.getElementById('html-input').value;
             if (!html.trim()) {
-                alert('请输入HTML内容！');
+                alert('请输入HTML内容�?);
                 return;
             }
 
@@ -1941,13 +1977,13 @@
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
-            // 移除 script 和 style 标签
+            // 移除 script �?style 标签
             if (removeScripts) {
                 doc.querySelectorAll('script, style, noscript, meta, link').forEach(el => el.remove());
             }
 
             if (extractText) {
-                // 提取纯文本
+                // 提取纯文�?
                 const text = doc.body.textContent || doc.body.innerText || '';
                 let formattedText = text;
 
@@ -1970,7 +2006,7 @@
             }
 
             if (extractLinks) {
-                // 提取所有链接
+                // 提取所有链�?
                 const links = Array.from(doc.querySelectorAll('a[href]'))
                     .map(a => {
                         const text = (a.textContent || '').trim() || a.href;
@@ -1995,7 +2031,7 @@
             }
 
             if (!result) {
-                result = '未提取到内容，请选择至少一项提取类型。';
+                result = '未提取到内容，请选择至少一项提取类型�?;
             }
 
             document.getElementById('html-output').value = result;
@@ -2023,7 +2059,7 @@
 </head>
 <body>
     <h1>欢迎来到我的网站</h1>
-    <p>这是一个<strong>示例HTML</strong>内容，用于演示HTML文件提取器的功能。</p>
+    <p>这是一�?strong>示例HTML</strong>内容，用于演示HTML文件提取器的功能�?/p>
     <a href="https://example.com">访问 Example.com</a>
     <p>更多相关的内容，</p>
     <ul>
@@ -2034,16 +2070,68 @@
     <script>
         // 这个脚本内容将被移除
         console.log('This will be removed');
-    </script>
-</body>
-</html>`;
+        // ==================== SHA 鍝堝笇鐢熸垚鍣?====================
+        async function generateSHA() {
+            const textInput = document.getElementById('sha-input').value;
+            const fileInput = document.getElementById('sha-file-input').files[0];
+            const algorithm = document.querySelector('input[name="sha-algorithm"]:checked').value;
+            const uppercase = document.getElementById('sha-uppercase').checked;
+            const colonFormat = document.getElementById('sha-colon').checked;
+            const errorDiv = document.getElementById('sha-error');
+            const outputField = document.getElementById('sha-output');
+
+            try {
+                errorDiv.classList.remove('show');
+                let hashBuffer;
+
+                if (fileInput) {
+                    const fileData = await fileInput.arrayBuffer();
+                    hashBuffer = await crypto.subtle.digest(algorithm, fileData);
+                } else if (textInput) {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(textInput);
+                    hashBuffer = await crypto.subtle.digest(algorithm, data);
+                } else {
+                    errorDiv.textContent = '璇疯緭鍏ユ枃鏈垨閫夋嫨鏂囦欢锛?;
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                let hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                if (uppercase) {
+                    hashHex = hashHex.toUpperCase();
+                }
+                if (colonFormat) {
+                    hashHex = hashHex.match(/.{1,2}/g).join(':');
+                }
+
+                outputField.value = hashHex;
+            } catch (e) {
+                errorDiv.textContent = '鐢熸垚鍝堝笇澶辫触锛? + e.message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function clearSHA() {
+            document.getElementById('sha-input').value = '';
+            document.getElementById('sha-file-input').value = '';
+            document.getElementById('sha-output').value = '';
+            document.getElementById('sha-error').classList.remove('show');
+            document.querySelector('input[name="sha-algorithm"][value="SHA-256"]').checked = true;
+            document.getElementById('sha-uppercase').checked = false;
+            document.getElementById('sha-colon').checked = false;
+        }
+
+`;
             document.getElementById('html-input').value = demo;
         }
 
         function downloadHTMLResult() {
             const content = document.getElementById('html-output').value;
             if (!content) {
-                alert('没有可下载的内容！');
+                alert('没有可下载的内容�?);
                 return;
             }
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -2063,7 +2151,7 @@
             const resultDiv = document.getElementById('color-result');
 
             if (!input) {
-                resultDiv.innerHTML = '<span style="color: #999;">请输入颜色值（HEX/RGB/HSL）</span>';
+                resultDiv.innerHTML = '<span style="color: #999;">请输入颜色值（HEX/RGB/HSL�?/span>';
                 return;
             }
 
@@ -2099,7 +2187,7 @@
                 html += '</div>';
                 resultDiv.innerHTML = html;
             } else {
-                resultDiv.innerHTML = '<span style="color: #dc2626;">无效的颜色格式</span><br><small style="color: #666;">支持格式：#RGB, #RRGGBB, rgb(r,g,b), hsl(h,s%,l%)</small>';
+                resultDiv.innerHTML = '<span style="color: #dc2626;">无效的颜色格�?/span><br><small style="color: #666;">支持格式�?RGB, #RRGGBB, rgb(r,g,b), hsl(h,s%,l%)</small>';
             }
         }
 
@@ -2231,7 +2319,7 @@
                     const removeEmpty = document.getElementById('text-splitter-empty').checked;
                     const dedup = document.getElementById('text-splitter-discard').checked;
 
-                    // 处理特殊分隔符
+                    // 处理特殊分隔�?
                     let realDelimiter = delimiter.replace(/_space/g, ' ').replace(/_tab/g, '\t').replace(/_newline/g, '\n');
                     if (realDelimiter === '\\n') realDelimiter = '\n';
 
@@ -2256,7 +2344,7 @@
                         items = [...new Set(items)];
                     }
 
-                    stats += `去重后: ${items.length}，筛选后: ${items.length}`;
+                    stats += `去重�? ${items.length}，筛选后: ${items.length}`;
                     
                     // 保留换行输出
                     result = items.join('\n');
@@ -2275,7 +2363,7 @@
                     items = items.filter(item => item !== '');
                     
                     result = items.join(mergeDelimiter);
-                    stats = `合并: ${items.length} 行 → 单行`;
+                    stats = `合并: ${items.length} �?�?单行`;
                 }
                 else if (mode === 'unique') {
                     // 按行去重
@@ -2283,7 +2371,7 @@
                     const uniqueItems = [...new Set(items)];
                     
                     result = uniqueItems.join('\n');
-                    stats = `去重: ${items.length} → ${uniqueItems.length}`;
+                    stats = `去重: ${items.length} �?${uniqueItems.length}`;
                 }
 
                 document.getElementById('text-splitter-output').value = result;
@@ -2297,7 +2385,7 @@
                     '</ul>';
                 
                 if (result.split('\n').length > 20) {
-                    previewBox.innerHTML += '<p style="color: #666; margin-top: 5px; font-size: 12px;">... (共' + result.split('\n').length + '行，仅显示前20行)</p>';
+                    previewBox.innerHTML += '<p style="color: #666; margin-top: 5px; font-size: 12px;">... (�? + result.split('\n').length + '行，仅显示前20�?</p>';
                 }
                 
             } catch (e) {
@@ -2343,7 +2431,7 @@ Apple`;
             const errorDiv = document.getElementById('qr-error');
             
             if (!input) {
-                errorDiv.textContent = '请输入要生成QR码的内容！';
+                errorDiv.textContent = '请输入要生成QR码的内容�?;
                 errorDiv.classList.add('show');
                 return;
             }
@@ -2366,14 +2454,14 @@ Apple`;
                 resultDiv.dataset.qrDataUrl = dataUrl;
                 
             } catch (e) {
-                errorDiv.textContent = '生成QR码失败: ' + e.message;
+                errorDiv.textContent = '生成QR码失�? ' + e.message;
                 errorDiv.classList.add('show');
             }
         }
         
         function clearQRCode() {
             document.getElementById('qr-input').value = '';
-            document.getElementById('qr-result').innerHTML = '<div style="color: #999;">点击“生成QR码”开始</div>';
+            document.getElementById('qr-result').innerHTML = '<div style="color: #999;">点击“生成QR码”开�?/div>';
             document.getElementById('qr-result').dataset.qrDataUrl = '';
             document.getElementById('qr-error').classList.remove('show');
         }
@@ -2402,7 +2490,7 @@ Apple`;
             window.qrGenerator.downloadQRCode(dataUrl, filename);
         }
         
-        // ==================== UUID 生成器 ====================
+        // ==================== UUID 生成�?====================
         function generateUUIDv4() {
             if (crypto.randomUUID) {
                 return crypto.randomUUID();
@@ -2467,7 +2555,7 @@ Apple`;
                 '</div>'
             ).join('');
 
-            document.getElementById('uuid-stats').textContent = '已生成 ' + count + ' 个 UUID ' + version.toUpperCase();
+            document.getElementById('uuid-stats').textContent = '已生�?' + count + ' �?UUID ' + version.toUpperCase();
         }
 
         function copyAllUUIDs() {
@@ -2494,7 +2582,7 @@ Apple`;
             document.querySelector('input[name="uuid-version"][value="v4"]').checked = true;
         }
     
-        function convertJsonToCsv(){const input=document.getElementById('json-csv-input').value.trim(),delimiter=document.getElementById('json-csv-delimiter').value,addBom=document.getElementById('json-csv-bom').checked,output=document.getElementById('json-csv-output'),stats=document.getElementById('json-csv-stats');if(!input){output.value='请输入 JSON 数组';stats.textContent='';return}try{const data=JSON.parse(input);if(!Array.isArray(data)){output.value='错误：请输入 JSON 数组';return}if(data.length===0){output.value='错误：数组为空';return}const allKeys=new Set();data.forEach(obj=>{if(typeof obj==='object'&&obj!==null){Object.keys(obj).forEach(key=>allKeys.add(key))}});const keys=Array.from(allKeys);let csv=addBom?'\uFEFF':'';csv+=keys.map(k=>escapeCsv(k,delimiter)).join(delimiter)+'\n';let rowCount=0;data.forEach(obj=>{if(typeof obj==='object'&&obj!==null){const row=keys.map(key=>escapeCsv(obj[key]!==null?obj[key]:' ',delimiter));csv+=row.join(delimiter)+'\n';rowCount++}});output.value=csv;stats.textContent='共 '+rowCount+' 行数据，'+keys.length+' 个字段'}catch(e){output.value='JSON 解析错误：'+e.message}}
+        function convertJsonToCsv(){const input=document.getElementById('json-csv-input').value.trim(),delimiter=document.getElementById('json-csv-delimiter').value,addBom=document.getElementById('json-csv-bom').checked,output=document.getElementById('json-csv-output'),stats=document.getElementById('json-csv-stats');if(!input){output.value='请输�?JSON 数组';stats.textContent='';return}try{const data=JSON.parse(input);if(!Array.isArray(data)){output.value='错误：请输入 JSON 数组';return}if(data.length===0){output.value='错误：数组为�?;return}const allKeys=new Set();data.forEach(obj=>{if(typeof obj==='object'&&obj!==null){Object.keys(obj).forEach(key=>allKeys.add(key))}});const keys=Array.from(allKeys);let csv=addBom?'\uFEFF':'';csv+=keys.map(k=>escapeCsv(k,delimiter)).join(delimiter)+'\n';let rowCount=0;data.forEach(obj=>{if(typeof obj==='object'&&obj!==null){const row=keys.map(key=>escapeCsv(obj[key]!==null?obj[key]:' ',delimiter));csv+=row.join(delimiter)+'\n';rowCount++}});output.value=csv;stats.textContent='�?'+rowCount+' 行数据，'+keys.length+' 个字�?}catch(e){output.value='JSON 解析错误�?+e.message}}
         function escapeCsv(value,delimiter){if(typeof value!=='string')value=String(value);if(value.includes(delimiter)||value.includes('"')||value.includes('\n')){value='"'+value.replace(/"/g,'""')+'"'}return value}
         function copyCsvResult(){const output=document.getElementById('json-csv-output');if(output.value)navigator.clipboard.writeText(output.value).then(()=>alert('已复制！'))}
         function downloadCsv(){const output=document.getElementById('json-csv-output');if(output.value){const blob=new Blob([output.value],{type:'text/csv;charset=utf-8;'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='export.csv';link.click()}}
@@ -2505,7 +2593,7 @@ Apple`;
             const statsResult = document.getElementById('text-statistics-result');
             
             if (!input) {
-                statsResult.innerHTML = '<span style="color: #999;">请输入要统计的文本</span>';
+                statsResult.innerHTML = '<span style="color: #999;">请输入要统计的文�?/span>';
                 return;
             }
             
@@ -2528,7 +2616,7 @@ Apple`;
             // 英文字母：[a-zA-Z]
             // 数字：[0-9]
             // 空白字符：\s
-            // 标点符号：其他可见字符
+            // 标点符号：其他可见字�?
             
             for (let i = 0; i < input.length; i++) {
                 const char = input[i];
@@ -2542,14 +2630,14 @@ Apple`;
                 } else if (/^\s$/.test(char)) {
                     spaceCount++;
                 } else if (/^[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\u2000-\u206F\u3000-\u303F\uFF00-\uFFEF]$/.test(char)) {
-                    // 其他中文标点和符号
+                    // 其他中文标点和符�?
                     punctuationCount++;
                 } else {
                     otherCount++;
                 }
             }
             
-            // 如果未选择任何选项，默认全部显示
+            // 如果未选择任何选项，默认全部显�?
             const stats = [];
             
             if (includeChinese) {
@@ -2568,22 +2656,22 @@ Apple`;
                 stats.push({ name: '标点符号', count: punctuationCount, percent: ((punctuationCount / totalChars) * 100).toFixed(2) });
             }
             
-            // 总字符统计
+            // 总字符统�?
             const otherStats = { name: '其他字符', count: otherCount, percent: ((otherCount / totalChars) * 100).toFixed(2) };
             
             // 统计单词数量
             const words = input.trim().split(/\s+/).filter(w => w.length > 0);
             const wordCount = words.length;
             
-            // 统计句子数量（按句号、问号、感叹号分割）
-            const sentences = input.split(/[。！？!?]+/).filter(s => s.trim().length > 0);
+            // 统计句子数量（按句号、问号、感叹号分割�?
+            const sentences = input.split(/[。！�??]+/).filter(s => s.trim().length > 0);
             const sentenceCount = sentences.length;
             
             // 统计行数
             const lines = input.split('\n');
             const lineCount = lines.length;
             
-            // 统计最长单词
+            // 统计最长单�?
             let longestWord = '';
             if (wordCount > 0) {
                 longestWord = words.reduce((a, b) => a.length > b.length ? a : b, '');
@@ -2596,12 +2684,12 @@ Apple`;
                 wordFrequency[lowerWord] = (wordFrequency[lowerWord] || 0) + 1;
             });
             
-            // 获取出现频率最高的5个单词
+            // 获取出现频率最高的5个单�?
             const topWords = Object.entries(wordFrequency)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 5)
                 .map(([word, count]) => `${word}: ${count}次`)
-                .join('<br>• ');
+                .join('<br>�?');
             
             // 汉字出现频率（如果包含中文）
             let topChinese = '';
@@ -2615,7 +2703,7 @@ Apple`;
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 10)
                     .map(([char, count]) => `${char}: ${count}次`)
-                    .join('<br>• ');
+                    .join('<br>�?');
             }
             
             // 生成统计结果HTML
@@ -2623,8 +2711,8 @@ Apple`;
             html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">整体统计</h3>';
             html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">';
             html += `<div style="background: #f0f7fd; padding: 15px; border-radius: 6px; text-align: center;"><strong style="color: #333; font-size: 24px;">${totalChars}</strong><br><span style="font-size: 13px; color: #666;">总字符数</span></div>`;
-            html += `<div style="background: #f0f7fd; padding: 15px; border-radius: 6px; text-align: center;"><strong style="color: #333; font-size: 24px;">${wordCount}</strong><br><span style="font-size: 13px; color: #666;">单词数</span></div>`;
-            html += `<div style="background: #f0f7fd; padding: 15px; border-radius: 6px; text-align: center;"><strong style="color: #333; font-size: 24px;">${sentenceCount}</strong><br><span style="font-size: 13px; color: #666;">句子数</span></div>`;
+            html += `<div style="background: #f0f7fd; padding: 15px; border-radius: 6px; text-align: center;"><strong style="color: #333; font-size: 24px;">${wordCount}</strong><br><span style="font-size: 13px; color: #666;">单词�?/span></div>`;
+            html += `<div style="background: #f0f7fd; padding: 15px; border-radius: 6px; text-align: center;"><strong style="color: #333; font-size: 24px;">${sentenceCount}</strong><br><span style="font-size: 13px; color: #666;">句子�?/span></div>`;
             html += `<div style="background: #f0f7fd; padding: 15px; border-radius: 6px; text-align: center;"><strong style="color: #333; font-size: 24px;">${lineCount}</strong><br><span style="font-size: 13px; color: #666;">行数</span></div>`;
             html += '</div>';
             html += '</div>';
@@ -2652,21 +2740,21 @@ Apple`;
             
             if (wordCount > 0) {
                 html += '<div style="margin-bottom: 20px;">';
-                html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">词频分析（Top 5）</h3>';
+                html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">词频分析（Top 5�?/h3>';
                 html += '<div style="background: #fafafa; padding: 15px; border-radius: 6px; border: 1px solid #e0e0e0;"><ul style="margin: 0; padding-left: 20px;"><li>' + topWords + '</ul></div>';
                 html += '</div>';
             }
             
             if (chineseCount > 0) {
                 html += '<div style="margin-bottom: 20px;">';
-                html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">汉字出现频率（Top 10）</h3>';
+                html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">汉字出现频率（Top 10�?/h3>';
                 html += '<div style="background: #fafafa; padding: 15px; border-radius: 6px; border: 1px solid #e0e0e0;"><ul style="margin: 0; padding-left: 20px;"><li>' + topChinese + '</ul></div>';
                 html += '</div>';
             }
             
             if (longestWord) {
                 html += '<div style="margin-bottom: 20px;">';
-                html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">最长单词</h3>';
+                html += '<h3 style="color: #333; font-size: 1.2em; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">最长单�?/h3>';
                 html += `<div style="background: #e8f5e8; padding: 15px; border-radius: 6px; border: 1px solid #c8e6c9; font-family: monospace; font-size: 16px;">${escapeHtml(longestWord)}</div>`;
                 html += '</div>';
             }
@@ -2683,7 +2771,58 @@ Apple`;
             document.getElementById('text-stat-spaces').checked = false;
             document.getElementById('text-stat-punctuation').checked = false;
         }
+        // ==================== SHA 鍝堝笇鐢熸垚鍣?====================
+        async function generateSHA() {
+            const textInput = document.getElementById('sha-input').value;
+            const fileInput = document.getElementById('sha-file-input').files[0];
+            const algorithm = document.querySelector('input[name="sha-algorithm"]:checked').value;
+            const uppercase = document.getElementById('sha-uppercase').checked;
+            const colonFormat = document.getElementById('sha-colon').checked;
+            const errorDiv = document.getElementById('sha-error');
+            const outputField = document.getElementById('sha-output');
 
-    </script>
-</body>
-</html>
+            try {
+                errorDiv.classList.remove('show');
+                let hashBuffer;
+
+                if (fileInput) {
+                    const fileData = await fileInput.arrayBuffer();
+                    hashBuffer = await crypto.subtle.digest(algorithm, fileData);
+                } else if (textInput) {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(textInput);
+                    hashBuffer = await crypto.subtle.digest(algorithm, data);
+                } else {
+                    errorDiv.textContent = '璇疯緭鍏ユ枃鏈垨閫夋嫨鏂囦欢锛?;
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                let hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                if (uppercase) {
+                    hashHex = hashHex.toUpperCase();
+                }
+                if (colonFormat) {
+                    hashHex = hashHex.match(/.{1,2}/g).join(':');
+                }
+
+                outputField.value = hashHex;
+            } catch (e) {
+                errorDiv.textContent = '鐢熸垚鍝堝笇澶辫触锛? + e.message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function clearSHA() {
+            document.getElementById('sha-input').value = '';
+            document.getElementById('sha-file-input').value = '';
+            document.getElementById('sha-output').value = '';
+            document.getElementById('sha-error').classList.remove('show');
+            document.querySelector('input[name="sha-algorithm"][value="SHA-256"]').checked = true;
+            document.getElementById('sha-uppercase').checked = false;
+            document.getElementById('sha-colon').checked = false;
+        }
+
+
