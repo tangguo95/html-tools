@@ -4,7 +4,531 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工具�?/title>
-    <script src="qr-code-generator.js"></script>
+    <script src="qr-code-generator.js">
+        // ==================== 剪贴板历史工具 ====================
+        const HISTORY_KEY = 'html_tools_clipboard_history';
+        const MAX_HISTORY_ITEMS = 100;
+        const MAX_ITEM_LENGTH = 5000;
+
+        function loadHistory() {
+            try {
+                const data = localStorage.getItem(HISTORY_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('Failed to load history:', e);
+                return [];
+            }
+        }
+
+        function saveHistory(items) {
+            try {
+                if (items.length > MAX_HISTORY_ITEMS) {
+                    items = items.slice(-MAX_HISTORY_ITEMS);
+                }
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(items));
+                updateHistoryDisplay();
+            } catch (e) {
+                showError('保存历史记录失败: ' + e.message);
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const items = loadHistory();
+            const container = document.getElementById('clipboard-history-container');
+            const countSpan = document.getElementById('history-count');
+            
+            if (!countSpan) return;
+            countSpan.textContent = items.length;
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 40px;">暂无历史记录，点击上方按钮获取内容</div>';
+                return;
+            }
+            
+            const recentItems = items.slice(-100).reverse();
+            
+            container.innerHTML = recentItems.map((item, index) => {
+                const safeContent = escapeHtmlForDisplay(item.content.length > 300 ? item.content.substring(0, 300) + '...' : item.content);
+                const fullContent = item.content;
+                return '<div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; position: relative;">' +
+                    '<div style="margin-bottom: 8px; font-size: 12px; color: #999;">' + 
+                    new Date(item.timestamp).toLocaleString() + ' (' + (item.type || '文本') + ')' +
+                    '</div>' +
+                    '<div style="margin-bottom: 10px; padding: 8px; background: #fafafa; border-radius: 4px; word-break: break-all; font-family: monospace; font-size: 13px; max-height: 150px; overflow-y: auto;">' +
+                    safeContent +
+                    '</div>' +
+                    '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+                    '<button class="btn btn-secondary copy-btn" onclick="copyTextForClipboard(' + index + ', this)">复制</button>' +
+                    '<button class="btn btn-secondary" onclick="copyFullItem(' + index + ')">完整复制</button>' +
+                    '<button class="btn btn-secondary" onclick="copyFullThenClose(' + index + ')">复制并关闭</button>' +
+                    '<button class="btn btn-secondary" onclick="deleteHistoryItem(' + index + ')">删除</button>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function getCurrentClipboard() {
+            if (!navigator.clipboard) {
+                showClipboardMsg('您的浏览器不支持剪贴板API，请使用现代浏览器', 'error');
+                return;
+            }
+            
+            navigator.clipboard.readText().then(text => {
+                if (text) {
+                    addToHistory(text, '文本');
+                    showClipboardMsg('已添加到历史记录', 'success');
+                } else {
+                    showClipboardMsg('剪贴板为空', 'warning');
+                }
+            }).catch(err => {
+                showClipboardMsg('无法读取剪贴板: ' + err.message + '。请确保已授予剪贴板权限。', 'error');
+            });
+        }
+
+        function addToHistory(content, type) {
+            if (!content || content.trim() === '') {
+                showClipboardMsg('内容为空，未添加', 'warning');
+                return;
+            }
+            
+            const truncatedContent = content.length > MAX_ITEM_LENGTH 
+                ? content.substring(0, MAX_ITEM_LENGTH) + '... (内容已截断)'
+                : content;
+            
+            const items = loadHistory();
+            
+            const recentItems = items.slice(-10);
+            const isDuplicate = recentItems.some(item => 
+                item.content === truncatedContent && item.type === type
+            );
+            
+            if (!isDuplicate) {
+                items.push({
+                    content: truncatedContent,
+                    type: type || '文本',
+                    timestamp: Date.now()
+                });
+                saveHistory(items);
+            } else {
+                showClipboardMsg('最新10条中已有相同内容，已跳过', 'warning');
+            }
+        }
+
+        function deleteHistoryItem(index) {
+            const items = loadHistory();
+            const totalItems = items.length;
+            const realIndex = totalItems - 1 - index;
+            
+            if (realIndex >= 0 && realIndex < totalItems) {
+                items.splice(realIndex, 1);
+                saveHistory(items);
+                showClipboardMsg('已删除该条目', 'success');
+            }
+        }
+
+        function clearHistory() {
+            if (loadHistory().length === 0) {
+                showClipboardMsg('历史记录为空', 'warning');
+                return;
+            }
+            
+            if (confirm('确定要清空所有历史记录吗？此操作不可恢复。')) {
+                localStorage.removeItem(HISTORY_KEY);
+                updateHistoryDisplay();
+                showClipboardMsg('历史记录已清空', 'success');
+            }
+        }
+
+        function exportHistory() {
+            const items = loadHistory();
+            if (items.length === 0) {
+                showClipboardMsg('没有可导出的历史记录', 'warning');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(items, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'clipboard_history_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showClipboardMsg('导出成功', 'success');
+        }
+
+        function importHistory() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importedItems = JSON.parse(event.target.result);
+                        if (!Array.isArray(importedItems)) {
+                            throw new Error('文件格式错误：应为JSON数组');
+                        }
+                        
+                        importedItems.forEach(item => {
+                            if (!item.content || !item.timestamp) {
+                                throw new Error('文件格式错误：缺少必要字段');
+                            }
+                        });
+                        
+                        const currentItems = loadHistory();
+                        const newItems = [...currentItems, ...importedItems];
+                        
+                        const seen = new Set();
+                        const uniqueItems = [];
+                        newItems.forEach(item => {
+                            const key = item.content + '|' + item.timestamp;
+                            if (!seen.has(key)) {
+                                seen.add(key);
+                                uniqueItems.push(item);
+                            }
+                        });
+                        
+                        saveHistory(uniqueItems);
+                        showClipboardMsg('导入成功，共 ' + importedItems.length + ' 条记录', 'success');
+                    } catch (err) {
+                        showClipboardMsg('导入失败: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function showClipboardMsg(message, type) {
+            const msgDiv = document.getElementById('clipboard-msg');
+            if (!msgDiv) return;
+            
+            msgDiv.textContent = message;
+            msgDiv.className = 'alert alert-warning show';
+            if (type === 'success') {
+                msgDiv.style.background = '#d4edda';
+                msgDiv.style.color = '#155724';
+                msgDiv.style.borderColor = '#c3e6cb';
+            } else if (type === 'error') {
+                msgDiv.style.background = '#f8d7da';
+                msgDiv.style.color = '#721c24';
+                msgDiv.style.borderColor = '#f5c6cb';
+            } else {
+                msgDiv.style.background = '#fff3cd';
+                msgDiv.style.color = '#856404';
+                msgDiv.style.borderColor = '#ffeeba';
+            }
+            
+            setTimeout(() => {
+                msgDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function showError(message) {
+            showClipboardMsg(message, 'error');
+        }
+
+        // 复制功能
+        function copyTextForClipboard(index, btn) {
+            const items = loadHistory();
+            const realIndex = items.length - 1 - index;
+            if (realIndex >= 0 && realIndex < items.length) {
+                copyToClipboard(items[realIndex].content, btn);
+                showClipboardMsg('已复制', 'success');
+            }
+        }
+
+        function copyFullItem(index) {
+            const items = loadHistory();
+            const realIndex = items.length - 1 - index;
+            if (realIndex >= 0 && realIndex < items.length) {
+                copyToClipboard(items[realIndex].content);
+                showClipboardMsg('已复制完整内容', 'success');
+            }
+        }
+
+        function copyFullThenClose(index) {
+            copyFullItem(index);
+            // 尝试关闭面板
+            setTimeout(() => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+            }, 100);
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHistoryDisplay();
+        });
+
+
+        // ==================== 剪贴板历史工具 ====================
+        const HISTORY_KEY = 'html_tools_clipboard_history';
+        const MAX_HISTORY_ITEMS = 100;
+        const MAX_ITEM_LENGTH = 5000;
+
+        function loadHistory() {
+            try {
+                const data = localStorage.getItem(HISTORY_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('Failed to load history:', e);
+                return [];
+            }
+        }
+
+        function saveHistory(items) {
+            try {
+                if (items.length > MAX_HISTORY_ITEMS) {
+                    items = items.slice(-MAX_HISTORY_ITEMS);
+                }
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(items));
+                updateHistoryDisplay();
+            } catch (e) {
+                showError('保存历史记录失败: ' + e.message);
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const items = loadHistory();
+            const container = document.getElementById('clipboard-history-container');
+            const countSpan = document.getElementById('history-count');
+            
+            if (!countSpan || !container) return;
+            countSpan.textContent = items.length;
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #999; padding: 40px;">暂无历史记录，点击上方按钮获取内容</div>';
+                return;
+            }
+            
+            const recentItems = items.slice(-100).reverse();
+            
+            container.innerHTML = recentItems.map((item, index) => {
+                const safeContent = escapeHtmlForDisplay(item.content.length > 300 ? item.content.substring(0, 300) + '...' : item.content);
+                return '<div style="background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; position: relative;">' +
+                    '<div style="margin-bottom: 8px; font-size: 12px; color: #999;">' + 
+                    new Date(item.timestamp).toLocaleString() + ' (' + (item.type || '文本') + ')' +
+                    '</div>' +
+                    '<div style="margin-bottom: 10px; padding: 8px; background: #fafafa; border-radius: 4px; word-break: break-all; font-family: monospace; font-size: 13px; max-height: 150px; overflow-y: auto;">' +
+                    safeContent +
+                    '</div>' +
+                    '<div style="display: flex; gap: 8px; flex-wrap: wrap;">' +
+                    '<button class="btn btn-secondary copy-btn" onclick="copyTextForClipboard(' + index + ', this)">复制</button>' +
+                    '<button class="btn btn-secondary" onclick="copyFullItem(' + index + ')">完整复制</button>' +
+                    '<button class="btn btn-secondary" onclick="copyFullThenClose(' + index + ')">复制并关闭</button>' +
+                    '<button class="btn btn-secondary" onclick="deleteHistoryItem(' + index + ')">删除</button>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function getCurrentClipboard() {
+            if (!navigator.clipboard) {
+                showClipboardMsg('您的浏览器不支持剪贴板API，请使用现代浏览器', 'error');
+                return;
+            }
+            
+            navigator.clipboard.readText().then(text => {
+                if (text) {
+                    addToHistory(text, '文本');
+                    showClipboardMsg('已添加到历史记录', 'success');
+                } else {
+                    showClipboardMsg('剪贴板为空', 'warning');
+                }
+            }).catch(err => {
+                showClipboardMsg('无法读取剪贴板: ' + err.message + '。请确保已授予剪贴板权限。', 'error');
+            });
+        }
+
+        function addToHistory(content, type) {
+            if (!content || content.trim() === '') {
+                showClipboardMsg('内容为空，未添加', 'warning');
+                return;
+            }
+            
+            const truncatedContent = content.length > MAX_ITEM_LENGTH 
+                ? content.substring(0, MAX_ITEM_LENGTH) + '... (内容已截断)'
+                : content;
+            
+            const items = loadHistory();
+            
+            const recentItems = items.slice(-10);
+            const isDuplicate = recentItems.some(item => 
+                item.content === truncatedContent && item.type === type
+            );
+            
+            if (!isDuplicate) {
+                items.push({
+                    content: truncatedContent,
+                    type: type || '文本',
+                    timestamp: Date.now()
+                });
+                saveHistory(items);
+            } else {
+                showClipboardMsg('最新10条中已有相同内容，已跳过', 'warning');
+            }
+        }
+
+        function deleteHistoryItem(index) {
+            const items = loadHistory();
+            const totalItems = items.length;
+            const realIndex = totalItems - 1 - index;
+            
+            if (realIndex >= 0 && realIndex < totalItems) {
+                items.splice(realIndex, 1);
+                saveHistory(items);
+                showClipboardMsg('已删除该条目', 'success');
+            }
+        }
+
+        function clearHistory() {
+            if (loadHistory().length === 0) {
+                showClipboardMsg('历史记录为空', 'warning');
+                return;
+            }
+            
+            if (confirm('确定要清空所有历史记录吗？此操作不可恢复。')) {
+                localStorage.removeItem(HISTORY_KEY);
+                updateHistoryDisplay();
+                showClipboardMsg('历史记录已清空', 'success');
+            }
+        }
+
+        function exportHistory() {
+            const items = loadHistory();
+            if (items.length === 0) {
+                showClipboardMsg('没有可导出的历史记录', 'warning');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(items, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'clipboard_history_' + new Date().toISOString().slice(0, 10) + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showClipboardMsg('导出成功', 'success');
+        }
+
+        function importHistory() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importedItems = JSON.parse(event.target.result);
+                        if (!Array.isArray(importedItems)) {
+                            throw new Error('文件格式错误：应为JSON数组');
+                        }
+                        
+                        importedItems.forEach(item => {
+                            if (!item.content || !item.timestamp) {
+                                throw new Error('文件格式错误：缺少必要字段');
+                            }
+                        });
+                        
+                        const currentItems = loadHistory();
+                        const newItems = [...currentItems, ...importedItems];
+                        
+                        const seen = new Set();
+                        const uniqueItems = [];
+                        newItems.forEach(item => {
+                            const key = item.content + '|' + item.timestamp;
+                            if (!seen.has(key)) {
+                                seen.add(key);
+                                uniqueItems.push(item);
+                            }
+                        });
+                        
+                        saveHistory(uniqueItems);
+                        showClipboardMsg('导入成功，共 ' + importedItems.length + ' 条记录', 'success');
+                    } catch (err) {
+                        showClipboardMsg('导入失败: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function showClipboardMsg(message, type) {
+            const msgDiv = document.getElementById('clipboard-msg');
+            if (!msgDiv) return;
+            
+            msgDiv.textContent = message;
+            msgDiv.className = 'alert alert-warning show';
+            if (type === 'success') {
+                msgDiv.style.background = '#d4edda';
+                msgDiv.style.color = '#155724';
+                msgDiv.style.borderColor = '#c3e6cb';
+            } else if (type === 'error') {
+                msgDiv.style.background = '#f8d7da';
+                msgDiv.style.color = '#721c24';
+                msgDiv.style.borderColor = '#f5c6cb';
+            } else {
+                msgDiv.style.background = '#fff3cd';
+                msgDiv.style.color = '#856404';
+                msgDiv.style.borderColor = '#ffeeba';
+            }
+            
+            setTimeout(() => {
+                msgDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        function showError(message) {
+            showClipboardMsg(message, 'error');
+        }
+
+        // 复制功能
+        function copyTextForClipboard(index, btn) {
+            const items = loadHistory();
+            const realIndex = items.length - 1 - index;
+            if (realIndex >= 0 && realIndex < items.length) {
+                copyToClipboard(items[realIndex].content, btn);
+                showClipboardMsg('已复制', 'success');
+            }
+        }
+
+        function copyFullItem(index) {
+            const items = loadHistory();
+            const realIndex = items.length - 1 - index;
+            if (realIndex >= 0 && realIndex < items.length) {
+                copyToClipboard(items[realIndex].content);
+                showClipboardMsg('已复制完整内容', 'success');
+            }
+        }
+
+        function copyFullThenClose(index) {
+            copyFullItem(index);
+            setTimeout(() => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+            }, 100);
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateHistoryDisplay();
+        });
+
+</script>
     <style>
         * {
             margin: 0;
@@ -285,6 +809,8 @@
             <button class="tab-btn" data-tab="text-statistics">文本统计</button>
             <button class="tab-btn" data-tab="qr-code">QR码生�?/button>
             <button class="tab-btn" data-tab="sha">SHA 鍝堝笇</button>
+            <button class="tab-btn" data-tab="clipboard">剪贴板历史</button>
+            <button class="tab-btn" data-tab="clipboard">剪贴板历史</button>
         </div>
 
         <!-- 密码生成�?-->
@@ -868,7 +1394,38 @@
                 <div id="uuid-result" class="result-box" style="min-height: 100px;"></div>
             </div>
 
-        <!-- SHA 鍝堝笇宸ュ叿 -->
+        
+        <!-- 剪贴板历史工具 -->
+        <div class="tool-panel" id="clipboard-panel">
+            <h2 class="tool-title">剪贴板历史记录器</h2>
+            <div class="alert alert-warning">
+                <p>💡 提示：本工具使用浏览器 localStorage 存储历史记录，数据仅保存在您的本地设备。</p>
+            </div>
+            <div class="form-group">
+                <label>当前剪贴板内容（点击按钮获取）</label>
+                <button class="btn btn-primary" onclick="getCurrentClipboard()">获取剪贴板内容</button>
+                <p class="helper-text">点击按钮后，浏览器会弹出权限请求框，点击"允许"即可获取当前剪贴板内容</p>
+                <textarea id="clipboard-current" readonly placeholder="点击" style="margin-top: 10px; min-height: 80px;"></textarea>
+            </div>
+            
+            <hr style="margin: 25px 0; border: none; border-top: 1px solid #eee;">
+            
+            <div class="form-group">
+                <label>历史记录（共 <span id="history-count">0</span> 条）</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="clearHistory()">清空历史</button>
+                    <button class="btn btn-secondary" onclick="exportHistory()">导出为JSON</button>
+                    <button class="btn btn-secondary" onclick="importHistory()">导入JSON</button>
+                </div>
+            </div>
+            
+            <div id="clipboard-history-container" style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="text-align: center; color: #999; padding: 40px;">暂无历史记录，点击上方按钮获取内容</div>
+            </div>
+            
+            <div id="clipboard-msg" class="alert" style="margin-top: 15px;"></div>
+        </div>
+<!-- SHA 鍝堝笇宸ュ叿 -->
         <div class="tool-panel" id="sha-panel">
             <h2 class="tool-title">SHA 鍝堝笇鐢熸垚鍣?/h2>
             <div class="form-group">
