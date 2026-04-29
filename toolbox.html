@@ -977,6 +977,7 @@
             <button class="tab-btn" data-tab="base-converter">进制转换</button>
             <button class="tab-btn" data-tab="yaml">YAML格式化</button>
             <button class="tab-btn" data-tab="case-converter">大小写转换</button>
+            <button class="tab-btn" data-tab="ip-calculator">IP 地址计算器</button>
         </div>
 
         <!-- 密码生成�?-->
@@ -1729,6 +1730,46 @@
                 <textarea id="case-output" readonly placeholder="转换结果将显示在这里..." style="min-height: 120px;"></textarea>
             </div>
             <p class="helper-text" style="margin-top: 15px;">💡 提示：工具会自动识别分隔符（空格、下划线、短横线、驼峰等），支持中英文混合。</p>
+        </div>
+
+        <!-- IP 地址计算器 -->
+        <div class="tool-panel" id="ip-calculator-panel">
+            <h2 class="tool-title">IP 地址计算器</h2>
+            <div class="alert alert-warning">
+                <p>💡 提示：支持 IPv4 CIDR 计算、子网掩码转换、IP 范围查询等功能</p>
+            </div>
+            <div class="form-group">
+                <label>输入 IP/CIDR</label>
+                <input type="text" id="ip-cidr-input" placeholder="例如: 192.168.1.0/24 或 192.168.1.10" style="width: 100%;">
+            </div>
+            <div class="form-group">
+                <label>操作模式</label>
+                <select id="ip-mode" onchange="updateIPCalculatorUI()">
+                    <option value="subnet">子网计算 (CIDR)</option>
+                    <option value="range">IP 范围计算</option>
+                    <option value="convert">子网掩码转换</option>
+                </select>
+            </div>
+            <div class="form-group" id="ip-subnet-options">
+                <label>输出格式</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="ip-binary" checked> 显示二进制</label>
+                    <label><input type="checkbox" id="ip-wildcard" checked> 显示通配掩码</label>
+                </div>
+            </div>
+            <div class="form-group" id="ip-range-options" style="display: none;">
+                <label>起始 IP</label>
+                <input type="text" id="ip-start" placeholder="起始 IP" style="margin-bottom: 10px;">
+                <label>结束 IP</label>
+                <input type="text" id="ip-end" placeholder="结束 IP" style="margin-bottom: 10px;">
+            </div>
+            <button class="btn btn-primary" onclick="calculateIP()">计算</button>
+            <button class="btn btn-secondary" onclick="clearIPCalculator()">清空</button>
+            <button class="btn btn-secondary" onclick="copyIPResult()">复制结果</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>计算结果</label>
+                <div id="ip-result" class="result-box" style="min-height: 200px; font-family: monospace;"></div>
+            </div>
         </div>
 
     <script>
