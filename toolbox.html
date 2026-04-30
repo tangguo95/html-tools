@@ -978,6 +978,7 @@
             <button class="tab-btn" data-tab="yaml">YAML格式化</button>
             <button class="tab-btn" data-tab="case-converter">大小写转换</button>
             <button class="tab-btn" data-tab="ip-calculator">IP 地址计算器</button>
+            <button class="tab-btn" data-tab="unit-converter">单位转换器</button>
         </div>
 
         <!-- 密码生成�?-->
@@ -1770,6 +1771,46 @@
                 <label>计算结果</label>
                 <div id="ip-result" class="result-box" style="min-height: 200px; font-family: monospace;"></div>
             </div>
+        </div>
+
+        <!-- 单位转换器 -->
+        <div class="tool-panel" id="unit-converter-panel">
+            <h2 class="tool-title">单位转换器</h2>
+            <div class="alert alert-warning">
+                <p>💡 提示：支持长度、重量、温度、体积、时间等多种单位之间的转换</p>
+            </div>
+            <div class="form-group">
+                <label>转换类型</label>
+                <select id="unit-type" onchange="updateUnitConverterUI()">
+                    <option value="length">长度</option>
+                    <option value="weight">重量</option>
+                    <option value="temperature">温度</option>
+                    <option value="volume">体积</option>
+                    <option value="time">时间</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>输入数值</label>
+                <input type="number" id="unit-input" placeholder="请输入数值" step="any">
+            </div>
+            <div class="form-group">
+                <label>从</label>
+                <select id="unit-from"></select>
+            </div>
+            <div class="form-group">
+                <label>转换为</label>
+                <select id="unit-to"></select>
+            </div>
+            <button class="btn btn-primary" onclick="convertUnits()">转换</button>
+            <button class="btn btn-secondary" onclick="clearUnitConverter()">清空</button>
+            <button class="btn btn-secondary copy-btn" onclick="copyResult('unit-output', this)">复制结果</button>
+            <div class="form-group" style="margin-top: 20px;">
+                <label>转换结果</label>
+                <div id="unit-output" class="result-box" style="min-height: 80px;">
+                    <span style="color: #999;">输入数值后点击转换按钮</span>
+                </div>
+            </div>
+            <p class="helper-text" style="margin-top: 15px;">💡 提示：支持小数和科学计数法输入</p>
         </div>
 
     <script>
@@ -3843,3 +3884,123 @@ Apple`;
         }
 
 
+
+        // ==================== 单位转换器 ====================
+        const unitData = {
+            length: {
+                units: [
+                    { name: '米 (m)', value: 1 },
+                    { name: '千米 (km)', value: 1000 },
+                    { name: '厘米 (cm)', value: 0.01 },
+                    { name: '毫米 (mm)', value: 0.001 },
+                    { name: '英尺 (ft)', value: 0.3048 },
+                    { name: '英寸 (in)', value: 0.0254 },
+                    { name: '英里 (mi)', value: 1609.344 },
+                    { name: '码 (yd)', value: 0.9144 }
+                ]
+            },
+            weight: {
+                units: [
+                    { name: '千克 (kg)', value: 1 },
+                    { name: '克 (g)', value: 0.001 },
+                    { name: '毫克 (mg)', value: 0.000001 },
+                    { name: '磅 (lb)', value: 0.45359237 },
+                    { name: '盎司 (oz)', value: 0.028349523125 },
+                    { name: '吨 (t)', value: 1000 }
+                ]
+            },
+            temperature: {
+                units: [
+                    { name: '摄氏度 (°C)', value: 'celsius' },
+                    { name: '华氏度 (°F)', value: 'fahrenheit' },
+                    { name: '开尔文 (K)', value: 'kelvin' }
+                ]
+            },
+            volume: {
+                units: [
+                    { name: '升 (L)', value: 1 },
+                    { name: '毫升 (mL)', value: 0.001 },
+                    { name: '立方米 (m³)', value: 1000 },
+                    { name: '立方厘米 (cm³)', value: 0.001 },
+                    { name: '加仑 (gal)', value: 3.78541 },
+                    { name: '品脱 (pt)', value: 0.473176 },
+                    { name: '液量盎司 (fl oz)', value: 0.0295735 }
+                ]
+            },
+            time: {
+                units: [
+                    { name: '秒 (s)', value: 1 },
+                    { name: '毫秒 (ms)', value: 0.001 },
+                    { name: '分钟 (min)', value: 60 },
+                    { name: '小时 (h)', value: 3600 },
+                    { name: '天 (d)', value: 86400 },
+                    { name: '周 (week)', value: 604800 },
+                    { name: '年 (year)', value: 31536000 }
+                ]
+            }
+        };
+
+        function updateUnitConverterUI() {
+            const type = document.getElementById('unit-type').value;
+            const fromSelect = document.getElementById('unit-from');
+            const toSelect = document.getElementById('unit-to');
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            unitData[type].units.forEach(unit => {
+                const option1 = document.createElement('option');
+                option1.value = unit.value;
+                option1.textContent = unit.name;
+                fromSelect.appendChild(option1);
+                const option2 = document.createElement('option');
+                option2.value = unit.value;
+                option2.textContent = unit.name;
+                toSelect.appendChild(option2);
+            });
+            if (type === 'length') { fromSelect.value = 1; toSelect.value = 0.3048; }
+            else if (type === 'weight') { fromSelect.value = 1; toSelect.value = 0.45359237; }
+            else if (type === 'temperature') { fromSelect.value = 'celsius'; toSelect.value = 'fahrenheit'; }
+            else if (type === 'volume') { fromSelect.value = 1; toSelect.value = 3.78541; }
+            else if (type === 'time') { fromSelect.value = 3600; toSelect.value = 60; }
+        }
+
+        function convertUnits() {
+            const input = parseFloat(document.getElementById('unit-input').value);
+            const type = document.getElementById('unit-type').value;
+            const fromValue = document.getElementById('unit-from').value;
+            const toValue = document.getElementById('unit-to').value;
+            const outputDiv = document.getElementById('unit-output');
+            if (isNaN(input)) { outputDiv.innerHTML = '<span style=\"color: #dc2626;\">请输入有效数值</span>'; return; }
+            let result;
+            if (type === 'temperature') {
+                result = convertTemperature(input, fromValue, toValue);
+            } else {
+                result = input * (parseFloat(fromValue) / parseFloat(toValue));
+            }
+            const formattedResult = formatNumber(result);
+            const fromUnit = document.getElementById('unit-from').options[document.getElementById('unit-from').selectedIndex].text;
+            const toUnit = document.getElementById('unit-to').options[document.getElementById('unit-to').selectedIndex].text;
+            outputDiv.innerHTML = '<div style=\"font-family: monospace; font-size: 16px; color: #333;\">' + formattedResult + '</div><div style=\"color: #666; font-size: 13px; margin-top: 8px;\">' + input + ' ' + (fromUnit.split(' ')[1] || '') + ' = ' + formattedResult + ' ' + (toUnit.split(' ')[1] || '') + '</div>';
+            navigator.clipboard.writeText(formattedResult).catch(function(){});
+        }
+
+        function convertTemperature(value, fromUnit, toUnit) {
+            let celsius;
+            if (fromUnit === 'celsius') celsius = value;
+            else if (fromUnit === 'fahrenheit') celsius = (value - 32) * 5 / 9;
+            else if (fromUnit === 'kelvin') celsius = value - 273.15;
+            if (toUnit === 'celsius') return celsius;
+            if (toUnit === 'fahrenheit') return celsius * 9 / 5 + 32;
+            if (toUnit === 'kelvin') return celsius + 273.15;
+        }
+
+        function formatNumber(num) {
+            if (Math.abs(num) < 0.0001 || Math.abs(num) > 1e10) return num.toExponential(6);
+            return (Math.round(num * 1e10) / 1e10).toString().replace(/\.?0+$/, '');
+        }
+
+        function clearUnitConverter() {
+            document.getElementById('unit-input').value = '';
+            document.getElementById('unit-output').innerHTML = '<span style=\"color: #999;\">输入数值后点击转换按钮</span>';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() { updateUnitConverterUI(); });
