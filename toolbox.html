@@ -31,41 +31,41 @@
       min-height: 100vh;
     }
 
-    .container { width: min(1440px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 40px; }
+    .container { width: 100%; margin: 0; padding: 12px 8px 24px; }
     header {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
       align-items: flex-end;
-      padding: 10px 0 22px;
+      padding: 6px 0 14px;
       border-bottom: 2px solid var(--ink);
-      margin-bottom: 18px;
+      margin-bottom: 10px;
     }
-    h1 { margin: 0; font-size: clamp(30px, 5vw, 56px); line-height: 1; letter-spacing: 0; }
-    .subtitle { color: var(--muted); margin: 8px 0 0; max-width: 560px; line-height: 1.6; }
+    h1 { margin: 0; font-size: clamp(24px, 4vw, 40px); line-height: 1; letter-spacing: 0; }
+    .subtitle { color: var(--muted); margin: 4px 0 0; max-width: 560px; line-height: 1.4; font-size: 13px; }
 
-    .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; }
+    .layout { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 10px; align-items: start; }
     .tabs {
       position: sticky;
-      top: 16px;
+      top: 8px;
       display: grid;
-      gap: 8px;
-      padding: 10px;
-      background: rgba(255,253,250,.82);
+      gap: 4px;
+      padding: 6px;
+      background: rgba(255,253,250,.85);
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
-      border-radius: 8px;
+      border-radius: 5px;
     }
     .tab-btn {
       border: 1px solid transparent;
       background: transparent;
       color: var(--ink);
-      padding: 10px 12px;
-      border-radius: 6px;
+      padding: 6px 8px;
+      border-radius: 4px;
       text-align: left;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 12px;
     }
     .tab-btn:hover { border-color: var(--line); background: #f7f3ea; }
     .tab-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
@@ -74,71 +74,85 @@
       display: none;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 5px;
       box-shadow: var(--shadow);
-      padding: clamp(18px, 3vw, 30px);
+      padding: 12px 16px;
     }
     .tool-panel.active { display: block; }
-    .tool-title { margin: 0 0 20px; font-size: 24px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .form-group { margin-bottom: 16px; }
-    label { display: block; margin-bottom: 7px; font-weight: 650; font-size: 14px; }
+    .tool-panel.has-row.active { display: flex; flex-direction: column; height: calc(100vh - 160px); overflow: hidden; }
+    .tool-title { margin: 0 0 10px; font-size: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px; flex-shrink: 0; }
+
+    /* 左右布局：输入区和输出区并排 */
+    .panel-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; flex: 1; min-height: 0; overflow: hidden; }
+    .panel-left, .panel-right { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: hidden; }
+    .panel-left textarea, .panel-right textarea { flex: 1; min-height: 0; resize: none; }
+    .panel-row > textarea { flex: 1; min-height: 0; resize: none; }
+    .tool-panel.has-row .checks, .tool-panel.has-row .actions, .tool-panel.has-row .grid-2, .tool-panel.has-row .grid-3, .tool-panel.has-row .form-group, .tool-panel.has-row .result-box:not(.flex-1), .tool-panel.has-row .helper-text, .tool-panel.has-row .stats { flex-shrink: 0; }
+    .result-box.flex-1 { flex: 1; min-height: 0; overflow: auto; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .form-group { margin-bottom: 8px; }
+    label { display: block; margin-bottom: 4px; font-weight: 650; font-size: 12px; }
     input[type="text"], input[type="number"], input[type="password"], input[type="file"], textarea, select {
       width: 100%;
-      min-height: 42px;
+      min-height: 32px;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 10px 12px;
+      border-radius: 4px;
+      padding: 6px 8px;
       background: #fff;
       color: var(--ink);
       font: inherit;
+      font-size: 13px;
     }
-    textarea { min-height: 150px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.55; }
+    textarea { min-height: 100px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.45; font-size: 12px; }
     input:focus, textarea:focus, select:focus { outline: 2px solid rgba(15,118,110,.18); border-color: var(--accent); }
-    .checks { display: flex; flex-wrap: wrap; gap: 12px 18px; margin-bottom: 14px; }
-    .checks label { display: inline-flex; align-items: center; gap: 7px; margin: 0; font-weight: 500; color: #374151; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; }
+    .checks { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 6px; }
+    .checks label { display: inline-flex; align-items: center; gap: 5px; margin: 0; font-weight: 500; font-size: 12px; color: #374151; }
+    .actions { display: flex; gap: 5px; flex-wrap: wrap; margin: 4px 0; }
     .btn {
       border: 1px solid var(--line);
-      border-radius: 6px;
+      border-radius: 4px;
       background: #fff;
       color: var(--ink);
-      padding: 10px 14px;
+      padding: 6px 10px;
       cursor: pointer;
       font-weight: 650;
-      min-height: 40px;
+      min-height: 30px;
+      font-size: 12px;
     }
     .btn:hover { background: #f7f3ea; }
     .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .btn-primary:hover { background: #115e59; }
     .btn-danger { color: var(--danger); }
     .result-box {
-      min-height: 64px;
-      padding: 14px;
+      min-height: 48px;
+      padding: 10px;
       background: #f9faf7;
       border: 1px solid var(--line);
-      border-radius: 6px;
+      border-radius: 4px;
       word-break: break-word;
       white-space: pre-wrap;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      line-height: 1.55;
+      line-height: 1.45;
+      font-size: 12px;
     }
-    .helper-text, .stats { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 8px 0 0; }
-    .alert { display: none; margin: 10px 0; border-radius: 6px; padding: 10px 12px; border: 1px solid var(--line); }
+    .result-box.flex-1 { flex: 1; min-height: 200px; }
+    .helper-text, .stats { color: var(--muted); font-size: 11px; line-height: 1.4; margin: 4px 0 0; }
+    .alert { display: none; margin: 6px 0; border-radius: 4px; padding: 6px 8px; border: 1px solid var(--line); font-size: 12px; }
     .alert.show { display: block; }
     .ok { color: var(--ok); }
     .bad { color: var(--danger); }
-    .color-chip { width: 100%; height: 84px; border-radius: 6px; border: 1px solid var(--line); margin-top: 10px; }
-    .history-list { display: grid; gap: 10px; margin-top: 16px; }
-    .history-item { border: 1px solid var(--line); border-radius: 6px; padding: 12px; background: #fff; }
-    .history-meta { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .color-chip { width: 100%; height: 60px; border-radius: 4px; border: 1px solid var(--line); margin-top: 6px; }
+    .history-list { display: grid; gap: 6px; margin-top: 10px; }
+    .history-item { border: 1px solid var(--line); border-radius: 4px; padding: 8px; background: #fff; }
+    .history-meta { color: var(--muted); font-size: 10px; margin-bottom: 4px; }
 
-    @media (max-width: 880px) {
+    @media (max-width: 768px) {
       header { display: block; }
       .layout { grid-template-columns: 1fr; }
       .tabs { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .panel-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -180,122 +194,183 @@
       </nav>
 
       <section>
-        <div class="tool-panel active" id="password-panel">
+        <div class="tool-panel has-row active" id="password-panel">
           <h2 class="tool-title">密码生成器</h2>
-          <div class="grid-2">
-            <div class="form-group"><label>密码长度</label><input id="pwd-length" type="number" min="4" max="128" value="16"></div>
-            <div class="form-group"><label>生成数量</label><input id="pwd-count" type="number" min="1" max="50" value="5"></div>
+          <div class="panel-row">
+            <div class="panel-left">
+              <div class="grid-2">
+                <div class="form-group"><label>长度</label><input id="pwd-length" type="number" min="4" max="128" value="16"></div>
+                <div class="form-group"><label>数量</label><input id="pwd-count" type="number" min="1" max="50" value="5"></div>
+              </div>
+              <div class="checks">
+                <label><input id="pwd-upper" type="checkbox" checked> 大写</label>
+                <label><input id="pwd-lower" type="checkbox" checked> 小写</label>
+                <label><input id="pwd-number" type="checkbox" checked> 数字</label>
+                <label><input id="pwd-symbol" type="checkbox" checked> 符号</label>
+                <label><input id="pwd-readable" type="checkbox"> 排除易混</label>
+              </div>
+            </div>
+            <div class="panel-right">
+              <div id="pwd-output" class="result-box flex-1">点击生成密码</div>
+              <div class="actions"><button class="btn btn-primary" onclick="generatePasswords()">生成</button><button class="btn" onclick="copyText('pwd-output')">复制</button></div>
+            </div>
           </div>
-          <div class="checks">
-            <label><input id="pwd-upper" type="checkbox" checked> 大写字母</label>
-            <label><input id="pwd-lower" type="checkbox" checked> 小写字母</label>
-            <label><input id="pwd-number" type="checkbox" checked> 数字</label>
-            <label><input id="pwd-symbol" type="checkbox" checked> 符号</label>
-            <label><input id="pwd-readable" type="checkbox"> 排除易混字符</label>
-          </div>
-          <div class="actions"><button class="btn btn-primary" onclick="generatePasswords()">生成</button><button class="btn" onclick="copyText('pwd-output')">复制结果</button></div>
-          <div id="pwd-output" class="result-box">点击生成密码</div>
         </div>
 
-        <div class="tool-panel" id="diff-panel">
+        <div class="tool-panel has-row" id="diff-panel">
           <h2 class="tool-title">文本比对</h2>
-          <div class="grid-2">
+          <div class="panel-row">
             <textarea id="diff-left" placeholder="原始文本"></textarea>
             <textarea id="diff-right" placeholder="比较文本"></textarea>
           </div>
           <div class="checks">
             <label><input id="diff-ignore-case" type="checkbox"> 忽略大小写</label>
-            <label><input id="diff-trim" type="checkbox"> 去除行首尾空格</label>
+            <label><input id="diff-trim" type="checkbox"> 去空格</label>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="compareText()">开始比对</button><button class="btn" onclick="copyText('diff-output')">复制结果</button></div>
+          <div class="actions"><button class="btn btn-primary" onclick="compareText()">比对</button><button class="btn" onclick="copyText('diff-output')">复制</button></div>
           <div id="diff-output" class="result-box"></div>
         </div>
 
-        <div class="tool-panel" id="json-panel">
+        <div class="tool-panel has-row" id="json-panel">
           <h2 class="tool-title">JSON 格式化</h2>
-          <textarea id="json-input" placeholder="请输入 JSON"></textarea>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="formatJson()">格式化</button>
-            <button class="btn" onclick="minifyJson()">压缩</button>
-            <button class="btn" onclick="copyText('json-output')">复制结果</button>
-            <button class="btn" onclick="clearFields('json-input','json-output','json-msg')">清空</button>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="json-input" placeholder="请输入 JSON"></textarea>
+              <div class="checks"><label><input id="json-strip-comments" type="checkbox"> 移除注释</label><label><input id="json-no-wrap" type="checkbox"> 长内容不换行</label></div>
+            </div>
+            <div class="panel-right">
+              <textarea id="json-output" readonly placeholder="结果显示在这里"></textarea>
+              <div class="actions">
+                <button class="btn btn-primary" onclick="formatJson()">格式化</button>
+                <button class="btn" onclick="minifyJson()">压缩</button>
+                <button class="btn" onclick="copyText('json-output')">复制</button>
+                <button class="btn" onclick="clearFields('json-input','json-output','json-msg')">清空</button>
+              </div>
+              <div id="json-msg" class="alert"></div>
+            </div>
           </div>
-          <div id="json-msg" class="alert"></div>
-          <textarea id="json-output" readonly placeholder="结果显示在这里"></textarea>
         </div>
 
-        <div class="tool-panel" id="jsoncsv-panel">
+        <div class="tool-panel has-row" id="jsoncsv-panel">
           <h2 class="tool-title">JSON 转 CSV</h2>
-          <textarea id="jsoncsv-input" placeholder='请输入 JSON 数组，例如 [{"name":"张三","age":18}]'></textarea>
-          <div class="grid-2">
-            <div class="form-group"><label>分隔符</label><select id="jsoncsv-delimiter"><option value=",">逗号</option><option value="&#9;">制表符</option><option value=";">分号</option></select></div>
-            <div class="checks" style="align-items:end;"><label><input id="jsoncsv-bom" type="checkbox" checked> 添加 BOM，便于 Excel 识别中文</label></div>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="jsoncsv-input" placeholder='请输入 JSON 数组，例如 [{"name":"张三","age":18}]'></textarea>
+              <div class="grid-2">
+                <div class="form-group"><label>分隔符</label><select id="jsoncsv-delimiter"><option value=",">逗号</option><option value="&#9;">制表符</option><option value=";">分号</option></select></div>
+                <div class="checks" style="align-items:end;"><label><input id="jsoncsv-bom" type="checkbox" checked> 添加 BOM</label></div>
+              </div>
+            </div>
+            <div class="panel-right">
+              <textarea id="jsoncsv-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="jsonToCsv()">转换</button><button class="btn" onclick="copyText('jsoncsv-output')">复制</button></div>
+              <p id="jsoncsv-stats" class="stats"></p>
+            </div>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="jsonToCsv()">转换</button><button class="btn" onclick="copyText('jsoncsv-output')">复制结果</button></div>
-          <textarea id="jsoncsv-output" readonly></textarea>
-          <p id="jsoncsv-stats" class="stats"></p>
         </div>
 
-        <div class="tool-panel" id="base64-panel">
+        <div class="tool-panel has-row" id="base64-panel">
           <h2 class="tool-title">Base64 编解码</h2>
-          <textarea id="base64-input" placeholder="请输入要编码或解码的内容"></textarea>
-          <div class="checks"><label><input id="base64-url-safe" type="checkbox"> URL 安全模式</label></div>
-          <div class="actions"><button class="btn btn-primary" onclick="base64Encode()">编码</button><button class="btn" onclick="base64Decode()">解码</button><button class="btn" onclick="copyText('base64-output')">复制结果</button></div>
-          <textarea id="base64-output" readonly></textarea>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="base64-input" placeholder="请输入要编码或解码的内容"></textarea>
+              <div class="checks"><label><input id="base64-url-safe" type="checkbox"> URL 安全模式</label></div>
+            </div>
+            <div class="panel-right">
+              <textarea id="base64-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="base64Encode()">编码</button><button class="btn" onclick="base64Decode()">解码</button><button class="btn" onclick="copyText('base64-output')">复制</button></div>
+            </div>
+          </div>
         </div>
 
-        <div class="tool-panel" id="filebase64-panel">
+        <div class="tool-panel has-row" id="filebase64-panel">
           <h2 class="tool-title">文件 Base64 转换</h2>
-          <div class="form-group"><label>文件转 Base64</label><input id="filebase64-file" type="file"></div>
-          <div class="actions"><button class="btn btn-primary" onclick="fileToBase64()">读取文件</button><button class="btn" onclick="copyText('filebase64-output')">复制 Base64</button></div>
-          <textarea id="filebase64-output" readonly placeholder="文件 Base64 结果"></textarea>
-          <div class="form-group"><label>Base64 转文件</label><textarea id="filebase64-input" placeholder="粘贴 Base64 或 data URL"></textarea></div>
-          <div class="grid-2">
-            <div class="form-group"><label>文件名</label><input id="filebase64-name" type="text" value="download.bin"></div>
-            <div class="form-group"><label>MIME 类型</label><input id="filebase64-mime" type="text" value="application/octet-stream"></div>
+          <div class="panel-row">
+            <div class="panel-left">
+              <div class="form-group"><label>文件转 Base64</label><input id="filebase64-file" type="file"></div>
+              <div class="actions"><button class="btn btn-primary" onclick="fileToBase64()">读取文件</button><button class="btn" onclick="copyText('filebase64-output')">复制</button></div>
+            </div>
+            <div class="panel-right">
+              <textarea id="filebase64-output" readonly placeholder="文件 Base64 结果"></textarea>
+            </div>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="base64ToFile()">下载文件</button></div>
-          <p id="filebase64-stats" class="stats"></p>
+          <div class="panel-row" style="margin-top:10px;">
+            <div class="panel-left">
+              <div class="form-group"><label>Base64 转文件</label><textarea id="filebase64-input" placeholder="粘贴 Base64 或 data URL"></textarea></div>
+              <div class="grid-2">
+                <div class="form-group"><label>文件名</label><input id="filebase64-name" type="text" value="download.bin"></div>
+                <div class="form-group"><label>MIME</label><input id="filebase64-mime" type="text" value="application/octet-stream"></div>
+              </div>
+            </div>
+            <div class="panel-right">
+              <div class="actions"><button class="btn btn-primary" onclick="base64ToFile()">下载文件</button></div>
+              <p id="filebase64-stats" class="stats"></p>
+            </div>
+          </div>
         </div>
 
-        <div class="tool-panel" id="md5-panel">
+        <div class="tool-panel has-row" id="md5-panel">
           <h2 class="tool-title">MD5</h2>
-          <textarea id="md5-input" placeholder="请输入要计算 MD5 的文本"></textarea>
-          <div class="checks"><label><input id="md5-upper" type="checkbox"> 大写输出</label><label><input id="md5-short" type="checkbox"> 16 位 MD5</label></div>
-          <div class="actions"><button class="btn btn-primary" onclick="makeMd5()">生成</button><button class="btn" onclick="copyText('md5-output')">复制结果</button></div>
-          <input id="md5-output" type="text" readonly>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="md5-input" placeholder="请输入要计算 MD5 的文本"></textarea>
+              <div class="checks"><label><input id="md5-upper" type="checkbox"> 大写</label><label><input id="md5-short" type="checkbox"> 16位</label></div>
+            </div>
+            <div class="panel-right">
+              <div class="form-group"><label>结果</label><input id="md5-output" type="text" readonly></div>
+              <div class="actions"><button class="btn btn-primary" onclick="makeMd5()">生成</button><button class="btn" onclick="copyText('md5-output')">复制</button></div>
+            </div>
+          </div>
         </div>
 
-        <div class="tool-panel" id="aes-panel">
+        <div class="tool-panel has-row" id="aes-panel">
           <h2 class="tool-title">AES 加解密</h2>
-          <textarea id="aes-input" placeholder="请输入明文或密文"></textarea>
-          <div class="grid-2">
-            <div class="form-group"><label>密码</label><input id="aes-password" type="password" placeholder="请输入密码"></div>
-            <div class="form-group"><label>模式</label><select id="aes-mode"><option value="GCM">AES-GCM</option><option value="CBC">AES-CBC</option></select></div>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="aes-input" placeholder="请输入明文或密文"></textarea>
+              <div class="grid-2">
+                <div class="form-group"><label>密码</label><input id="aes-password" type="password" placeholder="请输入密码"></div>
+                <div class="form-group"><label>模式</label><select id="aes-mode"><option value="GCM">AES-GCM</option><option value="CBC">AES-CBC</option></select></div>
+              </div>
+            </div>
+            <div class="panel-right">
+              <textarea id="aes-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="aesEncrypt()">加密</button><button class="btn" onclick="aesDecrypt()">解密</button><button class="btn" onclick="copyText('aes-output')">复制</button></div>
+              <p class="helper-text">输出为包含盐值和 IV 的 JSON 字符串。</p>
+            </div>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="aesEncrypt()">加密</button><button class="btn" onclick="aesDecrypt()">解密</button><button class="btn" onclick="copyText('aes-output')">复制结果</button></div>
-          <textarea id="aes-output" readonly></textarea>
-          <p class="helper-text">输出为包含盐值和 IV 的 JSON 字符串。</p>
         </div>
 
-        <div class="tool-panel" id="url-panel">
+        <div class="tool-panel has-row" id="url-panel">
           <h2 class="tool-title">URL 编解码</h2>
-          <textarea id="url-input" placeholder="请输入 URL 或文本"></textarea>
-          <div class="actions"><button class="btn btn-primary" onclick="urlEncode()">编码</button><button class="btn" onclick="urlDecode()">解码</button><button class="btn" onclick="copyText('url-output')">复制结果</button></div>
-          <textarea id="url-output" readonly></textarea>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="url-input" placeholder="请输入 URL 或文本"></textarea>
+            </div>
+            <div class="panel-right">
+              <textarea id="url-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="urlEncode()">编码</button><button class="btn" onclick="urlDecode()">解码</button><button class="btn" onclick="copyText('url-output')">复制</button></div>
+            </div>
+          </div>
         </div>
 
-        <div class="tool-panel" id="sql-panel">
+        <div class="tool-panel has-row" id="sql-panel">
           <h2 class="tool-title">SQL IN 助手</h2>
-          <textarea id="sql-input" placeholder="粘贴 Excel 或多行文本"></textarea>
-          <div class="checks">
-            <label><input id="sql-quote" type="checkbox" checked> 单引号包裹</label>
-            <label><input id="sql-distinct" type="checkbox" checked> 去重</label>
-            <label><input id="sql-wrap" type="checkbox"> 每项换行</label>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="sql-input" placeholder="粘贴 Excel 或多行文本"></textarea>
+              <div class="checks">
+                <label><input id="sql-quote" type="checkbox" checked> 单引号</label>
+                <label><input id="sql-distinct" type="checkbox" checked> 去重</label>
+                <label><input id="sql-wrap" type="checkbox"> 换行</label>
+              </div>
+            </div>
+            <div class="panel-right">
+              <div id="sql-output" class="result-box flex-1"></div>
+              <div class="actions"><button class="btn btn-primary" onclick="makeSqlIn()">生成</button><button class="btn" onclick="copyText('sql-output')">复制</button></div>
+              <p id="sql-stats" class="stats"></p>
+            </div>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="makeSqlIn()">生成</button><button class="btn" onclick="copyText('sql-output')">复制结果</button></div>
-          <div id="sql-output" class="result-box"></div>
-          <p id="sql-stats" class="stats"></p>
         </div>
 
         <div class="tool-panel" id="timestamp-panel">
@@ -313,26 +388,38 @@
           <div id="ts-output" class="result-box">结果显示在这里</div>
         </div>
 
-        <div class="tool-panel" id="regex-panel">
+        <div class="tool-panel has-row" id="regex-panel">
           <h2 class="tool-title">正则测试</h2>
-          <div class="form-group"><label>正则表达式</label><input id="regex-pattern" type="text" placeholder="例如 ^1[3-9]\d{9}$"></div>
-          <div class="checks"><label><input id="regex-g" type="checkbox" checked> g</label><label><input id="regex-i" type="checkbox"> i</label><label><input id="regex-m" type="checkbox"> m</label><label><input id="regex-s" type="checkbox"> s</label></div>
-          <textarea id="regex-text" placeholder="请输入测试文本"></textarea>
-          <div class="actions"><button class="btn btn-primary" onclick="testRegex()">测试</button></div>
-          <div id="regex-output" class="result-box"></div>
+          <div class="panel-row">
+            <div class="panel-left">
+              <div class="form-group"><label>正则表达式</label><input id="regex-pattern" type="text" placeholder="例如 ^1[3-9]\d{9}$"></div>
+              <div class="checks"><label><input id="regex-g" type="checkbox" checked> g</label><label><input id="regex-i" type="checkbox"> i</label><label><input id="regex-m" type="checkbox"> m</label><label><input id="regex-s" type="checkbox"> s</label></div>
+              <textarea id="regex-text" placeholder="请输入测试文本"></textarea>
+            </div>
+            <div class="panel-right">
+              <div id="regex-output" class="result-box flex-1"></div>
+              <div class="actions"><button class="btn btn-primary" onclick="testRegex()">测试</button></div>
+            </div>
+          </div>
         </div>
 
-        <div class="tool-panel" id="html-panel">
+        <div class="tool-panel has-row" id="html-panel">
           <h2 class="tool-title">HTML 提取器</h2>
-          <textarea id="html-input" placeholder="粘贴 HTML 代码"></textarea>
-          <div class="checks">
-            <label><input id="html-text" type="checkbox" checked> 提取文本</label>
-            <label><input id="html-links" type="checkbox" checked> 提取链接</label>
-            <label><input id="html-images" type="checkbox"> 提取图片</label>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="html-input" placeholder="粘贴 HTML 代码"></textarea>
+              <div class="checks">
+                <label><input id="html-text" type="checkbox" checked> 文本</label>
+                <label><input id="html-links" type="checkbox" checked> 链接</label>
+                <label><input id="html-images" type="checkbox"> 图片</label>
+              </div>
+            </div>
+            <div class="panel-right">
+              <textarea id="html-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="extractHtml()">提取</button><button class="btn" onclick="demoHtml()">示例</button><button class="btn" onclick="copyText('html-output')">复制</button></div>
+              <p id="html-stats" class="stats"></p>
+            </div>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="extractHtml()">开始提取</button><button class="btn" onclick="demoHtml()">示例 HTML</button><button class="btn" onclick="copyText('html-output')">复制结果</button></div>
-          <textarea id="html-output" readonly></textarea>
-          <p id="html-stats" class="stats"></p>
         </div>
 
         <div class="tool-panel" id="color-panel">
@@ -343,24 +430,38 @@
           <div id="color-chip" class="color-chip"></div>
         </div>
 
-        <div class="tool-panel" id="hash-panel">
+        <div class="tool-panel has-row" id="hash-panel">
           <h2 class="tool-title">SHA 哈希</h2>
-          <textarea id="hash-input" placeholder="请输入文本"></textarea>
-          <div class="checks"><label><input name="hash-alg" type="radio" value="SHA-256" checked> SHA-256</label><label><input name="hash-alg" type="radio" value="SHA-384"> SHA-384</label><label><input name="hash-alg" type="radio" value="SHA-512"> SHA-512</label></div>
-          <div class="actions"><button class="btn btn-primary" onclick="makeHash()">生成</button><button class="btn" onclick="copyText('hash-output')">复制结果</button></div>
-          <textarea id="hash-output" readonly></textarea>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="hash-input" placeholder="请输入文本"></textarea>
+              <div class="checks"><label><input name="hash-alg" type="radio" value="SHA-256" checked> SHA-256</label><label><input name="hash-alg" type="radio" value="SHA-384"> SHA-384</label><label><input name="hash-alg" type="radio" value="SHA-512"> SHA-512</label></div>
+            </div>
+            <div class="panel-right">
+              <textarea id="hash-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="makeHash()">生成</button><button class="btn" onclick="copyText('hash-output')">复制</button></div>
+            </div>
+          </div>
         </div>
 
-        <div class="tool-panel" id="uuid-panel">
+        <div class="tool-panel has-row" id="uuid-panel">
           <h2 class="tool-title">UUID/GUID 生成器</h2>
-          <div class="grid-3">
-            <div class="form-group"><label>生成数量</label><input id="uuid-count" type="number" min="1" max="200" value="10"></div>
-            <div class="form-group"><label>版本</label><select id="uuid-version"><option value="v4">UUID v4</option><option value="v7">UUID v7</option></select></div>
-            <div class="form-group"><label>大小写</label><select id="uuid-case"><option value="lower">小写</option><option value="upper">大写</option></select></div>
+          <div class="panel-row">
+            <div class="panel-left">
+              <div class="grid-2">
+                <div class="form-group"><label>数量</label><input id="uuid-count" type="number" min="1" max="200" value="10"></div>
+                <div class="form-group"><label>版本</label><select id="uuid-version"><option value="v4">UUID v4</option><option value="v7">UUID v7</option></select></div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group"><label>大小写</label><select id="uuid-case"><option value="lower">小写</option><option value="upper">大写</option></select></div>
+                <div class="checks" style="align-items:end;"><label><input id="uuid-no-hyphen" type="checkbox"> 无连字符</label><label><input id="uuid-braces" type="checkbox"> 花括号</label></div>
+              </div>
+            </div>
+            <div class="panel-right">
+              <textarea id="uuid-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="generateUuid()">生成</button><button class="btn" onclick="copyText('uuid-output')">复制</button></div>
+            </div>
           </div>
-          <div class="checks"><label><input id="uuid-no-hyphen" type="checkbox"> 移除连字符</label><label><input id="uuid-braces" type="checkbox"> 添加花括号</label></div>
-          <div class="actions"><button class="btn btn-primary" onclick="generateUuid()">生成</button><button class="btn" onclick="copyText('uuid-output')">复制结果</button></div>
-          <textarea id="uuid-output" readonly></textarea>
         </div>
 
         <div class="tool-panel" id="base-panel">
@@ -374,25 +475,37 @@
           <div id="base-output" class="result-box"></div>
         </div>
 
-        <div class="tool-panel" id="case-panel">
+        <div class="tool-panel has-row" id="case-panel">
           <h2 class="tool-title">大小写转换</h2>
-          <textarea id="case-input" placeholder="例如 user_name、userName、User Name"></textarea>
-          <div class="actions">
-            <button class="btn btn-primary" onclick="convertCase('camel')">camelCase</button>
-            <button class="btn" onclick="convertCase('pascal')">PascalCase</button>
-            <button class="btn" onclick="convertCase('snake')">snake_case</button>
-            <button class="btn" onclick="convertCase('kebab')">kebab-case</button>
-            <button class="btn" onclick="copyText('case-output')">复制结果</button>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="case-input" placeholder="例如 user_name、userName、User Name"></textarea>
+            </div>
+            <div class="panel-right">
+              <textarea id="case-output" readonly></textarea>
+              <div class="actions">
+                <button class="btn btn-primary" onclick="convertCase('camel')">camelCase</button>
+                <button class="btn" onclick="convertCase('pascal')">PascalCase</button>
+                <button class="btn" onclick="convertCase('snake')">snake_case</button>
+                <button class="btn" onclick="convertCase('kebab')">kebab-case</button>
+                <button class="btn" onclick="copyText('case-output')">复制</button>
+              </div>
+            </div>
           </div>
-          <textarea id="case-output" readonly></textarea>
         </div>
 
-        <div class="tool-panel" id="yaml-panel">
+        <div class="tool-panel has-row" id="yaml-panel">
           <h2 class="tool-title">YAML 格式化</h2>
-          <textarea id="yaml-input" placeholder="粘贴 YAML 或 JSON"></textarea>
-          <div class="actions"><button class="btn btn-primary" onclick="formatYaml()">格式化</button><button class="btn" onclick="yamlToJson()">YAML 转 JSON</button><button class="btn" onclick="copyText('yaml-output')">复制结果</button></div>
-          <textarea id="yaml-output" readonly></textarea>
-          <p class="helper-text">内置轻量解析器支持常见 key: value、缩进对象和列表；复杂 YAML 建议使用专业解析库。</p>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="yaml-input" placeholder="粘贴 YAML 或 JSON"></textarea>
+            </div>
+            <div class="panel-right">
+              <textarea id="yaml-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="formatYaml()">格式化</button><button class="btn" onclick="yamlToJson()">转JSON</button><button class="btn" onclick="copyText('yaml-output')">复制</button></div>
+              <p class="helper-text">内置轻量解析器支持常见 key: value、缩进对象和列表。</p>
+            </div>
+          </div>
         </div>
 
         <div class="tool-panel" id="ip-panel">
@@ -417,24 +530,36 @@
           <div id="unit-output" class="result-box"></div>
         </div>
 
-        <div class="tool-panel" id="splitter-panel">
-          <h2 class="tool-title">文本分隔合并工具</h2>
-          <textarea id="splitter-input" placeholder="输入要分隔或合并的文本"></textarea>
-          <div class="checks"><label><input name="splitter-mode" type="radio" value="split" checked> 分隔</label><label><input name="splitter-mode" type="radio" value="merge"> 合并</label><label><input id="splitter-trim" type="checkbox" checked> 去除空格</label><label><input id="splitter-distinct" type="checkbox"> 去重</label></div>
-          <div class="grid-2">
-            <div class="form-group"><label>输入分隔符</label><input id="splitter-delimiter" type="text" value="," placeholder="支持 \\n、\\t、空格"></div>
-            <div class="form-group"><label>输出分隔符</label><input id="splitter-joiner" type="text" value="\n" placeholder="支持 \\n、\\t、空格"></div>
+        <div class="tool-panel has-row" id="splitter-panel">
+          <h2 class="tool-title">文本分隔合并</h2>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="splitter-input" placeholder="输入要分隔或合并的文本"></textarea>
+              <div class="checks"><label><input name="splitter-mode" type="radio" value="split" checked> 分隔</label><label><input name="splitter-mode" type="radio" value="merge"> 合并</label><label><input id="splitter-trim" type="checkbox" checked> 去空格</label><label><input id="splitter-distinct" type="checkbox"> 去重</label></div>
+              <div class="grid-2">
+                <div class="form-group"><label>输入分隔符</label><input id="splitter-delimiter" type="text" value="," placeholder="支持 \\n、\\t"></div>
+                <div class="form-group"><label>输出分隔符</label><input id="splitter-joiner" type="text" value="\n" placeholder="支持 \\n、\\t"></div>
+              </div>
+            </div>
+            <div class="panel-right">
+              <textarea id="splitter-output" readonly></textarea>
+              <div class="actions"><button class="btn btn-primary" onclick="processSplitter()">处理</button><button class="btn" onclick="copyText('splitter-output')">复制</button></div>
+              <p id="splitter-stats" class="stats"></p>
+            </div>
           </div>
-          <div class="actions"><button class="btn btn-primary" onclick="processSplitter()">处理</button><button class="btn" onclick="copyText('splitter-output')">复制结果</button></div>
-          <textarea id="splitter-output" readonly></textarea>
-          <p id="splitter-stats" class="stats"></p>
         </div>
 
-        <div class="tool-panel" id="statistics-panel">
-          <h2 class="tool-title">文本统计工具</h2>
-          <textarea id="statistics-input" placeholder="请输入要统计的文本"></textarea>
-          <div class="actions"><button class="btn btn-primary" onclick="countText()">统计</button><button class="btn" onclick="copyText('statistics-output')">复制结果</button></div>
-          <div id="statistics-output" class="result-box"></div>
+        <div class="tool-panel has-row" id="statistics-panel">
+          <h2 class="tool-title">文本统计</h2>
+          <div class="panel-row">
+            <div class="panel-left">
+              <textarea id="statistics-input" placeholder="请输入要统计的文本"></textarea>
+            </div>
+            <div class="panel-right">
+              <div id="statistics-output" class="result-box flex-1"></div>
+              <div class="actions"><button class="btn btn-primary" onclick="countText()">统计</button><button class="btn" onclick="copyText('statistics-output')">复制</button></div>
+            </div>
+          </div>
         </div>
 
         <div class="tool-panel" id="clipboard-panel">
@@ -515,15 +640,27 @@
       msg.textContent = text;
       msg.className = 'alert show ' + (ok ? 'ok' : 'bad');
     }
+    // 移除JSON中的注释（支持 // 和 /* */）
+    function stripJsonComments(str) {
+      // 先移除多行注释 /* ... */
+      str = str.replace(/\/\*[\s\S]*?\*\//g, '');
+      // 再移除单行注释 // ...（到行尾）
+      str = str.replace(/\/\/.*$/gm, '');
+      return str;
+    }
     function formatJson() {
       try {
-        $('json-output').value = JSON.stringify(JSON.parse($('json-input').value), null, 2);
+        const input = $('json-strip-comments').checked ? stripJsonComments($('json-input').value) : $('json-input').value;
+        $('json-output').value = JSON.stringify(JSON.parse(input), null, 2);
+        $('json-output').style.whiteSpace = $('json-no-wrap').checked ? 'pre' : '';
         showJsonMessage('JSON 格式正确', true);
       } catch (e) { showJsonMessage('JSON 解析错误：' + e.message, false); }
     }
     function minifyJson() {
       try {
-        $('json-output').value = JSON.stringify(JSON.parse($('json-input').value));
+        const input = $('json-strip-comments').checked ? stripJsonComments($('json-input').value) : $('json-input').value;
+        $('json-output').value = JSON.stringify(JSON.parse(input));
+        $('json-output').style.whiteSpace = $('json-no-wrap').checked ? 'pre' : '';
         showJsonMessage('JSON 已压缩', true);
       } catch (e) { showJsonMessage('JSON 解析错误：' + e.message, false); }
     }
