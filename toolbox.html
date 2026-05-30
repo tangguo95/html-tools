@@ -366,7 +366,7 @@
               </div>
             </div>
             <div class="panel-right">
-              <div id="sql-output" class="result-box flex-1"></div>
+              <div id="sql-output" class="result-box flex-1" tabindex="0" aria-label="SQL IN 结果"></div>
               <div class="actions"><button class="btn btn-primary" onclick="makeSqlIn()">生成</button><button class="btn" onclick="copyText('sql-output')">复制</button></div>
               <p id="sql-stats" class="stats"></p>
             </div>
@@ -605,6 +605,14 @@
     function copyText(id) {
       const el = $(id);
       copyValue('value' in el ? el.value : el.textContent);
+    }
+
+    function selectElementText(el) {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
 
     function clearFields(...ids) {
@@ -1169,6 +1177,13 @@
       updateUnitOptions();
       generateUuid();
       ['sql-input','sql-quote','sql-distinct','sql-wrap'].forEach(id => $(id).addEventListener(id === 'sql-input' ? 'input' : 'change', makeSqlIn));
+      $('sql-output').addEventListener('keydown', event => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
+          event.preventDefault();
+          selectElementText(event.currentTarget);
+        }
+      });
+      $('sql-output').addEventListener('click', event => event.currentTarget.focus());
       ['base-input','base-from','base-to'].forEach(id => $(id).addEventListener(id === 'base-input' ? 'input' : 'change', convertBase));
       ['unit-value','unit-from','unit-to'].forEach(id => $(id).addEventListener('input', convertUnit));
     });
