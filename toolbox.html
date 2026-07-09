@@ -43,6 +43,103 @@
     }
     h1 { margin: 0; font-size: clamp(24px, 4vw, 40px); line-height: 1; letter-spacing: 0; }
     .subtitle { color: var(--muted); margin: 4px 0 0; max-width: 560px; line-height: 1.4; font-size: 13px; }
+    .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+    .opened-tabs {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      min-height: 38px;
+      margin: 0 0 10px;
+      padding: 5px;
+      overflow-x: auto;
+      background: rgba(255,253,250,.88);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .opened-tab-btn {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 190px;
+      min-height: 28px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 4px;
+      padding: 5px 8px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 12px;
+      font-weight: 650;
+    }
+    .opened-tab-btn:hover { background: #f7f3ea; border-color: #c9bfad; }
+    .opened-tab-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .opened-tab-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .opened-tab-mark { color: var(--muted); font-size: 10px; font-weight: 700; }
+    .opened-tab-btn.active .opened-tab-mark { color: rgba(255,255,255,.72); }
+    .opened-tab-close {
+      flex: 0 0 auto;
+      display: inline-grid;
+      place-items: center;
+      width: 17px;
+      height: 17px;
+      margin-right: -3px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: currentColor;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      opacity: .68;
+    }
+    .opened-tab-close:hover:not(:disabled) {
+      background: rgba(185, 28, 28, .12);
+      color: var(--danger);
+      opacity: 1;
+    }
+    .opened-tab-btn.active .opened-tab-close:hover:not(:disabled) {
+      background: rgba(255, 255, 255, .16);
+      color: #fff;
+    }
+    .opened-tab-close:disabled {
+      cursor: default;
+      opacity: .28;
+    }
+    .tab-context-menu {
+      position: fixed;
+      z-index: 50;
+      display: grid;
+      min-width: 132px;
+      padding: 5px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: 0 18px 45px rgba(31, 41, 51, .18);
+    }
+    .tab-context-menu[hidden] { display: none; }
+    .tab-context-menu button {
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--ink);
+      padding: 7px 9px;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+    }
+    .tab-context-menu button:hover:not(:disabled) { background: #f7f3ea; }
+    .tab-context-menu button:disabled { color: #b7afa2; cursor: default; }
 
     .layout { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 10px; align-items: start; }
     .tabs {
@@ -79,7 +176,7 @@
       padding: 12px 16px;
     }
     .tool-panel.active { display: block; }
-    .tool-panel.has-row.active { display: flex; flex-direction: column; height: calc(100vh - 160px); overflow: hidden; }
+    .tool-panel.has-row.active { display: flex; flex-direction: column; height: calc(100vh - 206px); overflow: hidden; }
     .tool-title { margin: 0 0 10px; font-size: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px; flex-shrink: 0; }
 
     /* 左右布局：输入区和输出区并排 */
@@ -107,6 +204,44 @@
     }
     textarea { min-height: 100px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.45; font-size: 12px; }
     input:focus, textarea:focus, select:focus { outline: 2px solid rgba(15,118,110,.18); border-color: var(--accent); }
+    .json-comment-editor {
+      position: relative;
+      min-width: 0;
+    }
+    .json-comment-editor textarea {
+      position: relative;
+      z-index: 2;
+      background: transparent;
+      color: transparent;
+      caret-color: var(--ink);
+      overflow: auto;
+    }
+    .json-comment-editor textarea::placeholder { color: var(--muted); }
+    .json-comment-editor textarea::selection { background: rgba(15,118,110,.22); color: transparent; }
+    .json-comment-highlight {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      margin: 0;
+      padding: 6px 8px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--ink);
+      pointer-events: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      line-height: 1.45;
+      font-size: 12px;
+    }
+    .json-comment-token {
+      color: #dc2626;
+      font-weight: 750;
+      background: rgba(220, 38, 38, .08);
+      border-radius: 2px;
+    }
     .checks { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 6px; }
     .checks label { display: inline-flex; align-items: center; gap: 5px; margin: 0; font-weight: 500; font-size: 12px; color: #374151; }
     .actions { display: flex; gap: 5px; flex-wrap: wrap; margin: 4px 0; }
@@ -124,6 +259,8 @@
     .btn:hover { background: #f7f3ea; }
     .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .btn-primary:hover { background: #115e59; }
+    .btn-hot { background: var(--danger); border-color: var(--danger); color: #fff; }
+    .btn-hot:hover { background: #991b1b; border-color: #991b1b; }
     .btn-danger { color: var(--danger); }
     .result-box {
       min-height: 48px;
@@ -144,14 +281,274 @@
     .ok { color: var(--ok); }
     .bad { color: var(--danger); }
     .color-chip { width: 100%; height: 60px; border-radius: 4px; border: 1px solid var(--line); margin-top: 6px; }
+    .json-compare-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-bottom: 10px;
+    }
+    .json-compare-groups {
+      display: grid;
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .json-compare-group {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+    }
+    .json-compare-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .json-compare-title {
+      width: min(260px, 100%);
+      min-height: 30px;
+      font-weight: 750;
+    }
+    .json-compare-status {
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .json-compare-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(280px, .9fr);
+      gap: 10px;
+      min-height: 0;
+    }
+    .json-compare-col {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+      min-height: 0;
+    }
+    .json-compare-input {
+      min-height: 190px;
+      resize: vertical;
+    }
+    .json-compare-result {
+      min-height: 190px;
+      max-height: 300px;
+      overflow: auto;
+    }
+    .json-note-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-bottom: 10px;
+    }
+    .json-note-list {
+      display: grid;
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .json-note-card {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+    }
+    .json-note-header {
+      display: grid;
+      grid-template-columns: minmax(160px, 1fr) minmax(180px, 1fr) auto;
+      gap: 8px;
+      align-items: end;
+    }
+    .json-note-body {
+      display: grid;
+      grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+      gap: 10px;
+      min-height: 0;
+    }
+    .json-note-col {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+      min-height: 0;
+    }
+    .json-note-remark {
+      min-height: 120px;
+      resize: vertical;
+    }
+    .json-note-payload {
+      min-height: 220px;
+      resize: vertical;
+    }
+    .json-note-empty {
+      padding: 18px;
+      color: var(--muted);
+      text-align: center;
+      background: #fbf8f1;
+      border: 1px dashed #b9ad98;
+      border-radius: 5px;
+    }
+    .json-note-zoom {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(31, 41, 51, .38);
+    }
+    .json-note-zoom[hidden] { display: none; }
+    .json-note-zoom-dialog {
+      width: min(1100px, 100%);
+      max-height: calc(100vh - 36px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: 0 24px 70px rgba(31, 41, 51, .24);
+    }
+    .json-note-zoom-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+    .json-note-zoom-title { margin: 0; font-size: 15px; }
+    .json-note-zoom-find {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+    }
+    .json-note-zoom-find[hidden] { display: none; }
+    .json-note-zoom-find input {
+      flex: 1 1 260px;
+      min-width: 180px;
+    }
+    .json-note-zoom-find-status {
+      color: var(--muted);
+      font-size: 11px;
+      min-width: 70px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .json-note-zoom-text {
+      min-height: min(68vh, 680px);
+      resize: vertical;
+    }
+    .image-drop-zone {
+      display: grid;
+      place-items: center;
+      min-height: 150px;
+      padding: 18px;
+      border: 1px dashed #b9ad98;
+      border-radius: 5px;
+      background: #fbf8f1;
+      color: #4b5563;
+      text-align: center;
+      cursor: pointer;
+    }
+    .image-drop-zone:hover, .image-drop-zone.dragging, .image-drop-zone:focus {
+      outline: 2px solid rgba(15,118,110,.16);
+      border-color: var(--accent);
+      background: #f3faf7;
+    }
+    .image-drop-title { font-weight: 750; font-size: 14px; color: var(--ink); }
+    .image-drop-subtitle { margin-top: 5px; font-size: 12px; color: var(--muted); }
+    .image-result-list {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .image-result-item {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+    }
+    .image-preview {
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+      background: #f9faf7;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+    }
+    .image-result-main { min-width: 0; display: grid; gap: 7px; }
+    .image-result-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .image-result-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--ink);
+      font-weight: 750;
+      font-size: 12px;
+    }
+    .image-result-text {
+      min-height: 180px;
+      resize: vertical;
+    }
     .history-list { display: grid; gap: 6px; margin-top: 10px; }
     .history-item { border: 1px solid var(--line); border-radius: 4px; padding: 8px; background: #fff; }
     .history-meta { color: var(--muted); font-size: 10px; margin-bottom: 4px; }
 
     @media (max-width: 768px) {
       header { display: block; }
+      .header-actions { margin-top: 10px; }
+      .opened-tabs { min-height: 36px; }
+      .opened-tab-btn { max-width: 150px; }
       .layout { grid-template-columns: 1fr; }
       .tabs { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tool-panel.has-row.active { height: auto; min-height: 360px; overflow: visible; }
+      .json-compare-body { grid-template-columns: 1fr; }
+      .json-compare-result, .json-compare-input { min-height: 220px; }
+      .json-note-header, .json-note-body { grid-template-columns: 1fr; }
+      .json-note-payload { min-height: 240px; }
+      .json-note-zoom { padding: 8px; }
+      .json-note-zoom-text { min-height: 65vh; }
+      .image-result-item { grid-template-columns: 1fr; }
+      .image-preview { width: 100%; height: 160px; }
+      .image-result-text { min-height: 220px; }
       .grid-2, .grid-3, .panel-row { grid-template-columns: 1fr; }
     }
   </style>
@@ -163,16 +560,56 @@
         <h1>工具箱</h1>
         <p class="subtitle">本地可用的常用开发工具集合，所有处理都在浏览器内完成。</p>
       </div>
+      <div class="header-actions">
+        <button class="btn btn-danger" id="reset-all-state" type="button">全部重置</button>
+      </div>
     </header>
+
+    <div class="opened-tabs" id="opened-tabs" role="tablist" aria-label="已打开工具"></div>
+    <div class="tab-context-menu" id="tab-context-menu" role="menu" hidden>
+      <button type="button" data-tab-action="rename" role="menuitem">设置标签名称</button>
+      <button type="button" data-tab-action="close-current" role="menuitem">关闭当前</button>
+      <button type="button" data-tab-action="close-others" role="menuitem">关闭其他</button>
+      <button type="button" data-tab-action="close-left" role="menuitem">关闭左侧</button>
+      <button type="button" data-tab-action="close-right" role="menuitem">关闭右侧</button>
+    </div>
+
+    <div class="json-note-zoom" id="jsonnote-zoom" hidden>
+      <div class="json-note-zoom-dialog" role="dialog" aria-modal="true" aria-labelledby="jsonnote-zoom-title">
+        <div class="json-note-zoom-header">
+          <h3 class="json-note-zoom-title" id="jsonnote-zoom-title">放大编辑 JSON 报文</h3>
+          <button class="btn" id="jsonnote-zoom-cancel" type="button">关闭</button>
+        </div>
+        <div class="json-note-zoom-find" id="jsonnote-zoom-find" hidden>
+          <input id="jsonnote-zoom-find-input" type="text" placeholder="搜索当前放大报文">
+          <span class="json-note-zoom-find-status" id="jsonnote-zoom-find-status">0 / 0</span>
+          <button class="btn" id="jsonnote-zoom-find-prev" type="button">上一个</button>
+          <button class="btn" id="jsonnote-zoom-find-next" type="button">下一个</button>
+          <button class="btn" id="jsonnote-zoom-find-close" type="button">关闭搜索</button>
+        </div>
+        <div class="json-comment-editor json-note-zoom-editor" data-json-comment-editor>
+          <pre class="json-comment-highlight" aria-hidden="true"></pre>
+          <textarea id="jsonnote-zoom-text" class="json-note-zoom-text" placeholder="粘贴或编辑 JSON 报文，支持 // 注释"></textarea>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="jsonnote-zoom-format-keep" type="button">格式化（保留注释）</button>
+          <button class="btn" id="jsonnote-zoom-format-strip" type="button">格式化（去掉注释）</button>
+          <button class="btn btn-primary" id="jsonnote-zoom-save" type="button">保存并关闭</button>
+        </div>
+      </div>
+    </div>
 
     <main class="layout">
       <nav class="tabs" aria-label="工具列表">
         <button class="tab-btn active" data-tab="password">密码生成器</button>
         <button class="tab-btn" data-tab="diff">文本比对</button>
         <button class="tab-btn" data-tab="json">JSON 格式化</button>
+        <button class="tab-btn" data-tab="jsoncompare">JSON 报文比对</button>
+        <button class="tab-btn" data-tab="jsonnote">JSON 报文记录</button>
         <button class="tab-btn" data-tab="jsoncsv">JSON 转 CSV</button>
         <button class="tab-btn" data-tab="base64">Base64 编解码</button>
         <button class="tab-btn" data-tab="filebase64">文件 Base64</button>
+        <button class="tab-btn" data-tab="imagebase64">图片 Base64</button>
         <button class="tab-btn" data-tab="md5">MD5</button>
         <button class="tab-btn" data-tab="aes">AES 加解密</button>
         <button class="tab-btn" data-tab="url">URL 编解码</button>
@@ -239,7 +676,7 @@
               <div class="checks"><label><input id="json-strip-comments" type="checkbox"> 移除注释</label><label><input id="json-no-wrap" type="checkbox"> 长内容不换行</label></div>
             </div>
             <div class="panel-right">
-              <textarea id="json-output" readonly placeholder="结果显示在这里"></textarea>
+              <textarea id="json-output" placeholder="结果显示在这里"></textarea>
               <div class="actions">
                 <button class="btn btn-primary" onclick="formatJson()">格式化</button>
                 <button class="btn" onclick="minifyJson()">压缩</button>
@@ -249,6 +686,33 @@
               <div id="json-msg" class="alert"></div>
             </div>
           </div>
+        </div>
+
+        <div class="tool-panel has-row" id="jsoncompare-panel">
+          <h2 class="tool-title">JSON 报文比对</h2>
+          <div class="json-compare-toolbar">
+            <div class="actions">
+              <button class="btn btn-primary" id="jsoncompare-add" type="button">新增比对组</button>
+              <button class="btn" id="jsoncompare-run-all" type="button">全部比对</button>
+            </div>
+            <p id="jsoncompare-summary" class="stats">暂无比对结果</p>
+          </div>
+          <div id="jsoncompare-groups" class="json-compare-groups"></div>
+        </div>
+
+        <div class="tool-panel has-row" id="jsonnote-panel">
+          <h2 class="tool-title">JSON 报文记录</h2>
+          <input id="jsonnote-import-file" type="file" accept="application/json,.json" hidden>
+          <div class="json-note-toolbar">
+            <div class="actions">
+              <button class="btn btn-primary" id="jsonnote-add" type="button">新增记录</button>
+              <button class="btn" id="jsonnote-export" type="button">导出</button>
+              <button class="btn" id="jsonnote-import" type="button">导入</button>
+              <button class="btn btn-danger" id="jsonnote-clear-all" type="button">清空全部</button>
+            </div>
+            <p id="jsonnote-status" class="stats">暂无记录</p>
+          </div>
+          <div id="jsonnote-list" class="json-note-list"></div>
         </div>
 
         <div class="tool-panel has-row" id="jsoncsv-panel">
@@ -305,6 +769,33 @@
             <div class="panel-right">
               <div class="actions"><button class="btn btn-primary" onclick="base64ToFile()">下载文件</button></div>
               <p id="filebase64-stats" class="stats"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-panel has-row" id="imagebase64-panel">
+          <h2 class="tool-title">图片 Base64 转换</h2>
+          <div class="panel-row">
+            <div class="panel-left">
+              <input id="imagebase64-file" type="file" accept="image/*" multiple hidden>
+              <div id="imagebase64-drop" class="image-drop-zone" tabindex="0" role="button" aria-label="选择、粘贴或拖入图片">
+                <div>
+                  <div class="image-drop-title">选择、粘贴或拖入图片</div>
+                  <div class="image-drop-subtitle">支持多张图片分别转 Base64</div>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" onclick="$('imagebase64-file').click()">选择图片</button>
+                <button class="btn" onclick="copyAllImageBase64('dataUrl')">复制全部完整 Base64</button>
+                <button class="btn" onclick="copyAllImageBase64('base64')">复制全部纯 Base64</button>
+                <button class="btn btn-danger" onclick="clearImageBase64()">清空</button>
+              </div>
+              <p id="imagebase64-stats" class="stats">暂无图片</p>
+            </div>
+            <div class="panel-right">
+              <div id="imagebase64-results" class="image-result-list">
+                <p class="helper-text">图片结果会显示在这里。</p>
+              </div>
             </div>
           </div>
         </div>
@@ -484,10 +975,13 @@
             <div class="panel-right">
               <textarea id="case-output" readonly></textarea>
               <div class="actions">
-                <button class="btn btn-primary" onclick="convertCase('camel')">camelCase</button>
-                <button class="btn" onclick="convertCase('pascal')">PascalCase</button>
-                <button class="btn" onclick="convertCase('snake')">snake_case</button>
-                <button class="btn" onclick="convertCase('kebab')">kebab-case</button>
+                <button class="btn btn-primary" onclick="convertCase('upper')">全部大写</button>
+                <button class="btn" onclick="convertCase('lower')">全部小写</button>
+                <button class="btn" onclick="convertCase('title')" title="例如 User Name">词首大写 User Name</button>
+                <button class="btn" onclick="convertCase('camel')" title="例如 userName">小驼峰 userName</button>
+                <button class="btn" onclick="convertCase('pascal')" title="例如 UserName">大驼峰 UserName</button>
+                <button class="btn" onclick="convertCase('snake')" title="例如 user_name">下划线 user_name</button>
+                <button class="btn" onclick="convertCase('kebab')" title="例如 user-name">短横线 user-name</button>
                 <button class="btn" onclick="copyText('case-output')">复制</button>
               </div>
             </div>
@@ -574,16 +1068,350 @@
 
   <script>
     const $ = id => document.getElementById(id);
+    const APP_STATE_KEY = 'html_tools_app_state';
     const HISTORY_KEY = 'html_tools_clipboard_history';
+    const JSON_NOTE_KEY = 'html_tools_json_note_records';
+    const IMAGE_BASE64_EMPTY = '<p class="helper-text">图片结果会显示在这里。</p>';
+    const JSON_COMPARE_MAX_DIFFS = 300;
+    const JSON_COMPARE_MISSING = Symbol('json-compare-missing');
+    let openedTabs = [];
+    let activeOpenTabId = '';
+    let openTabSeq = 0;
+    let contextOpenTabId = '';
+    let imageBase64Items = [];
+    let imageBase64Seq = 0;
+    let jsonCompareSeq = 0;
+    let jsonNoteRecords = [];
+    let jsonNoteSeq = 0;
+    let jsonNoteZoomRecordId = null;
+    let restoringAppState = false;
+    let appStateTimer = 0;
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        $(btn.dataset.tab + '-panel').classList.add('active');
+    function loadAppState() {
+      try { return JSON.parse(localStorage.getItem(APP_STATE_KEY) || '{}') || {}; }
+      catch (_) { return {}; }
+    }
+
+    function getPersistentFormControls() {
+      return [...document.querySelectorAll('input[id], textarea[id], select[id]')].filter(el => {
+        if (el.type === 'file' || el.type === 'hidden') return false;
+        if (el.closest('#jsoncompare-panel') || el.closest('#jsonnote-panel')) return false;
+        if (el.closest('#jsonnote-zoom')) return false;
+        return true;
       });
-    });
+    }
+
+    function collectFormState() {
+      return getPersistentFormControls().reduce((state, el) => {
+        state[el.id] = el.type === 'checkbox' || el.type === 'radio'
+          ? { checked: el.checked }
+          : { value: el.value };
+        return state;
+      }, {});
+    }
+
+    function restoreFormState(formState = {}) {
+      if (formState['unit-type'] && $('unit-type')) {
+        $('unit-type').value = formState['unit-type'].value;
+        updateUnitOptions();
+      }
+      getPersistentFormControls().forEach(el => {
+        const saved = formState[el.id];
+        if (!saved) return;
+        if ('checked' in saved) el.checked = !!saved.checked;
+        else if ('value' in saved) el.value = saved.value;
+      });
+    }
+
+    function collectJsonCompareState() {
+      return getJsonCompareGroups().map(group => ({
+        title: group.querySelector('.json-compare-title').value,
+        left: group.querySelector('[data-json-compare-side="left"]').value,
+        right: group.querySelector('[data-json-compare-side="right"]').value,
+        result: group.querySelector('[data-json-compare-result]').textContent,
+        resultClass: group.querySelector('[data-json-compare-result]').className,
+        status: group.querySelector('[data-json-compare-status]').textContent,
+        statusClass: group.querySelector('[data-json-compare-status]').className
+      }));
+    }
+
+    function persistAppState() {
+      if (restoringAppState) return;
+      const state = {
+        openedTabs,
+        activeOpenTabId,
+        openTabSeq,
+        formState: collectFormState(),
+        jsonCompareGroups: collectJsonCompareState()
+      };
+      localStorage.setItem(APP_STATE_KEY, JSON.stringify(state));
+    }
+
+    function schedulePersistAppState() {
+      if (restoringAppState) return;
+      clearTimeout(appStateTimer);
+      appStateTimer = setTimeout(persistAppState, 180);
+    }
+
+    function resetAllToolboxState() {
+      if (!confirm('确定清空工具箱缓存并恢复初始状态吗？')) return;
+      localStorage.removeItem(APP_STATE_KEY);
+      localStorage.removeItem(JSON_NOTE_KEY);
+      localStorage.removeItem(HISTORY_KEY);
+      location.reload();
+    }
+
+    function initAppStateCache() {
+      $('reset-all-state').addEventListener('click', resetAllToolboxState);
+      document.addEventListener('input', event => {
+        if (event.target.matches('input, textarea, select')) schedulePersistAppState();
+      }, true);
+      document.addEventListener('change', event => {
+        if (event.target.matches('input, textarea, select')) schedulePersistAppState();
+      }, true);
+    }
+
+    function getToolButton(toolKey) {
+      return [...document.querySelectorAll('.tabs .tab-btn')].find(btn => btn.dataset.tab === toolKey);
+    }
+
+    function getToolTitle(toolKey) {
+      const btn = getToolButton(toolKey);
+      return btn ? btn.textContent.trim() : toolKey;
+    }
+
+    function getOpenedTabDisplayTitle(tab) {
+      return tab.customName ? `${tab.title} - ${tab.customName}` : tab.title;
+    }
+
+    function setActiveTool(toolKey) {
+      document.querySelectorAll('.tabs .tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === toolKey));
+      document.querySelectorAll('.tool-panel').forEach(panel => panel.classList.remove('active'));
+      if (!toolKey) return;
+      const panel = $(toolKey + '-panel');
+      if (panel) panel.classList.add('active');
+    }
+
+    function renderOpenedTabs() {
+      const bar = $('opened-tabs');
+      bar.innerHTML = '';
+      openedTabs.forEach(tab => {
+        const displayTitle = getOpenedTabDisplayTitle(tab);
+        const btn = document.createElement('div');
+        btn.className = 'opened-tab-btn' + (tab.id === activeOpenTabId ? ' active' : '');
+        btn.dataset.openTabId = tab.id;
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('tabindex', '0');
+        btn.setAttribute('aria-selected', tab.id === activeOpenTabId ? 'true' : 'false');
+        btn.title = displayTitle + ' #' + tab.seq;
+
+        const title = document.createElement('span');
+        title.className = 'opened-tab-title';
+        title.textContent = displayTitle;
+
+        const mark = document.createElement('span');
+        mark.className = 'opened-tab-mark';
+        mark.textContent = '#' + tab.seq;
+
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'opened-tab-close';
+        close.dataset.closeOpenTabId = tab.id;
+        close.disabled = openedTabs.length <= 1;
+        close.title = '关闭 ' + displayTitle + ' #' + tab.seq;
+        close.setAttribute('aria-label', close.title);
+        close.textContent = 'x';
+
+        btn.append(title, mark, close);
+        bar.appendChild(btn);
+      });
+    }
+
+    function activateOpenedTab(openTabId) {
+      const tab = openedTabs.find(item => item.id === openTabId);
+      if (!tab) {
+        activeOpenTabId = '';
+        renderOpenedTabs();
+        setActiveTool('');
+        return;
+      }
+      activeOpenTabId = openTabId;
+      renderOpenedTabs();
+      setActiveTool(tab.toolKey);
+      schedulePersistAppState();
+    }
+
+    function openToolTab(toolKey) {
+      if (!$(toolKey + '-panel')) return;
+      openTabSeq += 1;
+      const tab = {
+        id: 'opened-tab-' + openTabSeq,
+        seq: openTabSeq,
+        toolKey,
+        title: getToolTitle(toolKey),
+        customName: ''
+      };
+      openedTabs.push(tab);
+      activateOpenedTab(tab.id);
+    }
+
+    function restoreOpenedTabs(state) {
+      const restoredTabs = Array.isArray(state.openedTabs)
+        ? state.openedTabs.filter(tab => tab && tab.id && $(tab.toolKey + '-panel')).map(tab => ({
+          id: tab.id,
+          seq: Number(tab.seq) || 0,
+          toolKey: tab.toolKey,
+          title: tab.title || getToolTitle(tab.toolKey),
+          customName: tab.customName || ''
+        }))
+        : [];
+      if (!restoredTabs.length) {
+        openToolTab('password');
+        return;
+      }
+      openedTabs = restoredTabs;
+      openTabSeq = Math.max(Number(state.openTabSeq) || 0, ...openedTabs.map(tab => tab.seq || 0));
+      const activeId = openedTabs.some(tab => tab.id === state.activeOpenTabId)
+        ? state.activeOpenTabId
+        : openedTabs[openedTabs.length - 1].id;
+      activateOpenedTab(activeId);
+    }
+
+    function renameOpenedTab(openTabId) {
+      const tab = openedTabs.find(item => item.id === openTabId);
+      if (!tab) return;
+      const value = prompt('请输入自定义标签名称，留空则清除：', tab.customName || '');
+      if (value == null) return;
+      tab.customName = value.trim();
+      renderOpenedTabs();
+      schedulePersistAppState();
+    }
+
+    function closeOpenedTab(openTabId) {
+      if (openedTabs.length <= 1) return;
+      const targetIndex = openedTabs.findIndex(tab => tab.id === openTabId);
+      if (targetIndex === -1) return;
+      openedTabs = openedTabs.filter(tab => tab.id !== openTabId);
+
+      const nextActiveId = openedTabs.some(tab => tab.id === activeOpenTabId)
+        ? activeOpenTabId
+        : (openedTabs[Math.min(targetIndex, openedTabs.length - 1)] || {}).id || '';
+      activateOpenedTab(nextActiveId);
+    }
+
+    function hideTabContextMenu() {
+      const menu = $('tab-context-menu');
+      menu.hidden = true;
+      contextOpenTabId = '';
+    }
+
+    function refreshTabContextMenu(targetIndex) {
+      const menu = $('tab-context-menu');
+      const count = openedTabs.length;
+      menu.querySelector('[data-tab-action="close-current"]').disabled = count <= 1;
+      menu.querySelector('[data-tab-action="close-others"]').disabled = count <= 1;
+      menu.querySelector('[data-tab-action="close-left"]').disabled = targetIndex <= 0;
+      menu.querySelector('[data-tab-action="close-right"]').disabled = targetIndex >= count - 1;
+    }
+
+    function showTabContextMenu(event, openTabId) {
+      event.preventDefault();
+      const targetIndex = openedTabs.findIndex(tab => tab.id === openTabId);
+      if (targetIndex === -1) return;
+      contextOpenTabId = openTabId;
+      refreshTabContextMenu(targetIndex);
+
+      const menu = $('tab-context-menu');
+      menu.hidden = false;
+      const left = Math.max(8, Math.min(event.clientX, window.innerWidth - menu.offsetWidth - 8));
+      const top = Math.max(8, Math.min(event.clientY, window.innerHeight - menu.offsetHeight - 8));
+      menu.style.left = left + 'px';
+      menu.style.top = top + 'px';
+    }
+
+    function applyTabMenuAction(action) {
+      const targetIndex = openedTabs.findIndex(tab => tab.id === contextOpenTabId);
+      if (targetIndex === -1) return;
+      const targetId = contextOpenTabId;
+
+      if (action === 'rename') {
+        renameOpenedTab(targetId);
+        return;
+      } else if (action === 'close-current') {
+        openedTabs = openedTabs.filter((_, index) => index !== targetIndex);
+      } else if (action === 'close-others') {
+        openedTabs = [openedTabs[targetIndex]];
+      } else if (action === 'close-left') {
+        openedTabs = openedTabs.filter((_, index) => index >= targetIndex);
+      } else if (action === 'close-right') {
+        openedTabs = openedTabs.filter((_, index) => index <= targetIndex);
+      }
+
+      let nextActiveId = activeOpenTabId;
+      if (!openedTabs.some(tab => tab.id === nextActiveId)) {
+        nextActiveId = openedTabs.some(tab => tab.id === targetId)
+          ? targetId
+          : (openedTabs[Math.min(targetIndex, openedTabs.length - 1)] || {}).id || '';
+      }
+
+      if (nextActiveId) activateOpenedTab(nextActiveId);
+      else {
+        activeOpenTabId = '';
+        renderOpenedTabs();
+        setActiveTool('');
+        schedulePersistAppState();
+      }
+    }
+
+    function initToolTabs(state = {}) {
+      document.querySelectorAll('.tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => openToolTab(btn.dataset.tab));
+      });
+
+      $('opened-tabs').addEventListener('click', event => {
+        const closeBtn = event.target.closest('.opened-tab-close');
+        if (closeBtn && $('opened-tabs').contains(closeBtn)) {
+          event.stopPropagation();
+          closeOpenedTab(closeBtn.dataset.closeOpenTabId);
+          hideTabContextMenu();
+          return;
+        }
+        const btn = event.target.closest('.opened-tab-btn');
+        if (btn && $('opened-tabs').contains(btn)) activateOpenedTab(btn.dataset.openTabId);
+      });
+      $('opened-tabs').addEventListener('keydown', event => {
+        if (event.target.closest('.opened-tab-close')) return;
+        const btn = event.target.closest('.opened-tab-btn');
+        if (!btn || !$('opened-tabs').contains(btn)) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          activateOpenedTab(btn.dataset.openTabId);
+        }
+      });
+      $('opened-tabs').addEventListener('dblclick', event => {
+        if (event.target.closest('.opened-tab-close')) return;
+        const btn = event.target.closest('.opened-tab-btn');
+        if (btn && $('opened-tabs').contains(btn)) renameOpenedTab(btn.dataset.openTabId);
+      });
+      $('opened-tabs').addEventListener('contextmenu', event => {
+        const btn = event.target.closest('.opened-tab-btn');
+        if (btn && $('opened-tabs').contains(btn)) showTabContextMenu(event, btn.dataset.openTabId);
+      });
+      $('tab-context-menu').addEventListener('click', event => {
+        const btn = event.target.closest('[data-tab-action]');
+        if (!btn || btn.disabled) return;
+        event.stopPropagation();
+        applyTabMenuAction(btn.dataset.tabAction);
+        hideTabContextMenu();
+      });
+      document.addEventListener('click', hideTabContextMenu);
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') hideTabContextMenu();
+      });
+      window.addEventListener('resize', hideTabContextMenu);
+
+      restoreOpenedTabs(state);
+    }
 
     function escapeHtml(text) {
       return String(text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -648,13 +1476,340 @@
       msg.textContent = text;
       msg.className = 'alert show ' + (ok ? 'ok' : 'bad');
     }
-    // 移除JSON中的注释（支持 // 和 /* */）
+    // 移除 JSON 注释时避开字符串内容，避免误删 https:// 这类字段值。
     function stripJsonComments(str) {
-      // 先移除多行注释 /* ... */
-      str = str.replace(/\/\*[\s\S]*?\*\//g, '');
-      // 再移除单行注释 // ...（到行尾）
-      str = str.replace(/\/\/.*$/gm, '');
-      return str;
+      let output = '';
+      let inString = false;
+      let quote = '';
+      let escaped = false;
+      let inLineComment = false;
+      let inBlockComment = false;
+
+      for (let i = 0; i < str.length; i++) {
+        const ch = str[i];
+        const next = str[i + 1];
+
+        if (inLineComment) {
+          if (ch === '\n' || ch === '\r') {
+            inLineComment = false;
+            output += ch;
+          }
+          continue;
+        }
+        if (inBlockComment) {
+          if (ch === '*' && next === '/') {
+            inBlockComment = false;
+            i++;
+          } else if (ch === '\n' || ch === '\r') {
+            output += ch;
+          }
+          continue;
+        }
+        if (inString) {
+          output += ch;
+          if (escaped) escaped = false;
+          else if (ch === '\\') escaped = true;
+          else if (ch === quote) inString = false;
+          continue;
+        }
+
+        if (ch === '"' || ch === "'") {
+          inString = true;
+          quote = ch;
+          output += ch;
+        } else if (ch === '/' && next === '/') {
+          inLineComment = true;
+          i++;
+        } else if (ch === '/' && next === '*') {
+          inBlockComment = true;
+          i++;
+        } else {
+          output += ch;
+        }
+      }
+      return output;
+    }
+    function parseJsonWithComments(text) {
+      return JSON.parse(stripJsonComments(text));
+    }
+    function tokenizeJsonWithComments(text) {
+      const tokens = [];
+      for (let i = 0; i < text.length;) {
+        let leadingNewline = false;
+        while (i < text.length && /\s/.test(text[i])) {
+          if (text[i] === '\n' || text[i] === '\r') leadingNewline = true;
+          i++;
+        }
+        if (i >= text.length) break;
+        const ch = text[i];
+        const next = text[i + 1];
+
+        if (ch === '"' || ch === "'") {
+          const start = i;
+          const quote = ch;
+          let escaped = false;
+          i++;
+          while (i < text.length) {
+            const current = text[i++];
+            if (escaped) escaped = false;
+            else if (current === '\\') escaped = true;
+            else if (current === quote) break;
+          }
+          tokens.push({ type: 'value', value: text.slice(start, i), leadingNewline });
+          continue;
+        }
+
+        if (ch === '/' && next === '/') {
+          const start = i;
+          i += 2;
+          while (i < text.length && text[i] !== '\n' && text[i] !== '\r') i++;
+          tokens.push({ type: 'lineComment', value: text.slice(start, i), leadingNewline });
+          continue;
+        }
+
+        if (ch === '/' && next === '*') {
+          const start = i;
+          i += 2;
+          while (i < text.length && !(text[i] === '*' && text[i + 1] === '/')) i++;
+          i = Math.min(text.length, i + 2);
+          tokens.push({ type: 'blockComment', value: text.slice(start, i), leadingNewline });
+          continue;
+        }
+
+        if ('{}[]:,'.includes(ch)) {
+          tokens.push({ type: 'punct', value: ch, leadingNewline });
+          i++;
+          continue;
+        }
+
+        const start = i;
+        while (i < text.length) {
+          const current = text[i];
+          const after = text[i + 1];
+          if (/\s/.test(current) || '{}[]:,'.includes(current) || (current === '/' && (after === '/' || after === '*'))) break;
+          i++;
+        }
+        tokens.push({ type: 'value', value: text.slice(start, i), leadingNewline });
+      }
+      return tokens;
+    }
+    function isJsonOpenToken(token) {
+      return token && token.type === 'punct' && (token.value === '{' || token.value === '[');
+    }
+    function isJsonCloseToken(token) {
+      return token && token.type === 'punct' && (token.value === '}' || token.value === ']');
+    }
+    function isMatchingJsonPair(open, close) {
+      return (open === '{' && close === '}') || (open === '[' && close === ']');
+    }
+    // 给测试报文用的 JSONC 格式化：校验时忽略注释，输出时保留 // 注释位置。
+    function formatJsonWithComments(text) {
+      parseJsonWithComments(text);
+      const tokens = tokenizeJsonWithComments(text);
+      let output = '';
+      let indentLevel = 0;
+      let lineStart = true;
+      let skipNextComma = false;
+      const indent = () => '  '.repeat(indentLevel);
+      const trimLineEnd = () => { output = output.replace(/[ \t]+$/g, ''); };
+      const write = value => {
+        if (lineStart) {
+          output += indent();
+          lineStart = false;
+        }
+        output += value;
+      };
+      const newline = () => {
+        trimLineEnd();
+        if (!output.endsWith('\n')) output += '\n';
+        lineStart = true;
+      };
+
+      tokens.forEach((token, index) => {
+        const next = tokens[index + 1];
+        const prev = tokens[index - 1];
+        if (skipNextComma && token.type === 'punct' && token.value === ',') {
+          skipNextComma = false;
+          return;
+        }
+        if (token.type === 'value') {
+          write(token.value);
+          return;
+        }
+
+        if (token.type === 'lineComment') {
+          if (token.leadingNewline && !lineStart) newline();
+          const commaAfterInlineComment = !lineStart && !token.leadingNewline && next && next.type === 'punct' && next.value === ',';
+          if (lineStart) write(token.value);
+          else {
+            if (commaAfterInlineComment) {
+              trimLineEnd();
+              output += ',';
+              skipNextComma = true;
+            }
+            if (!/[ \t]$/.test(output)) output += ' ';
+            output += token.value;
+          }
+          if (next) newline();
+          return;
+        }
+
+        if (token.type === 'blockComment') {
+          const lines = token.value.split(/\r\n|\n|\r/);
+          if (token.leadingNewline && !lineStart) newline();
+          if (!lineStart && !/[ \t]$/.test(output)) output += ' ';
+          lines.forEach((line, lineIndex) => {
+            if (lineIndex > 0) newline();
+            write(line);
+          });
+          if (next && next.value !== ',' && next.value !== ':') newline();
+          return;
+        }
+
+        if (token.value === '{' || token.value === '[') {
+          write(token.value);
+          if (!isJsonCloseToken(next) || !isMatchingJsonPair(token.value, next.value)) {
+            indentLevel++;
+            newline();
+          }
+          return;
+        }
+
+        if (token.value === '}' || token.value === ']') {
+          const emptyPair = isJsonOpenToken(prev) && isMatchingJsonPair(prev.value, token.value);
+          if (!emptyPair) {
+            if (!lineStart) newline();
+            indentLevel = Math.max(0, indentLevel - 1);
+          }
+          write(token.value);
+          return;
+        }
+
+        if (token.value === ':') {
+          trimLineEnd();
+          output += ': ';
+          lineStart = false;
+          return;
+        }
+
+        if (token.value === ',') {
+          write(',');
+          if (next && next.type === 'lineComment' && !next.leadingNewline) output += ' ';
+          else newline();
+        }
+      });
+
+      trimLineEnd();
+      return output.replace(/\n+$/g, '');
+    }
+    function highlightJsonComments(text) {
+      let html = '';
+      let plainStart = 0;
+      let inString = false;
+      let quote = '';
+      let escaped = false;
+      const appendPlain = end => {
+        if (end > plainStart) html += escapeHtml(text.slice(plainStart, end));
+      };
+
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
+        if (inString) {
+          if (escaped) escaped = false;
+          else if (ch === '\\') escaped = true;
+          else if (ch === quote) inString = false;
+          continue;
+        }
+        if (ch === '"' || ch === "'") {
+          inString = true;
+          quote = ch;
+          continue;
+        }
+        if (ch === '/' && next === '/') {
+          appendPlain(i);
+          const start = i;
+          i += 2;
+          while (i < text.length && text[i] !== '\n' && text[i] !== '\r') i++;
+          html += `<span class="json-comment-token">${escapeHtml(text.slice(start, i))}</span>`;
+          plainStart = i;
+          i--;
+        } else if (ch === '/' && next === '*') {
+          appendPlain(i);
+          const start = i;
+          i += 2;
+          while (i < text.length && !(text[i] === '*' && text[i + 1] === '/')) i++;
+          i = Math.min(text.length - 1, i + 1);
+          html += `<span class="json-comment-token">${escapeHtml(text.slice(start, i + 1))}</span>`;
+          plainStart = i + 1;
+        }
+      }
+      appendPlain(text.length);
+      return html;
+    }
+    function updateJsonCommentHighlight(textarea) {
+      const editor = textarea.closest('[data-json-comment-editor]');
+      const highlight = editor && editor.querySelector('.json-comment-highlight');
+      if (!highlight) return;
+      highlight.innerHTML = highlightJsonComments(textarea.value) + (textarea.value.endsWith('\n') ? ' ' : '');
+      highlight.scrollTop = textarea.scrollTop;
+      highlight.scrollLeft = textarea.scrollLeft;
+    }
+    function handleJsonCommentEditorTab(event, textarea) {
+      if (event.key !== 'Tab') return;
+      event.preventDefault();
+
+      const tabText = '\t';
+      const value = textarea.value;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+      const lineEnd = end > start ? end : start;
+      const selectedBlock = value.slice(lineStart, lineEnd);
+      const isMultiLine = selectedBlock.includes('\n');
+
+      if (event.shiftKey) {
+        const blockEnd = isMultiLine ? lineEnd : start;
+        const block = value.slice(lineStart, blockEnd);
+        const lines = block.split('\n');
+        let removedBeforeStart = 0;
+        let removedTotal = 0;
+        const outdented = lines.map((line, index) => {
+          let removeCount = 0;
+          if (line.startsWith('\t')) removeCount = 1;
+          else if (line.startsWith('  ')) removeCount = 2;
+          else if (line.startsWith(' ')) removeCount = 1;
+          if (index === 0) removedBeforeStart = Math.min(removeCount, start - lineStart);
+          removedTotal += removeCount;
+          return line.slice(removeCount);
+        }).join('\n');
+        textarea.value = value.slice(0, lineStart) + outdented + value.slice(blockEnd);
+        textarea.selectionStart = Math.max(lineStart, start - removedBeforeStart);
+        textarea.selectionEnd = Math.max(textarea.selectionStart, end - removedTotal);
+      } else if (isMultiLine) {
+        const block = value.slice(lineStart, lineEnd);
+        const indented = block.split('\n').map(line => tabText + line).join('\n');
+        textarea.value = value.slice(0, lineStart) + indented + value.slice(lineEnd);
+        textarea.selectionStart = start + tabText.length;
+        textarea.selectionEnd = end + tabText.length * block.split('\n').length;
+      } else {
+        textarea.value = value.slice(0, start) + tabText + value.slice(end);
+        textarea.selectionStart = textarea.selectionEnd = start + tabText.length;
+      }
+
+      textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      updateJsonCommentHighlight(textarea);
+    }
+    function setupJsonCommentEditor(textarea) {
+      if (!textarea || textarea.dataset.jsonCommentBound) return;
+      textarea.dataset.jsonCommentBound = '1';
+      textarea.addEventListener('input', () => updateJsonCommentHighlight(textarea));
+      textarea.addEventListener('scroll', () => updateJsonCommentHighlight(textarea));
+      textarea.addEventListener('keydown', event => handleJsonCommentEditorTab(event, textarea));
+      updateJsonCommentHighlight(textarea);
+    }
+    function updateJsonCommentHighlights(root = document) {
+      root.querySelectorAll('[data-json-comment-editor] textarea').forEach(setupJsonCommentEditor);
     }
     function formatJson() {
       try {
@@ -671,6 +1826,600 @@
         $('json-output').style.whiteSpace = $('json-no-wrap').checked ? 'pre' : '';
         showJsonMessage('JSON 已压缩', true);
       } catch (e) { showJsonMessage('JSON 解析错误：' + e.message, false); }
+    }
+
+    function addJsonCompareGroup() {
+      const id = ++jsonCompareSeq;
+      const group = document.createElement('div');
+      group.className = 'json-compare-group';
+      group.dataset.jsonCompareGroup = String(id);
+      group.innerHTML = `
+        <div class="json-compare-header">
+          <input class="json-compare-title" type="text" value="比对组 ${id}" aria-label="比对组名称">
+          <span class="json-compare-status" data-json-compare-status>未比对</span>
+          <div class="actions">
+            <button class="btn btn-primary" type="button" data-json-compare-action="compare">比对</button>
+            <button class="btn" type="button" data-json-compare-action="copy">复制结果</button>
+            <button class="btn" type="button" data-json-compare-action="clear">清空</button>
+            <button class="btn btn-danger" type="button" data-json-compare-action="remove">删除</button>
+          </div>
+        </div>
+        <div class="json-compare-body">
+          <div class="json-compare-col">
+            <label for="jsoncompare-left-${id}">A 报文</label>
+            <div class="json-comment-editor" data-json-comment-editor>
+              <pre class="json-comment-highlight" aria-hidden="true"></pre>
+              <textarea id="jsoncompare-left-${id}" class="json-compare-input" data-json-compare-side="left" placeholder="粘贴 A JSON 报文，支持 // 注释"></textarea>
+            </div>
+          </div>
+          <div class="json-compare-col">
+            <label for="jsoncompare-right-${id}">B 报文</label>
+            <div class="json-comment-editor" data-json-comment-editor>
+              <pre class="json-comment-highlight" aria-hidden="true"></pre>
+              <textarea id="jsoncompare-right-${id}" class="json-compare-input" data-json-compare-side="right" placeholder="粘贴 B JSON 报文，支持 // 注释"></textarea>
+            </div>
+          </div>
+          <div class="json-compare-col">
+            <label>比对结果</label>
+            <div class="result-box json-compare-result" data-json-compare-result>点击“比对”查看差异</div>
+          </div>
+        </div>`;
+      $('jsoncompare-groups').appendChild(group);
+      updateJsonCommentHighlights(group);
+      updateJsonCompareSummary();
+      return group;
+    }
+
+    function getJsonCompareGroups() {
+      return [...document.querySelectorAll('.json-compare-group')];
+    }
+
+    function jsonValueType(value) {
+      if (Array.isArray(value)) return '数组';
+      if (value === null) return 'null';
+      return ({ object: '对象', string: '字符串', number: '数字', boolean: '布尔值' })[typeof value] || typeof value;
+    }
+
+    function jsonPathJoin(path, key) {
+      if (typeof key === 'number') return `${path}[${key}]`;
+      return /^[A-Za-z_$][\w$]*$/.test(key) ? `${path}.${key}` : `${path}[${JSON.stringify(key)}]`;
+    }
+
+    function previewJsonValue(value) {
+      if (value === JSON_COMPARE_MISSING) return '缺失';
+      const text = typeof value === 'string' ? JSON.stringify(value) : JSON.stringify(value);
+      const shown = text === undefined ? String(value) : text;
+      return shown.length > 180 ? shown.slice(0, 177) + '...' : shown;
+    }
+
+    function pushJsonDiff(diffs, path, type, left, right) {
+      if (diffs.length >= JSON_COMPARE_MAX_DIFFS) return;
+      diffs.push({ path, type, left: previewJsonValue(left), right: previewJsonValue(right) });
+    }
+
+    function compareJsonValues(left, right, path, diffs) {
+      if (diffs.length >= JSON_COMPARE_MAX_DIFFS) return;
+      const leftType = jsonValueType(left);
+      const rightType = jsonValueType(right);
+      if (leftType !== rightType) {
+        pushJsonDiff(diffs, path, `类型不同（A: ${leftType}，B: ${rightType}）`, left, right);
+        return;
+      }
+
+      if (Array.isArray(left)) {
+        const max = Math.max(left.length, right.length);
+        for (let i = 0; i < max; i++) {
+          if (diffs.length >= JSON_COMPARE_MAX_DIFFS) return;
+          if (i >= left.length) pushJsonDiff(diffs, jsonPathJoin(path, i), 'A 缺少数组项', JSON_COMPARE_MISSING, right[i]);
+          else if (i >= right.length) pushJsonDiff(diffs, jsonPathJoin(path, i), 'B 缺少数组项', left[i], JSON_COMPARE_MISSING);
+          else compareJsonValues(left[i], right[i], jsonPathJoin(path, i), diffs);
+        }
+        return;
+      }
+
+      if (left && typeof left === 'object') {
+        const keys = [...new Set([...Object.keys(left), ...Object.keys(right)])].sort();
+        keys.forEach(key => {
+          if (diffs.length >= JSON_COMPARE_MAX_DIFFS) return;
+          if (!Object.prototype.hasOwnProperty.call(left, key)) pushJsonDiff(diffs, jsonPathJoin(path, key), 'A 缺少字段', JSON_COMPARE_MISSING, right[key]);
+          else if (!Object.prototype.hasOwnProperty.call(right, key)) pushJsonDiff(diffs, jsonPathJoin(path, key), 'B 缺少字段', left[key], JSON_COMPARE_MISSING);
+          else compareJsonValues(left[key], right[key], jsonPathJoin(path, key), diffs);
+        });
+        return;
+      }
+
+      if (!Object.is(left, right)) pushJsonDiff(diffs, path, '值不同', left, right);
+    }
+
+    function formatJsonCompareDiffs(diffs) {
+      if (!diffs.length) return '两段 JSON 一致';
+      const title = `发现 ${diffs.length} 处差异${diffs.length >= JSON_COMPARE_MAX_DIFFS ? '（仅显示前 300 处）' : ''}：`;
+      return title + '\n\n' + diffs.map((item, index) =>
+        `${index + 1}. ${item.path}｜${item.type}\nA: ${item.left}\nB: ${item.right}`
+      ).join('\n\n');
+    }
+
+    function compareJsonGroup(group) {
+      const result = group.querySelector('[data-json-compare-result]');
+      const status = group.querySelector('[data-json-compare-status]');
+      const leftText = group.querySelector('[data-json-compare-side="left"]').value.trim();
+      const rightText = group.querySelector('[data-json-compare-side="right"]').value.trim();
+      try {
+        const leftJson = parseJsonWithComments(leftText);
+        const rightJson = parseJsonWithComments(rightText);
+        const diffs = [];
+        compareJsonValues(leftJson, rightJson, '$', diffs);
+        result.textContent = formatJsonCompareDiffs(diffs);
+        result.className = 'result-box json-compare-result ' + (diffs.length ? '' : 'ok');
+        status.textContent = diffs.length ? `${diffs.length} 处差异` : '一致';
+        status.className = 'json-compare-status ' + (diffs.length ? 'bad' : 'ok');
+        updateJsonCompareSummary();
+        schedulePersistAppState();
+        return { ok: true, diffCount: diffs.length };
+      } catch (e) {
+        result.textContent = 'JSON 解析失败：' + e.message;
+        result.className = 'result-box json-compare-result bad';
+        status.textContent = '解析失败';
+        status.className = 'json-compare-status bad';
+        updateJsonCompareSummary();
+        schedulePersistAppState();
+        return { ok: false, diffCount: 0 };
+      }
+    }
+
+    function clearJsonCompareGroup(group) {
+      group.querySelectorAll('textarea').forEach(textarea => textarea.value = '');
+      const result = group.querySelector('[data-json-compare-result]');
+      const status = group.querySelector('[data-json-compare-status]');
+      result.textContent = '点击“比对”查看差异';
+      result.className = 'result-box json-compare-result';
+      status.textContent = '未比对';
+      status.className = 'json-compare-status';
+      updateJsonCompareSummary();
+      schedulePersistAppState();
+    }
+
+    function removeJsonCompareGroup(group) {
+      group.remove();
+      if (!getJsonCompareGroups().length) addJsonCompareGroup();
+      updateJsonCompareSummary();
+      schedulePersistAppState();
+    }
+
+    function updateJsonCompareSummary() {
+      const groups = getJsonCompareGroups();
+      const compared = groups.filter(group => group.querySelector('[data-json-compare-status]').textContent !== '未比对').length;
+      $('jsoncompare-summary').textContent = groups.length ? `共 ${groups.length} 个比对组，已比对 ${compared} 个` : '暂无比对组';
+    }
+
+    function restoreJsonCompareGroups(groups = []) {
+      $('jsoncompare-groups').innerHTML = '';
+      jsonCompareSeq = 0;
+      if (!Array.isArray(groups) || !groups.length) {
+        addJsonCompareGroup();
+        return;
+      }
+      groups.forEach(saved => {
+        const group = addJsonCompareGroup();
+        group.querySelector('.json-compare-title').value = saved.title || `比对组 ${jsonCompareSeq}`;
+        group.querySelector('[data-json-compare-side="left"]').value = saved.left || '';
+        group.querySelector('[data-json-compare-side="right"]').value = saved.right || '';
+        const result = group.querySelector('[data-json-compare-result]');
+        const status = group.querySelector('[data-json-compare-status]');
+        result.textContent = saved.result || '点击“比对”查看差异';
+        result.className = saved.resultClass || 'result-box json-compare-result';
+        status.textContent = saved.status || '未比对';
+        status.className = saved.statusClass || 'json-compare-status';
+      });
+      updateJsonCompareSummary();
+    }
+
+    function initJsonCompare(state = {}) {
+      $('jsoncompare-add').addEventListener('click', () => {
+        addJsonCompareGroup();
+        schedulePersistAppState();
+      });
+      $('jsoncompare-run-all').addEventListener('click', () => {
+        getJsonCompareGroups().forEach(compareJsonGroup);
+        schedulePersistAppState();
+      });
+      $('jsoncompare-groups').addEventListener('click', event => {
+        const btn = event.target.closest('[data-json-compare-action]');
+        if (!btn) return;
+        const group = btn.closest('.json-compare-group');
+        const action = btn.dataset.jsonCompareAction;
+        if (action === 'compare') compareJsonGroup(group);
+        else if (action === 'copy') copyValue(group.querySelector('[data-json-compare-result]').textContent);
+        else if (action === 'clear') clearJsonCompareGroup(group);
+        else if (action === 'remove') removeJsonCompareGroup(group);
+      });
+      $('jsoncompare-groups').addEventListener('input', schedulePersistAppState);
+      restoreJsonCompareGroups(state.jsonCompareGroups);
+    }
+
+    function createJsonNoteRecord(data = {}) {
+      const now = Date.now();
+      const id = data.id || ++jsonNoteSeq;
+      jsonNoteSeq = Math.max(jsonNoteSeq, Number(id) || 0);
+      return {
+        id,
+        title: data.title || `报文记录 ${id}`,
+        tag: data.tag || '',
+        remark: data.remark || '',
+        payload: data.payload || '',
+        createdAt: data.createdAt || now,
+        updatedAt: data.updatedAt || now
+      };
+    }
+
+    function loadJsonNoteRecords() {
+      jsonNoteSeq = 0;
+      try {
+        const raw = JSON.parse(localStorage.getItem(JSON_NOTE_KEY) || '[]');
+        const records = Array.isArray(raw) ? raw : raw.records;
+        jsonNoteRecords = Array.isArray(records) ? records.map(createJsonNoteRecord) : [];
+      } catch (_) {
+        jsonNoteRecords = [];
+      }
+    }
+
+    function saveJsonNoteRecords() {
+      localStorage.setItem(JSON_NOTE_KEY, JSON.stringify(jsonNoteRecords));
+      updateJsonNoteStatus();
+    }
+
+    function clearJsonNoteRecords() {
+      jsonNoteRecords = [];
+      jsonNoteSeq = 0;
+      saveJsonNoteRecords();
+      renderJsonNoteRecords();
+    }
+
+    function updateJsonNoteStatus(message) {
+      const status = $('jsonnote-status');
+      if (message) {
+        status.textContent = message;
+        return;
+      }
+      status.textContent = jsonNoteRecords.length ? `已记录 ${jsonNoteRecords.length} 条报文` : '暂无记录';
+    }
+
+    function renderJsonNoteRecords() {
+      const list = $('jsonnote-list');
+      list.innerHTML = '';
+      if (!jsonNoteRecords.length) {
+        const empty = document.createElement('div');
+        empty.className = 'json-note-empty';
+        empty.textContent = '暂无报文记录，点击“新增记录”开始记录测试数据。';
+        list.appendChild(empty);
+        updateJsonNoteStatus();
+        return;
+      }
+
+      jsonNoteRecords.forEach(record => {
+        const card = document.createElement('div');
+        card.className = 'json-note-card';
+        card.dataset.jsonNoteId = String(record.id);
+        card.innerHTML = `
+          <div class="json-note-header">
+            <div class="form-group">
+              <label>记录名称</label>
+              <input type="text" data-json-note-field="title">
+            </div>
+            <div class="form-group">
+              <label>标签/场景</label>
+              <input type="text" data-json-note-field="tag" placeholder="例如 登录、下单、异常场景">
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="button" data-json-note-action="format-keep">格式化（保留注释）</button>
+              <button class="btn" type="button" data-json-note-action="format-strip">格式化（去掉注释）</button>
+              <button class="btn btn-hot" type="button" data-json-note-action="zoom">放大报文</button>
+              <button class="btn" type="button" data-json-note-action="copy-payload">复制报文</button>
+              <button class="btn" type="button" data-json-note-action="copy-record">复制整条</button>
+              <button class="btn btn-danger" type="button" data-json-note-action="remove">删除</button>
+            </div>
+          </div>
+          <div class="json-note-body">
+            <div class="json-note-col">
+              <label>备注/批注</label>
+              <textarea class="json-note-remark" data-json-note-field="remark" placeholder="记录接口、参数含义、测试结论、问题备注等"></textarea>
+              <p class="helper-text" data-json-note-meta></p>
+            </div>
+            <div class="json-note-col">
+              <label>JSON 报文</label>
+              <div class="json-comment-editor" data-json-comment-editor>
+                <pre class="json-comment-highlight" aria-hidden="true"></pre>
+                <textarea class="json-note-payload" data-json-note-field="payload" placeholder="粘贴 JSON 请求或响应报文，支持 // 注释"></textarea>
+              </div>
+            </div>
+          </div>`;
+
+        card.querySelector('[data-json-note-field="title"]').value = record.title;
+        card.querySelector('[data-json-note-field="tag"]').value = record.tag;
+        card.querySelector('[data-json-note-field="remark"]').value = record.remark;
+        card.querySelector('[data-json-note-field="payload"]').value = record.payload;
+        card.querySelector('[data-json-note-meta]').textContent = `创建：${new Date(record.createdAt).toLocaleString()}，更新：${new Date(record.updatedAt).toLocaleString()}`;
+        list.appendChild(card);
+      });
+      updateJsonCommentHighlights(list);
+      updateJsonNoteStatus();
+    }
+
+    function getJsonNoteRecordFromElement(el) {
+      const card = el.closest('.json-note-card');
+      if (!card) return null;
+      return jsonNoteRecords.find(record => String(record.id) === card.dataset.jsonNoteId) || null;
+    }
+
+    function addJsonNoteRecord(data) {
+      const record = createJsonNoteRecord(data);
+      jsonNoteRecords.unshift(record);
+      saveJsonNoteRecords();
+      renderJsonNoteRecords();
+    }
+
+    function confirmStripJsonComments() {
+      return confirm('确定要去掉当前报文里的所有注释吗？\n\n该操作会删除 // 和 /* */ 注释，建议确认这些备注已经不需要保留。');
+    }
+
+    function getJsonNoteZoomFindMatches(query) {
+      if (!query) return [];
+      const text = $('jsonnote-zoom-text').value.toLowerCase();
+      const needle = query.toLowerCase();
+      const matches = [];
+      let index = text.indexOf(needle);
+      while (index !== -1) {
+        matches.push(index);
+        index = text.indexOf(needle, index + Math.max(needle.length, 1));
+      }
+      return matches;
+    }
+
+    function updateJsonNoteZoomFindStatus(currentIndex, total) {
+      $('jsonnote-zoom-find-status').textContent = total ? `第 ${currentIndex + 1} / ${total} 个` : '0 / 0';
+    }
+
+    function selectJsonNoteZoomMatch(start, length, focusText = true) {
+      const textarea = $('jsonnote-zoom-text');
+      textarea.setSelectionRange(start, start + length);
+      if (focusText) textarea.focus();
+    }
+
+    function searchJsonNoteZoom(direction = 1, focusText = true) {
+      const input = $('jsonnote-zoom-find-input');
+      const query = input.value;
+      const matches = getJsonNoteZoomFindMatches(query);
+      if (!matches.length) {
+        updateJsonNoteZoomFindStatus(-1, 0);
+        return false;
+      }
+
+      const textarea = $('jsonnote-zoom-text');
+      const cursor = direction < 0 ? textarea.selectionStart - 1 : textarea.selectionEnd;
+      let matchIndex = -1;
+      if (direction < 0) {
+        const before = Math.max(cursor + 1, 0);
+        for (let i = matches.length - 1; i >= 0; i--) {
+          if (matches[i] < before) {
+            matchIndex = i;
+            break;
+          }
+        }
+      } else {
+        const after = Math.max(cursor, 0);
+        matchIndex = matches.findIndex(index => index >= after);
+      }
+      if (matchIndex === -1) matchIndex = direction < 0 ? matches.length - 1 : 0;
+      selectJsonNoteZoomMatch(matches[matchIndex], query.length, focusText);
+      updateJsonNoteZoomFindStatus(matchIndex, matches.length);
+      return true;
+    }
+
+    function showJsonNoteZoomFind() {
+      const findBar = $('jsonnote-zoom-find');
+      const input = $('jsonnote-zoom-find-input');
+      const textarea = $('jsonnote-zoom-text');
+      const selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd);
+      findBar.hidden = false;
+      if (selectedText && !/[\r\n]/.test(selectedText)) input.value = selectedText;
+      if (input.value) searchJsonNoteZoom(1, false);
+      else updateJsonNoteZoomFindStatus(-1, 0);
+      input.focus();
+      input.select();
+    }
+
+    function hideJsonNoteZoomFind(clearValue = false, restoreFocus = true) {
+      $('jsonnote-zoom-find').hidden = true;
+      if (clearValue) {
+        $('jsonnote-zoom-find-input').value = '';
+        updateJsonNoteZoomFindStatus(-1, 0);
+      }
+      if (restoreFocus && !$('jsonnote-zoom').hidden) $('jsonnote-zoom-text').focus();
+    }
+
+    function formatJsonNoteRecord(record, keepComments = true) {
+      try {
+        record.payload = keepComments
+          ? formatJsonWithComments(record.payload)
+          : JSON.stringify(parseJsonWithComments(record.payload), null, 2);
+        record.updatedAt = Date.now();
+        saveJsonNoteRecords();
+        renderJsonNoteRecords();
+        updateJsonNoteStatus(keepComments ? 'JSON 格式化成功，已保留注释' : 'JSON 格式化成功，已去掉注释');
+      } catch (e) {
+        updateJsonNoteStatus('JSON 解析失败：' + e.message);
+      }
+    }
+
+    function openJsonNoteZoom(record) {
+      jsonNoteZoomRecordId = record.id;
+      $('jsonnote-zoom-title').textContent = '放大编辑：' + record.title;
+      $('jsonnote-zoom-text').value = record.payload;
+      $('jsonnote-zoom').hidden = false;
+      hideJsonNoteZoomFind(true, false);
+      updateJsonCommentHighlight($('jsonnote-zoom-text'));
+      $('jsonnote-zoom-text').focus();
+    }
+
+    function closeJsonNoteZoom() {
+      jsonNoteZoomRecordId = null;
+      hideJsonNoteZoomFind(true, false);
+      $('jsonnote-zoom').hidden = true;
+    }
+
+    function saveJsonNoteZoom() {
+      const record = jsonNoteRecords.find(item => item.id === jsonNoteZoomRecordId);
+      if (!record) {
+        closeJsonNoteZoom();
+        return;
+      }
+      record.payload = $('jsonnote-zoom-text').value;
+      record.updatedAt = Date.now();
+      saveJsonNoteRecords();
+      renderJsonNoteRecords();
+      closeJsonNoteZoom();
+      updateJsonNoteStatus('已保存放大编辑内容');
+    }
+
+    function formatJsonNoteZoom(keepComments = true) {
+      try {
+        $('jsonnote-zoom-text').value = keepComments
+          ? formatJsonWithComments($('jsonnote-zoom-text').value)
+          : JSON.stringify(parseJsonWithComments($('jsonnote-zoom-text').value), null, 2);
+        updateJsonCommentHighlight($('jsonnote-zoom-text'));
+        if (!$('jsonnote-zoom-find').hidden && $('jsonnote-zoom-find-input').value) searchJsonNoteZoom(1, false);
+        updateJsonNoteStatus(keepComments ? 'JSON 格式化成功，已保留注释' : 'JSON 格式化成功，已去掉注释');
+      } catch (e) {
+        updateJsonNoteStatus('JSON 解析失败：' + e.message);
+      }
+    }
+
+    function copyJsonNoteRecord(record) {
+      const text = [
+        `名称：${record.title}`,
+        record.tag ? `标签/场景：${record.tag}` : '',
+        record.remark ? `备注/批注：\n${record.remark}` : '',
+        `JSON 报文：\n${record.payload}`
+      ].filter(Boolean).join('\n\n');
+      copyValue(text);
+      updateJsonNoteStatus('已复制整条记录');
+    }
+
+    function exportJsonNotes() {
+      const payload = {
+        tool: 'html-tools-json-note',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        records: jsonNoteRecords
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'json-note-records.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      updateJsonNoteStatus(`已导出 ${jsonNoteRecords.length} 条记录`);
+    }
+
+    function importJsonNotes(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const records = Array.isArray(parsed) ? parsed : parsed.records;
+          if (!Array.isArray(records)) throw new Error('导入文件中没有 records 数组');
+          records.forEach(record => jsonNoteRecords.unshift(createJsonNoteRecord({ ...record, id: ++jsonNoteSeq, createdAt: Date.now(), updatedAt: Date.now() })));
+          saveJsonNoteRecords();
+          renderJsonNoteRecords();
+          updateJsonNoteStatus(`已导入 ${records.length} 条记录`);
+          $('jsonnote-import-file').value = '';
+        } catch (e) {
+          updateJsonNoteStatus('导入失败：' + e.message);
+        }
+      };
+      reader.onerror = () => updateJsonNoteStatus('导入失败：文件读取错误');
+      reader.readAsText(file);
+    }
+
+    function handleJsonNoteZoomShortcut(event) {
+      if ($('jsonnote-zoom').hidden) return;
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'f') {
+        event.preventDefault();
+        event.stopPropagation();
+        showJsonNoteZoomFind();
+        return;
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!$('jsonnote-zoom-find').hidden) hideJsonNoteZoomFind();
+        else closeJsonNoteZoom();
+      }
+    }
+
+    function initJsonNotes() {
+      loadJsonNoteRecords();
+      renderJsonNoteRecords();
+      $('jsonnote-add').addEventListener('click', () => addJsonNoteRecord());
+      $('jsonnote-export').addEventListener('click', exportJsonNotes);
+      $('jsonnote-import').addEventListener('click', () => $('jsonnote-import-file').click());
+      $('jsonnote-import-file').addEventListener('change', event => importJsonNotes(event.target.files[0]));
+      $('jsonnote-clear-all').addEventListener('click', () => {
+        if (!jsonNoteRecords.length || confirm('确定清空所有 JSON 报文记录吗？')) {
+          clearJsonNoteRecords();
+        }
+      });
+      $('jsonnote-list').addEventListener('input', event => {
+        const field = event.target.dataset.jsonNoteField;
+        const record = field ? getJsonNoteRecordFromElement(event.target) : null;
+        if (!record) return;
+        record[field] = event.target.value;
+        record.updatedAt = Date.now();
+        saveJsonNoteRecords();
+      });
+      $('jsonnote-list').addEventListener('click', event => {
+        const btn = event.target.closest('[data-json-note-action]');
+        const record = btn ? getJsonNoteRecordFromElement(btn) : null;
+        if (!record) return;
+        const action = btn.dataset.jsonNoteAction;
+        if (action === 'format-keep') formatJsonNoteRecord(record, true);
+        else if (action === 'format-strip') {
+          if (confirmStripJsonComments()) formatJsonNoteRecord(record, false);
+        }
+        else if (action === 'zoom') openJsonNoteZoom(record);
+        else if (action === 'copy-payload') {
+          copyValue(record.payload);
+          updateJsonNoteStatus('已复制报文');
+        } else if (action === 'copy-record') copyJsonNoteRecord(record);
+        else if (action === 'remove') {
+          jsonNoteRecords = jsonNoteRecords.filter(item => item.id !== record.id);
+          if (!jsonNoteRecords.length) jsonNoteSeq = 0;
+          saveJsonNoteRecords();
+          renderJsonNoteRecords();
+        }
+      });
+      $('jsonnote-zoom-save').addEventListener('click', saveJsonNoteZoom);
+      $('jsonnote-zoom-cancel').addEventListener('click', closeJsonNoteZoom);
+      $('jsonnote-zoom-format-keep').addEventListener('click', () => formatJsonNoteZoom(true));
+      $('jsonnote-zoom-format-strip').addEventListener('click', () => {
+        if (confirmStripJsonComments()) formatJsonNoteZoom(false);
+      });
+      $('jsonnote-zoom-find-input').addEventListener('input', () => searchJsonNoteZoom(1, false));
+      $('jsonnote-zoom-find-input').addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          searchJsonNoteZoom(event.shiftKey ? -1 : 1);
+        }
+      });
+      $('jsonnote-zoom-find-prev').addEventListener('click', () => searchJsonNoteZoom(-1));
+      $('jsonnote-zoom-find-next').addEventListener('click', () => searchJsonNoteZoom(1));
+      $('jsonnote-zoom-find-close').addEventListener('click', () => hideJsonNoteZoomFind());
+      updateJsonCommentHighlights($('jsonnote-zoom'));
+      $('jsonnote-zoom').addEventListener('click', event => {
+        if (event.target.id === 'jsonnote-zoom') closeJsonNoteZoom();
+      });
+      document.addEventListener('keydown', handleJsonNoteZoomShortcut, true);
     }
 
     function base64Encode() {
@@ -797,10 +2546,14 @@
       return text.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').split(/\s+/).filter(Boolean);
     }
     function convertCase(type) {
-      const words = splitWords($('case-input').value);
+      const input = $('case-input').value;
+      const words = splitWords(input);
       const cap = s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
       const lower = words.map(w => w.toLowerCase());
       const out = {
+        upper: input.toUpperCase(),
+        lower: input.toLowerCase(),
+        title: words.map(cap).join(' '),
         camel: lower[0] ? lower[0] + lower.slice(1).map(cap).join('') : '',
         pascal: words.map(cap).join(''),
         snake: lower.join('_'),
@@ -877,6 +2630,165 @@
         a.click();
         URL.revokeObjectURL(a.href);
       } catch (e) { $('filebase64-stats').textContent = '转换失败：' + e.message; }
+    }
+
+    function formatBytes(size) {
+      if (!Number.isFinite(size)) return '0 B';
+      if (size < 1024) return size + ' B';
+      if (size < 1024 * 1024) return (size / 1024).toFixed(1) + ' KB';
+      return (size / 1024 / 1024).toFixed(2) + ' MB';
+    }
+
+    function dataUrlToBase64(dataUrl) {
+      return String(dataUrl).includes(',') ? String(dataUrl).split(',').pop() : String(dataUrl);
+    }
+
+    function setImageBase64Status(message, type = '') {
+      const el = $('imagebase64-stats');
+      el.textContent = message;
+      el.className = 'stats' + (type ? ' ' + type : '');
+    }
+
+    function renderImageBase64Results() {
+      const list = $('imagebase64-results');
+      list.innerHTML = '';
+      if (!imageBase64Items.length) {
+        list.innerHTML = IMAGE_BASE64_EMPTY;
+        setImageBase64Status('暂无图片');
+        return;
+      }
+
+      imageBase64Items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'image-result-item';
+
+        const img = document.createElement('img');
+        img.className = 'image-preview';
+        img.src = item.dataUrl;
+        img.alt = item.name;
+
+        const main = document.createElement('div');
+        main.className = 'image-result-main';
+
+        const meta = document.createElement('div');
+        meta.className = 'image-result-meta';
+        const name = document.createElement('div');
+        name.className = 'image-result-name';
+        name.title = item.name;
+        name.textContent = item.name;
+        const info = document.createElement('div');
+        info.textContent = `${item.type || 'image/*'} · ${formatBytes(item.size)}`;
+        meta.append(name, info);
+
+        const textarea = document.createElement('textarea');
+        textarea.className = 'image-result-text';
+        textarea.readOnly = true;
+        textarea.value = item.dataUrl;
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+        const copyDataUrl = document.createElement('button');
+        copyDataUrl.type = 'button';
+        copyDataUrl.className = 'btn btn-primary';
+        copyDataUrl.textContent = '复制完整 Base64';
+        copyDataUrl.addEventListener('click', () => copyValue(item.dataUrl));
+        const copyBase64 = document.createElement('button');
+        copyBase64.type = 'button';
+        copyBase64.className = 'btn';
+        copyBase64.textContent = '复制纯 Base64';
+        copyBase64.addEventListener('click', () => copyValue(item.base64));
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'btn btn-danger';
+        remove.textContent = '删除';
+        remove.addEventListener('click', () => removeImageBase64Item(item.id));
+        actions.append(copyDataUrl, copyBase64, remove);
+
+        main.append(meta, textarea, actions);
+        card.append(img, main);
+        list.appendChild(card);
+      });
+      setImageBase64Status(`已转换 ${imageBase64Items.length} 张图片`);
+    }
+
+    function readImageAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({
+          id: ++imageBase64Seq,
+          name: file.name || `粘贴图片-${imageBase64Seq}.png`,
+          type: file.type || 'image/png',
+          size: file.size || 0,
+          dataUrl: reader.result,
+          base64: dataUrlToBase64(reader.result)
+        });
+        reader.onerror = () => reject(new Error(file.name + ' 读取失败'));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // 图片转码入口统一走这里，确保文件选择、拖放、粘贴行为一致。
+    async function addImageBase64Files(files) {
+      const imageFiles = [...files].filter(file => file.type && file.type.startsWith('image/'));
+      if (!imageFiles.length) {
+        setImageBase64Status('没有找到图片文件', 'bad');
+        return;
+      }
+      setImageBase64Status(`正在转换 ${imageFiles.length} 张图片...`);
+      try {
+        const items = await Promise.all(imageFiles.map(readImageAsBase64));
+        imageBase64Items.push(...items);
+        renderImageBase64Results();
+      } catch (e) {
+        setImageBase64Status('转换失败：' + e.message, 'bad');
+      }
+    }
+
+    function removeImageBase64Item(id) {
+      imageBase64Items = imageBase64Items.filter(item => item.id !== id);
+      renderImageBase64Results();
+    }
+
+    function clearImageBase64() {
+      imageBase64Items = [];
+      $('imagebase64-file').value = '';
+      renderImageBase64Results();
+    }
+
+    function copyAllImageBase64(type) {
+      if (!imageBase64Items.length) {
+        setImageBase64Status('暂无可复制图片', 'bad');
+        return;
+      }
+      const text = imageBase64Items.map(item => type === 'base64' ? item.base64 : item.dataUrl).join('\n');
+      copyValue(text);
+      setImageBase64Status(`已复制 ${imageBase64Items.length} 张图片`);
+    }
+
+    function initImageBase64() {
+      const fileInput = $('imagebase64-file');
+      const dropZone = $('imagebase64-drop');
+      fileInput.addEventListener('change', event => addImageBase64Files(event.target.files));
+      dropZone.addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          fileInput.click();
+        }
+      });
+      ['dragenter', 'dragover'].forEach(type => dropZone.addEventListener(type, event => {
+        event.preventDefault();
+        dropZone.classList.add('dragging');
+      }));
+      ['dragleave', 'drop'].forEach(type => dropZone.addEventListener(type, event => {
+        event.preventDefault();
+        dropZone.classList.remove('dragging');
+      }));
+      dropZone.addEventListener('drop', event => addImageBase64Files(event.dataTransfer.files));
+      document.addEventListener('paste', event => {
+        if (!$('imagebase64-panel').classList.contains('active')) return;
+        addImageBase64Files(event.clipboardData.files);
+      });
     }
 
     function md5(text) {
@@ -1171,11 +3083,21 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const appState = loadAppState();
+      restoringAppState = true;
+      initToolTabs(appState);
       generatePasswords();
       fillNow();
       renderHistory();
       updateUnitOptions();
       generateUuid();
+      initJsonCompare(appState);
+      initJsonNotes();
+      initImageBase64();
+      restoreFormState(appState.formState);
+      restoringAppState = false;
+      initAppStateCache();
+      persistAppState();
       ['sql-input','sql-quote','sql-distinct','sql-wrap'].forEach(id => $(id).addEventListener(id === 'sql-input' ? 'input' : 'change', makeSqlIn));
       $('sql-output').addEventListener('keydown', event => {
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
