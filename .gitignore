@@ -1,1 +1,10 @@
 todo.md
+node_modules/
+.next/
+.vinext/
+dist/
+.wrangler/
+public/toolbox.html
+work/
+outputs/
+next-env.d.ts
