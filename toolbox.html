@@ -4,98 +4,168 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>工具箱</title>
+  <script>
+    const THEME_KEY = 'html_tools_theme';
+    const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+    let themePreference = 'system';
+    try {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (['light', 'dark', 'system'].includes(savedTheme)) themePreference = savedTheme;
+    } catch (_) {}
+
+    function applyTheme() {
+      document.documentElement.dataset.theme = themePreference === 'system'
+        ? (systemThemeMedia.matches ? 'dark' : 'light')
+        : themePreference;
+    }
+
+    // 首屏绘制前应用主题，避免深色模式刷新时闪白。
+    applyTheme();
+  </script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20x%3D%2711%27%20y%3D%274%27%20width%3D%2710%27%20height%3D%274.5%27%20rx%3D%272.25%27%20fill%3D%27%23a86600%27%2F%3E%3Crect%20x%3D%274%27%20y%3D%278.5%27%20width%3D%2724%27%20height%3D%2718%27%20rx%3D%274%27%20fill%3D%27%232d65c8%27%2F%3E%3Crect%20x%3D%2713.5%27%20y%3D%278.5%27%20width%3D%275%27%20height%3D%276%27%20rx%3D%271.5%27%20fill%3D%27%23e8eef5%27%2F%3E%3Crect%20x%3D%274%27%20y%3D%2719%27%20width%3D%2724%27%20height%3D%271.5%27%20fill%3D%27%231f56b3%27%2F%3E%3C%2Fsvg%3E">
   <style>
     :root {
-      --bg: #f3f6f9;
+      color-scheme: light;
+      --bg: #f7f8fa;
       --panel: #ffffff;
+      --surface: #f8fafc;
+      --nav-bg: #f7f8fa;
+      --hover: #eef0f4;
+      --selected: #eaf0fc;
       --ink: #17202b;
       --muted: #667085;
-      --line: #dce3ed;
+      --secondary-ink: #475467;
+      --active-ink: #ffffff;
+      --line: #e3e6ec;
+      --line-strong: #cbd5e1;
       --accent: #2d65c8;
+      --accent-hover: #1f56b3;
+      --accent-ink: #ffffff;
       --accent-2: #a86600;
       --danger: #c0392b;
+      --danger-fill: #c0392b;
+      --danger-hover: #c0392b;
+      --comment-bg: rgba(192,57,43,.08);
       --ok: #13865d;
-      --shadow: 0 18px 45px rgba(31, 43, 59, .08);
+      --focus: rgba(45,101,200,.18);
+      --selection: rgba(45,101,200,.22);
+      --drop-hover: #e7efff;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #17191d;
+      --panel: #202328;
+      --surface: #1b1e23;
+      --nav-bg: #1b1e23;
+      --hover: #2d3238;
+      --selected: #29374e;
+      --ink: #e5e7eb;
+      --muted: #a4adb9;
+      --secondary-ink: #bbc3cf;
+      --active-ink: #17202b;
+      --line: #3b414a;
+      --line-strong: #505864;
+      --accent: #8ab4ff;
+      --accent-hover: #a5c6ff;
+      --accent-ink: #17202b;
+      --accent-2: #efbe68;
+      --danger: #ff8c8c;
+      --danger-fill: #ad3434;
+      --danger-hover: #c04444;
+      --comment-bg: rgba(255,140,140,.1);
+      --ok: #6bd4a8;
+      --focus: rgba(138,180,255,.28);
+      --selection: rgba(138,180,255,.32);
+      --drop-hover: #243449;
     }
 
     * { box-sizing: border-box; }
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        linear-gradient(90deg, rgba(45,101,200,.05) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(31,43,59,.04) 1px, transparent 1px),
-        var(--bg);
-      background-size: 28px 28px;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
       min-height: 100vh;
+      overflow: hidden;
     }
 
-    .container { width: 100%; margin: 0; padding: 12px 8px 24px; }
+    .container { display: grid; grid-template-columns: 224px minmax(0, 1fr); grid-template-rows: 56px 42px minmax(0, 1fr); width: 100%; height: 100vh; height: 100dvh; }
     header {
+      grid-column: 1 / -1;
+      grid-row: 1;
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      align-items: flex-end;
-      padding: 6px 0 14px;
-      border-bottom: 2px solid var(--ink);
-      margin-bottom: 10px;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      z-index: 20;
     }
-    h1 { margin: 0; font-size: clamp(24px, 4vw, 40px); line-height: 1; letter-spacing: 0; }
-    .subtitle { color: var(--muted); margin: 4px 0 0; max-width: 560px; line-height: 1.4; font-size: 13px; }
-    .header-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+    h1 { margin: 0; font-size: 18px; line-height: 1.3; letter-spacing: 0; font-weight: 750; }
+    .brand { display: flex; gap: 10px; align-items: center; min-width: 0; }
+    .brand img { width: 26px; height: 26px; flex-shrink: 0; }
+    .header-actions, .header-commands { display: flex; gap: 8px; align-items: center; }
+    .header-actions { position: relative; flex-shrink: 0; }
+    .header-actions .btn { min-height: 32px; }
+    .theme-picker { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--muted); }
+    .theme-picker select { width: auto; min-width: 112px; min-height: 32px; padding: 4px 8px; }
+    .mobile-control { display: none !important; }
+    .icon { display: block; width: 16px; height: 16px; flex-shrink: 0; }
+    .icon-btn { display: inline-grid; place-items: center; width: 32px; height: 32px; padding: 0 !important; flex-shrink: 0; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
     .opened-tabs {
+      grid-column: 2;
+      grid-row: 2;
       display: flex;
-      align-items: center;
-      gap: 5px;
-      min-height: 38px;
-      margin: 0 0 10px;
-      padding: 5px;
+      align-items: stretch;
+      gap: 2px;
+      min-width: 0;
+      padding: 0 12px;
       overflow-x: auto;
-      background: rgba(255,255,255,.88);
-      border: 1px solid var(--line);
-      border-radius: 5px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: thin;
     }
     .opened-tab-btn {
       flex: 0 0 auto;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      max-width: 190px;
-      min-height: 28px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--ink);
-      border-radius: 4px;
-      padding: 5px 8px;
+      gap: 8px;
+      max-width: 240px;
+      min-height: 38px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 12px 6px;
       cursor: pointer;
       user-select: none;
       font-size: 12px;
-      font-weight: 650;
+      font-weight: 550;
     }
-    .opened-tab-btn:hover { background: #e8eef5; border-color: #cbd5e1; }
-    .opened-tab-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .opened-tab-btn:hover { background: var(--hover); }
+    .opened-tab-btn.active { background: var(--panel); color: var(--ink); border-bottom-color: var(--accent); }
     .opened-tab-title {
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .opened-tab-mark { color: var(--muted); font-size: 10px; font-weight: 700; }
-    .opened-tab-btn.active .opened-tab-mark { color: rgba(255,255,255,.72); }
+    .opened-tab-mark { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .opened-tab-btn.active .opened-tab-mark { color: inherit; opacity: .72; }
     .opened-tab-close {
       flex: 0 0 auto;
       display: inline-grid;
       place-items: center;
-      width: 17px;
-      height: 17px;
-      margin-right: -3px;
+      width: 22px;
+      height: 22px;
       border: 0;
-      border-radius: 50%;
+      border-radius: 4px;
       background: transparent;
       color: currentColor;
       cursor: pointer;
@@ -109,8 +179,8 @@
       opacity: 1;
     }
     .opened-tab-btn.active .opened-tab-close:hover:not(:disabled) {
-      background: rgba(255, 255, 255, .16);
-      color: #fff;
+      background: var(--comment-bg);
+      color: var(--danger);
     }
     .opened-tab-close:disabled {
       cursor: default;
@@ -137,74 +207,96 @@
       text-align: left;
       cursor: pointer;
       font: inherit;
-      font-size: 12px;
+      font-size: 13px;
     }
-    .tab-context-menu button:hover:not(:disabled) { background: #e8eef5; }
-    .tab-context-menu button:disabled { color: #8a94a6; cursor: default; }
+    .tab-context-menu button:hover:not(:disabled) { background: var(--hover); }
+    .tab-context-menu button:disabled { color: var(--muted); opacity: .65; cursor: default; }
 
-    .layout { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 10px; align-items: start; }
+    .layout { display: contents; }
     .tabs {
-      position: sticky;
-      top: 8px;
-      display: grid;
-      gap: 4px;
-      padding: 6px;
-      background: rgba(255,255,255,.85);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-      border-radius: 5px;
+      grid-column: 1;
+      grid-row: 2 / 4;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+      background: var(--nav-bg);
+      border-right: 1px solid var(--line);
     }
+    .nav-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 20px 4px; min-height: 44px; }
+    .nav-heading strong { font-size: 12px; color: var(--muted); font-weight: 600; }
+    .menu-tools { display: flex; align-items: center; gap: 6px; padding: 10px 12px 14px; }
+    .menu-filter { flex: 1; min-width: 0; }
+    .menu-tools .menu-usage-reset { flex: 0 0 32px; }
+    .menu-list { flex: 1; overflow-y: auto; min-height: 0; padding: 0 10px 16px; scrollbar-width: thin; }
+    .menu-filter-empty { padding: 12px 8px; }
     .tab-btn {
-      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      min-width: 0;
+      border: 0;
       background: transparent;
       color: var(--ink);
-      padding: 6px 8px;
-      border-radius: 4px;
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 10px;
+      margin-bottom: 2px;
+      border-radius: 5px;
       text-align: left;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 13px;
     }
-    .tab-btn:hover { border-color: var(--line); background: #e8eef5; }
-    .tab-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .tab-btn[hidden] { display: none; }
+    .menu-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .menu-usage { flex: 0 0 auto; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--accent); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .tab-btn:hover { background: var(--hover); }
+    .tab-btn.active { background: var(--selected); color: var(--ink); font-weight: 650; }
+    .tool-content { grid-column: 2; grid-row: 3; min-width: 0; min-height: 0; overflow: auto; background: var(--panel); }
 
     .tool-panel {
       display: none;
       background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 5px;
-      box-shadow: var(--shadow);
-      padding: 12px 16px;
+      min-height: 100%;
+      padding: 20px 24px;
     }
-    .tool-panel.active { display: block; }
-    .tool-panel.has-row.active { display: flex; flex-direction: column; height: calc(100vh - 206px); overflow: hidden; }
-    .tool-title { margin: 0 0 10px; font-size: 16px; border-bottom: 1px solid var(--line); padding-bottom: 8px; flex-shrink: 0; }
+    .tool-panel.active { display: block; animation: tool-reveal 140ms ease-out; }
+    .tool-panel.has-row.active { display: flex; flex-direction: column; height: 100%; min-height: 440px; overflow: hidden; }
+    .tool-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; flex-shrink: 0; min-height: 40px; margin-bottom: 18px; }
+    .tool-heading .actions { margin: 0; gap: 6px; }
+    .tool-heading > .json-note-toolbar, .tool-heading > .json-compare-toolbar { flex: 1; min-width: 0; margin: 0; justify-content: flex-end; gap: 16px; }
+    .tool-heading > .json-note-toolbar .stats { max-width: 36ch; overflow-wrap: anywhere; }
+    .tool-title { margin: 0; font-size: 16px; line-height: 1.4; font-weight: 700; }
+    .editor-label { color: var(--muted); font-weight: 550; margin-bottom: 0; }
+    .editor-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 20px; }
+    .editor-heading .stats { margin: 0; font-size: 11px; }
 
     /* 左右布局：输入区和输出区并排 */
-    .panel-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; flex: 1; min-height: 0; overflow: hidden; }
-    .panel-left, .panel-right { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: hidden; }
+    .panel-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; flex: 1; min-height: 0; overflow: hidden; }
+    .panel-left, .panel-right { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; overflow: hidden; }
     .panel-left textarea, .panel-right textarea { flex: 1; min-height: 0; resize: none; }
     .panel-row > textarea { flex: 1; min-height: 0; resize: none; }
     .tool-panel.has-row .checks, .tool-panel.has-row .actions, .tool-panel.has-row .grid-2, .tool-panel.has-row .grid-3, .tool-panel.has-row .form-group, .tool-panel.has-row .result-box:not(.flex-1), .tool-panel.has-row .helper-text, .tool-panel.has-row .stats { flex-shrink: 0; }
     .result-box.flex-1 { flex: 1; min-height: 0; overflow: auto; }
 
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-    .form-group { margin-bottom: 8px; }
-    label { display: block; margin-bottom: 4px; font-weight: 650; font-size: 12px; }
-    input[type="text"], input[type="number"], input[type="password"], input[type="file"], textarea, select {
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .form-group { margin-bottom: 12px; min-width: 0; }
+    label { display: block; margin-bottom: 6px; font-weight: 550; font-size: 13px; }
+    input[type="text"], input[type="search"], input[type="number"], input[type="password"], input[type="file"], textarea, select {
       width: 100%;
-      min-height: 32px;
+      min-height: 36px;
       border: 1px solid var(--line);
       border-radius: 4px;
-      padding: 6px 8px;
-      background: #fff;
+      padding: 8px 10px;
+      background: var(--panel);
       color: var(--ink);
       font: inherit;
       font-size: 13px;
     }
-    textarea { min-height: 100px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.45; font-size: 12px; }
-    input:focus, textarea:focus, select:focus { outline: 2px solid rgba(45,101,200,.18); border-color: var(--accent); }
+    textarea { min-height: 100px; padding: 12px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 22px; font-size: 14px; }
+    input:focus, textarea:focus, select:focus { outline: 2px solid var(--focus); border-color: var(--accent); }
     .json-comment-editor {
       position: relative;
       min-width: 0;
@@ -218,66 +310,72 @@
       overflow: auto;
     }
     .json-comment-editor textarea::placeholder { color: var(--muted); }
-    .json-comment-editor textarea::selection { background: rgba(45,101,200,.22); color: transparent; }
+    .json-comment-editor textarea::selection { background: var(--selection); color: transparent; }
     .json-comment-highlight {
       position: absolute;
       inset: 0;
       z-index: 1;
       margin: 0;
-      padding: 6px 8px;
+      padding: 12px;
       overflow: hidden;
       border: 1px solid transparent;
       border-radius: 4px;
-      background: #fff;
+      background: var(--panel);
       color: var(--ink);
       pointer-events: none;
       white-space: pre-wrap;
       word-break: break-word;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      line-height: 1.45;
-      font-size: 12px;
+      line-height: 22px;
+      font-size: 14px;
     }
     .json-comment-token {
-      color: #c0392b;
+      color: var(--danger);
       font-weight: 750;
-      background: rgba(192, 57, 43, .08);
+      background: var(--comment-bg);
       border-radius: 2px;
     }
-    .checks { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 6px; }
-    .checks label { display: inline-flex; align-items: center; gap: 5px; margin: 0; font-weight: 500; font-size: 12px; color: #475467; }
-    .actions { display: flex; gap: 5px; flex-wrap: wrap; margin: 4px 0; }
+    .checks { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 4px 0; }
+    .checks label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 500; font-size: 13px; color: var(--secondary-ink); }
+    input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
+    .actions { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
     .btn {
       border: 1px solid var(--line);
       border-radius: 4px;
-      background: #fff;
+      background: var(--panel);
       color: var(--ink);
-      padding: 6px 10px;
+      padding: 7px 12px;
       cursor: pointer;
-      font-weight: 650;
-      min-height: 30px;
-      font-size: 12px;
+      font-family: inherit;
+      font-weight: 550;
+      min-height: 34px;
+      font-size: 13px;
+      line-height: 1.4;
+      transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, transform 80ms ease;
     }
-    .btn:hover { background: #e8eef5; }
-    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .btn-primary:hover { background: #1f56b3; }
-    .btn-hot { background: var(--danger); border-color: var(--danger); color: #fff; }
-    .btn-hot:hover { background: #c0392b; border-color: #c0392b; }
+    .btn:hover { background: var(--hover); }
+    .btn:active:not(:disabled) { transform: translateY(1px); }
+    .btn:disabled { cursor: default; opacity: .55; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-hot { background: var(--danger-fill); border-color: var(--danger-fill); color: #fff; }
+    .btn-hot:hover { background: var(--danger-hover); border-color: var(--danger-hover); }
     .btn-danger { color: var(--danger); }
     .result-box {
       min-height: 48px;
-      padding: 10px;
-      background: #f8fafc;
+      padding: 12px;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 4px;
       word-break: break-word;
       white-space: pre-wrap;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      line-height: 1.45;
-      font-size: 12px;
+      line-height: 1.6;
+      font-size: 13px;
     }
     .result-box.flex-1 { flex: 1; min-height: 200px; }
-    .helper-text, .stats { color: var(--muted); font-size: 11px; line-height: 1.4; margin: 4px 0 0; }
-    .alert { display: none; margin: 6px 0; border-radius: 4px; padding: 6px 8px; border: 1px solid var(--line); font-size: 12px; }
+    .helper-text, .stats { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 4px 0 0; }
+    .alert { display: none; margin: 6px 0; border-radius: 4px; padding: 8px 10px; border: 1px solid var(--line); font-size: 13px; }
     .alert.show { display: block; }
     .ok { color: var(--ok); }
     .bad { color: var(--danger); }
@@ -293,7 +391,8 @@
     }
     .json-compare-groups {
       display: grid;
-      gap: 10px;
+      align-content: start;
+      gap: 16px;
       flex: 1;
       min-height: 0;
       overflow: auto;
@@ -301,9 +400,10 @@
     }
     .json-compare-group {
       display: grid;
-      gap: 8px;
-      padding: 10px;
-      background: #fff;
+      align-content: start;
+      gap: 14px;
+      padding: 16px;
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 5px;
     }
@@ -326,8 +426,8 @@
     }
     .json-compare-body {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(280px, .9fr);
-      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(240px, .9fr);
+      gap: 14px;
       min-height: 0;
     }
     .json-compare-col {
@@ -338,12 +438,12 @@
       min-height: 0;
     }
     .json-compare-input {
-      min-height: 190px;
+      min-height: 260px;
       resize: vertical;
     }
     .json-compare-result {
-      min-height: 190px;
-      max-height: 300px;
+      min-height: 260px;
+      max-height: 360px;
       overflow: auto;
     }
     .json-note-toolbar {
@@ -357,7 +457,8 @@
     }
     .json-note-list {
       display: grid;
-      gap: 10px;
+      align-content: start;
+      gap: 16px;
       flex: 1;
       min-height: 0;
       overflow: auto;
@@ -365,22 +466,29 @@
     }
     .json-note-card {
       display: grid;
-      gap: 8px;
-      padding: 10px;
-      background: #fff;
+      align-content: start;
+      gap: 16px;
+      padding: 16px;
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 5px;
     }
     .json-note-header {
       display: grid;
-      grid-template-columns: minmax(160px, 1fr) minmax(180px, 1fr) auto;
-      gap: 8px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
       align-items: end;
     }
+    .json-note-header > .actions { grid-column: 1 / -1; margin: 0; }
+    .json-note-header > div:not(.actions) { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .json-note-header label { flex-shrink: 0; margin: 0; }
+    .json-note-header input { min-width: 0; }
+    .json-note-header label, .json-note-col > label { color: var(--muted); font-weight: 500; }
+    .json-note-header .btn:not(.btn-primary):not(.btn-hot) { font-weight: 500; }
     .json-note-body {
       display: grid;
-      grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
-      gap: 10px;
+      grid-template-columns: minmax(0, .6fr) minmax(0, 1.4fr);
+      gap: 16px;
       min-height: 0;
     }
     .json-note-col {
@@ -395,15 +503,15 @@
       resize: vertical;
     }
     .json-note-payload {
-      min-height: 220px;
+      min-height: 320px;
       resize: vertical;
     }
     .json-note-empty {
-      padding: 18px;
+      padding: 24px;
       color: var(--muted);
       text-align: center;
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
+      background: var(--surface);
+      border: 1px dashed var(--line-strong);
       border-radius: 5px;
     }
     .json-note-zoom {
@@ -417,12 +525,13 @@
     }
     .json-note-zoom[hidden] { display: none; }
     .json-note-zoom-dialog {
-      width: min(1100px, 100%);
-      max-height: calc(100vh - 36px);
+      width: min(1180px, 100%);
+      height: min(860px, calc(100dvh - 48px));
+      max-height: calc(100dvh - 48px);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 12px;
+      gap: 14px;
+      padding: 18px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 5px;
@@ -443,7 +552,7 @@
       gap: 6px;
       flex-wrap: wrap;
       padding: 8px;
-      background: #fff;
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 4px;
     }
@@ -460,9 +569,11 @@
       white-space: nowrap;
     }
     .json-note-zoom-text {
-      min-height: min(68vh, 680px);
-      resize: vertical;
+      height: 100%;
+      min-height: 0;
+      resize: none;
     }
+    .json-note-zoom-editor { flex: 1; min-height: 100px; }
     .sync-modal {
       position: fixed;
       inset: 0;
@@ -478,8 +589,8 @@
       max-height: calc(100vh - 36px);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 14px;
+      gap: 14px;
+      padding: 20px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 5px;
@@ -500,23 +611,24 @@
       place-items: center;
       min-height: 150px;
       padding: 18px;
-      border: 1px dashed #cbd5e1;
+      border: 1px dashed var(--line-strong);
       border-radius: 5px;
-      background: #f8fafc;
-      color: #667085;
+      background: var(--surface);
+      color: var(--muted);
       text-align: center;
       cursor: pointer;
     }
     .image-drop-zone:hover, .image-drop-zone.dragging, .image-drop-zone:focus {
-      outline: 2px solid rgba(45,101,200,.16);
+      outline: 2px solid var(--focus);
       border-color: var(--accent);
-      background: #e7efff;
+      background: var(--drop-hover);
     }
     .image-drop-title { font-weight: 750; font-size: 14px; color: var(--ink); }
     .image-drop-subtitle { margin-top: 5px; font-size: 12px; color: var(--muted); }
     .image-result-list {
       display: grid;
-      gap: 10px;
+      align-content: start;
+      gap: 16px;
       min-height: 0;
       overflow: auto;
       padding-right: 2px;
@@ -526,7 +638,7 @@
       grid-template-columns: 92px minmax(0, 1fr);
       gap: 10px;
       padding: 10px;
-      background: #fff;
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 5px;
     }
@@ -534,7 +646,7 @@
       width: 92px;
       height: 92px;
       object-fit: contain;
-      background: #f8fafc;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 4px;
     }
@@ -562,40 +674,91 @@
       resize: vertical;
     }
     .history-list { display: grid; gap: 6px; margin-top: 10px; }
-    .history-item { border: 1px solid var(--line); border-radius: 4px; padding: 8px; background: #fff; }
-    .history-meta { color: var(--muted); font-size: 10px; margin-bottom: 4px; }
+    .history-item { border: 1px solid var(--line); border-radius: 4px; padding: 8px; background: var(--panel); }
+    .history-meta { color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+
+    .nav-backdrop { position: fixed; inset: 0; border: 0; background: rgba(12,18,28,.4); z-index: 30; }
+    .nav-backdrop[hidden] { display: none; }
+    .tool-feedback { position: fixed; z-index: 100; bottom: 24px; right: 24px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--ink); color: var(--panel); box-shadow: 0 4px 20px rgba(0,0,0,.12); animation: tool-reveal 120ms ease-out; }
+    .tool-feedback[hidden] { display: none; }
+    @keyframes tool-reveal { from { opacity: .7; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 1100px) {
+      .json-compare-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .json-compare-col:last-child { grid-column: 1 / -1; }
+    }
 
     @media (max-width: 768px) {
-      header { display: block; }
-      .header-actions { margin-top: 10px; }
-      .opened-tabs { min-height: 36px; }
-      .opened-tab-btn { max-width: 150px; }
-      .layout { grid-template-columns: 1fr; }
-      .tabs { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .tool-panel.has-row.active { height: auto; min-height: 360px; overflow: visible; }
+      .container { grid-template-columns: minmax(0, 1fr); grid-template-rows: 56px 42px minmax(0, 1fr); }
+      header { padding: 0 12px; gap: 10px; }
+      .brand { gap: 8px; }
+      .brand img { display: none; }
+      h1 { font-size: 17px; white-space: nowrap; }
+      .mobile-control { display: inline-grid !important; }
+      .theme-picker { gap: 0; }
+      .theme-picker > span { display: none; }
+      .theme-picker select { min-width: 100px; max-width: 116px; }
+      .header-actions { gap: 6px; }
+      .header-commands { display: none; position: absolute; right: 0; top: calc(100% + 10px); min-width: 160px; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.14); }
+      .header-commands.is-open { display: grid; }
+      .header-commands .btn { width: 100%; min-height: 40px; text-align: left; border-color: transparent; }
+      .opened-tabs { grid-column: 1; padding: 0 6px; }
+      .opened-tab-btn { max-width: 210px; }
+      .tool-content { grid-column: 1; }
+      .tabs { position: fixed; top: 0; bottom: 0; left: 0; width: min(300px, calc(100vw - 48px)); z-index: 31; transform: translateX(-100%); visibility: hidden; transition: transform 220ms ease, visibility 220ms; }
+      .navigation-open .tabs { transform: translateX(0); visibility: visible; }
+      .nav-heading { min-height: 56px; padding: 12px 16px 4px; }
+      .nav-heading strong { font-size: 14px; color: var(--ink); }
+      .tool-panel { padding: 16px; }
+      .tool-panel.has-row.active { height: auto; min-height: 100%; overflow: visible; }
+      .tool-heading { margin-bottom: 16px; gap: 12px; }
+      .tool-heading .actions { width: 100%; }
+      .tool-heading > .json-note-toolbar, .tool-heading > .json-compare-toolbar { flex-basis: 100%; gap: 8px; justify-content: flex-start; }
+      .tool-heading > .json-note-toolbar .stats { max-width: 100%; }
+      .panel-row, .panel-left, .panel-right { overflow: visible; }
+      .panel-row { flex: 0 0 auto; gap: 20px; }
+      .panel-row textarea { min-height: 240px; }
+      .json-note-list, .json-compare-groups { flex: 0 0 auto; overflow: visible; }
+      .json-note-card, .json-compare-group { padding: 12px; }
       .json-compare-body { grid-template-columns: 1fr; }
       .json-compare-result, .json-compare-input { min-height: 220px; }
       .json-note-header, .json-note-body { grid-template-columns: 1fr; }
-      .json-note-payload { min-height: 240px; }
+      .json-note-payload { min-height: 320px; }
       .json-note-zoom { padding: 8px; }
-      .json-note-zoom-text { min-height: 65vh; }
+      .json-note-zoom-dialog { height: calc(100dvh - 16px); max-height: calc(100dvh - 16px); padding: 12px; gap: 10px; }
+      .json-note-zoom-header { align-items: start; }
+      .json-note-zoom-title { max-width: calc(100% - 58px); overflow-wrap: anywhere; }
+      .json-note-zoom-text { min-height: 0; }
       .image-result-item { grid-template-columns: 1fr; }
       .image-preview { width: 100%; height: 160px; }
       .image-result-text { min-height: 220px; }
       .grid-2, .grid-3, .panel-row { grid-template-columns: 1fr; }
     }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div>
+    <header id="app-header">
+      <div class="brand">
+        <button class="btn icon-btn mobile-control" id="open-tool-menu" type="button" title="打开工具菜单" aria-label="打开工具菜单" aria-controls="tool-navigation" aria-expanded="false" data-icon="menu"></button>
+        <img id="brand-icon" alt="" width="26" height="26">
         <h1>工具箱</h1>
-        <p class="subtitle">本地可用的常用开发工具集合，所有处理都在浏览器内完成。</p>
       </div>
       <div class="header-actions">
-        <button class="btn" id="open-sync-modal" type="button">数据同步</button>
-        <button class="btn btn-danger" id="reset-all-state" type="button">全部重置</button>
+        <label class="theme-picker" for="theme-select"><span>主题</span>
+          <select id="theme-select" aria-label="主题">
+            <option value="light">浅色</option>
+            <option value="dark">深色</option>
+            <option value="system" selected>跟随系统</option>
+          </select>
+        </label>
+        <button class="btn icon-btn mobile-control" id="header-more" type="button" title="更多操作" aria-label="更多操作" aria-controls="header-commands" aria-expanded="false" data-icon="ellipsis"></button>
+        <div class="header-commands" id="header-commands">
+          <button class="btn" id="open-sync-modal" type="button">数据同步</button>
+          <button class="btn btn-danger" id="reset-all-state" type="button">全部重置</button>
+        </div>
       </div>
     </header>
 
@@ -658,7 +821,16 @@
     </div>
 
     <main class="layout">
-      <nav class="tabs" aria-label="工具列表">
+      <nav class="tabs" id="tool-navigation" aria-label="工具列表">
+        <div class="nav-heading">
+          <strong>全部工具</strong>
+          <button class="btn icon-btn mobile-control" id="close-tool-menu" type="button" title="关闭工具菜单" aria-label="关闭工具菜单" data-icon="x"></button>
+        </div>
+        <div class="menu-tools">
+          <input class="menu-filter" id="menu-filter" type="search" placeholder="筛选菜单" aria-label="筛选菜单" autocomplete="off" spellcheck="false">
+          <button class="btn icon-btn menu-usage-reset" id="reset-tool-usage" type="button" title="重置使用量" aria-label="重置使用量" data-icon="rotate"></button>
+        </div>
+        <div class="menu-list" id="tool-menu-list">
         <button class="tab-btn active" data-tab="password">密码生成器</button>
         <button class="tab-btn" data-tab="diff">文本比对</button>
         <button class="tab-btn" data-tab="json">JSON 格式化</button>
@@ -687,9 +859,11 @@
         <button class="tab-btn" data-tab="splitter">文本分隔</button>
         <button class="tab-btn" data-tab="statistics">文本统计</button>
         <button class="tab-btn" data-tab="clipboard">剪贴板历史</button>
+        <p class="helper-text menu-filter-empty" id="menu-filter-empty" role="status" hidden>未找到匹配的菜单</p>
+        </div>
       </nav>
 
-      <section>
+      <section class="tool-content" id="tool-content" tabindex="-1" aria-label="当前工具">
         <div class="tool-panel has-row active" id="password-panel">
           <h2 class="tool-title">密码生成器</h2>
           <div class="panel-row">
@@ -731,10 +905,12 @@
           <h2 class="tool-title">JSON 格式化</h2>
           <div class="panel-row">
             <div class="panel-left">
+              <label class="editor-label" for="json-input">输入</label>
               <textarea id="json-input" placeholder="请输入 JSON"></textarea>
               <div class="checks"><label><input id="json-strip-comments" type="checkbox"> 移除注释</label><label><input id="json-no-wrap" type="checkbox"> 长内容不换行</label></div>
             </div>
             <div class="panel-right">
+              <div class="editor-heading"><label class="editor-label" for="json-output">结果</label><span class="stats" id="json-output-meta"></span></div>
               <textarea id="json-output" placeholder="结果显示在这里"></textarea>
               <div class="actions">
                 <button class="btn btn-primary" onclick="formatJson()">格式化</button>
@@ -1143,9 +1319,52 @@
     </main>
   </div>
 
+  <button class="nav-backdrop" id="tool-menu-backdrop" type="button" aria-label="关闭工具菜单" tabindex="-1" hidden></button>
+  <div class="tool-feedback" id="tool-feedback" role="status" hidden></div>
+
   <script>
     const $ = id => document.getElementById(id);
+    /* 内嵌图标来自 Lucide，保留原始许可：https://github.com/lucide-icons/lucide
+     * ISC License
+     * Copyright (c) 2026 Lucide Icons and Contributors
+     * Permission to use, copy, modify, and/or distribute this software for any
+     * purpose with or without fee is hereby granted, provided that the above
+     * copyright notice and this permission notice appear in all copies.
+     * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+     * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+     * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+     * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+     * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+     * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+     * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+     *
+     * Feather 衍生图标的 MIT License
+     * Copyright (c) 2013-present Cole Bemis
+     * Permission is hereby granted, free of charge, to any person obtaining a copy
+     * of this software and associated documentation files (the "Software"), to deal
+     * in the Software without restriction, including without limitation the rights
+     * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     * copies of the Software, and to permit persons to whom the Software is
+     * furnished to do so, subject to the following conditions:
+     * The above copyright notice and this permission notice shall be included in all
+     * copies or substantial portions of the Software.
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+     * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+     * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+     * SOFTWARE.
+     */
+    const TOOL_ICONS = {
+      menu: '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>',
+      x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+      ellipsis: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+      rotate: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>'
+    };
+    const workspaceMobile = window.matchMedia('(max-width: 768px)');
     const APP_STATE_KEY = 'html_tools_app_state';
+    const TOOL_USAGE_KEY = 'html_tools_tool_usage';
     const HISTORY_KEY = 'html_tools_clipboard_history';
     const JSON_NOTE_KEY = 'html_tools_json_note_records';
     const SYNC_CONFIG_KEY = 'html_tools_sync_config';
@@ -1165,14 +1384,150 @@
     let jsonNoteZoomRecordId = null;
     let restoringAppState = false;
     let appStateTimer = 0;
+    const toolMenuItems = [...document.querySelectorAll('.tabs .tab-btn')].map((button, index) => ({
+      button, key: button.dataset.tab, title: button.textContent.trim(), index
+    }));
+    let toolUsage = {};
+    const toolUsageTimers = {};
+    let copyFeedbackTimer = 0;
+
+    function toolIcon(name) {
+      return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${TOOL_ICONS[name]}</svg>`;
+    }
+
+    function setToolNavigation(open, restoreFocus = true) {
+      const visible = open && workspaceMobile.matches;
+      document.body.classList.toggle('navigation-open', visible);
+      $('tool-menu-backdrop').hidden = !visible;
+      $('open-tool-menu').setAttribute('aria-expanded', String(visible));
+      $('tool-navigation').inert = workspaceMobile.matches && !visible;
+      ['app-header', 'opened-tabs', 'tool-content'].forEach(id => $(id).inert = visible);
+      if (visible) $('menu-filter').focus();
+      else if (restoreFocus && workspaceMobile.matches) $('open-tool-menu').focus();
+    }
+
+    function initWorkspacePresentation() {
+      $('brand-icon').src = document.querySelector('link[rel="icon"]').href;
+      document.querySelectorAll('[data-icon]').forEach(button => button.innerHTML = toolIcon(button.dataset.icon));
+      // 移动现有控件而非重建，保留原来的事件、字段和缓存入口。
+      document.querySelectorAll('.tool-panel').forEach(panel => {
+        const title = panel.querySelector(':scope > .tool-title');
+        const actions = panel.querySelector(':scope > .panel-row > .panel-right > .actions') || panel.querySelector(':scope > .actions');
+        const heading = document.createElement('div');
+        heading.className = 'tool-heading';
+        title.before(heading);
+        heading.append(title);
+        if (actions) heading.append(actions);
+        const toolbar = panel.querySelector(':scope > .json-note-toolbar, :scope > .json-compare-toolbar');
+        if (toolbar) heading.append(toolbar);
+      });
+
+      $('open-tool-menu').addEventListener('click', () => setToolNavigation(true));
+      $('close-tool-menu').addEventListener('click', () => setToolNavigation(false));
+      $('tool-menu-backdrop').addEventListener('click', () => setToolNavigation(false));
+      const closeCommands = () => {
+        $('header-commands').classList.remove('is-open');
+        $('header-more').setAttribute('aria-expanded', 'false');
+      };
+      $('header-more').addEventListener('click', () => {
+        const open = $('header-commands').classList.toggle('is-open');
+        $('header-more').setAttribute('aria-expanded', String(open));
+        if (open) $('header-commands').querySelector('button').focus();
+      });
+      $('header-commands').addEventListener('click', closeCommands);
+      document.addEventListener('click', event => {
+        if (!event.target.closest('.header-actions')) closeCommands();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          if ($('header-commands').classList.contains('is-open')) {
+            closeCommands();
+            $('header-more').focus();
+          } else if (document.body.classList.contains('navigation-open')) setToolNavigation(false);
+        }
+        if (event.key !== 'Tab' || !document.body.classList.contains('navigation-open')) return;
+        const controls = [...$('tool-navigation').querySelectorAll('button:not(:disabled), input')].filter(el => el.getClientRects().length);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      });
+      workspaceMobile.addEventListener('change', () => {
+        const focusedInMenu = $('tool-navigation').contains(document.activeElement);
+        setToolNavigation(false, false);
+        closeCommands();
+        if (workspaceMobile.matches && focusedInMenu) $('open-tool-menu').focus();
+      });
+      setToolNavigation(false, false);
+    }
+
+    function initTheme() {
+      const select = $('theme-select');
+      select.value = themePreference;
+      select.addEventListener('change', () => {
+        themePreference = select.value;
+        applyTheme();
+        try { localStorage.setItem(THEME_KEY, themePreference); } catch (_) {}
+      });
+      systemThemeMedia.addEventListener('change', applyTheme);
+    }
 
     function loadAppState() {
       try { return JSON.parse(localStorage.getItem(APP_STATE_KEY) || '{}') || {}; }
       catch (_) { return {}; }
     }
 
+    function renderToolUsage() {
+      [...toolMenuItems].sort((a, b) => (toolUsage[b.key] || 0) - (toolUsage[a.key] || 0) || a.index - b.index).forEach(item => {
+        const count = toolUsage[item.key] || 0;
+        item.usage.textContent = String(count);
+        item.usage.title = '使用量：' + count;
+        item.button.parentNode.insertBefore(item.button, $('menu-filter-empty'));
+      });
+    }
+
+    // 在功能成功后调用；连续输入触发的自动转换合并计数，初始化不计数。
+    function recordToolUsage(toolKey, delay = 0) {
+      if (restoringAppState) return;
+      clearTimeout(toolUsageTimers[toolKey]);
+      delete toolUsageTimers[toolKey];
+      if (delay) {
+        toolUsageTimers[toolKey] = setTimeout(() => recordToolUsage(toolKey), delay);
+        return;
+      }
+      toolUsage[toolKey] = Math.min((toolUsage[toolKey] || 0) + 1, Number.MAX_SAFE_INTEGER);
+      try { localStorage.setItem(TOOL_USAGE_KEY, JSON.stringify(toolUsage)); } catch (_) {}
+      renderToolUsage();
+    }
+
+    function initToolUsage() {
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem(TOOL_USAGE_KEY) || '{}') || {}; } catch (_) {}
+      toolMenuItems.forEach(item => {
+        const count = saved[item.key];
+        toolUsage[item.key] = Number.isSafeInteger(count) && count >= 0 ? count : 0;
+        item.button.dataset.toolTitle = item.title;
+        const label = document.createElement('span');
+        label.className = 'menu-label';
+        label.textContent = item.title;
+        item.usage = document.createElement('span');
+        item.usage.className = 'menu-usage';
+        item.usage.setAttribute('aria-hidden', 'true');
+        item.button.title = item.title;
+        item.button.replaceChildren(label, item.usage);
+      });
+      renderToolUsage();
+      $('reset-tool-usage').addEventListener('click', () => {
+        if (!confirm('确定重置所有菜单的使用量吗？菜单将恢复默认顺序。')) return;
+        Object.values(toolUsageTimers).forEach(clearTimeout);
+        toolUsage = {};
+        localStorage.removeItem(TOOL_USAGE_KEY);
+        renderToolUsage();
+      });
+    }
+
     function getPersistentFormControls() {
       return [...document.querySelectorAll('input[id], textarea[id], select[id]')].filter(el => {
+        if (el.id === 'theme-select') return false;
         if (el.type === 'file' || el.type === 'hidden') return false;
         if (el.closest('#jsoncompare-panel') || el.closest('#jsonnote-panel')) return false;
         if (el.closest('#jsonnote-zoom')) return false;
@@ -1238,6 +1593,8 @@
       localStorage.removeItem(APP_STATE_KEY);
       localStorage.removeItem(JSON_NOTE_KEY);
       localStorage.removeItem(HISTORY_KEY);
+      localStorage.removeItem(THEME_KEY);
+      localStorage.removeItem(TOOL_USAGE_KEY);
       location.reload();
     }
 
@@ -1255,9 +1612,20 @@
       return [...document.querySelectorAll('.tabs .tab-btn')].find(btn => btn.dataset.tab === toolKey);
     }
 
+    function filterToolMenus() {
+      const keyword = $('menu-filter').value.toLowerCase().replace(/\s+/g, '');
+      let visibleCount = 0;
+      document.querySelectorAll('.tabs .tab-btn').forEach(btn => {
+        const matches = btn.dataset.toolTitle.toLowerCase().replace(/\s+/g, '').includes(keyword);
+        btn.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+      $('menu-filter-empty').hidden = visibleCount > 0;
+    }
+
     function getToolTitle(toolKey) {
       const btn = getToolButton(toolKey);
-      return btn ? btn.textContent.trim() : toolKey;
+      return btn ? btn.dataset.toolTitle : toolKey;
     }
 
     function getOpenedTabDisplayTitle(tab) {
@@ -1265,6 +1633,7 @@
     }
 
     function setActiveTool(toolKey) {
+      $('tool-content').scrollTop = 0;
       document.querySelectorAll('.tabs .tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === toolKey));
       document.querySelectorAll('.tool-panel').forEach(panel => panel.classList.remove('active'));
       if (!toolKey) return;
@@ -1300,7 +1669,7 @@
         close.disabled = openedTabs.length <= 1;
         close.title = '关闭 ' + displayTitle + ' #' + tab.seq;
         close.setAttribute('aria-label', close.title);
-        close.textContent = 'x';
+        close.innerHTML = toolIcon('x');
 
         btn.append(title, mark, close);
         bar.appendChild(btn);
@@ -1444,8 +1813,15 @@
     }
 
     function initToolTabs(state = {}) {
+      $('menu-filter').addEventListener('input', filterToolMenus);
       document.querySelectorAll('.tabs .tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => openToolTab(btn.dataset.tab));
+        btn.addEventListener('click', () => {
+          openToolTab(btn.dataset.tab);
+          if (workspaceMobile.matches) {
+            setToolNavigation(false, false);
+            $('tool-content').focus({ preventScroll: true });
+          }
+        });
       });
 
       $('opened-tabs').addEventListener('click', event => {
@@ -1497,7 +1873,7 @@
       return String(text).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     }
 
-    async function copyValue(value) {
+    async function copyValue(value, toolKey = '') {
       if (!value) return;
       try { await navigator.clipboard.writeText(value); }
       catch (_) {
@@ -1505,14 +1881,22 @@
         ta.value = value;
         document.body.appendChild(ta);
         ta.select();
-        document.execCommand('copy');
+        const copied = document.execCommand('copy');
         ta.remove();
+        if (!copied) return;
       }
+      if (toolKey) recordToolUsage(toolKey);
+      const feedback = $('tool-feedback');
+      feedback.textContent = '已复制';
+      feedback.hidden = false;
+      clearTimeout(copyFeedbackTimer);
+      copyFeedbackTimer = setTimeout(() => feedback.hidden = true, 1800);
     }
 
     function copyText(id) {
       const el = $(id);
-      copyValue('value' in el ? el.value : el.textContent);
+      const panel = el.closest('.tool-panel');
+      copyValue('value' in el ? el.value : el.textContent, panel ? panel.id.slice(0, -6) : '');
     }
 
     function selectElementText(el) {
@@ -1530,6 +1914,7 @@
         if ('value' in el) el.value = '';
         else { el.textContent = ''; el.className = 'alert'; }
       });
+      if (ids.includes('json-output')) updateJsonOutputMeta();
     }
 
     function generatePasswords() {
@@ -1549,6 +1934,7 @@
         out.push(Array.from(random, n => chars[n % chars.length]).join(''));
       }
       $('pwd-output').textContent = out.join('\n');
+      recordToolUsage('password');
     }
 
     function showJsonMessage(text, ok) {
@@ -1896,7 +2282,9 @@
         const input = $('json-strip-comments').checked ? stripJsonComments($('json-input').value) : $('json-input').value;
         $('json-output').value = JSON.stringify(JSON.parse(input), null, 2);
         $('json-output').style.whiteSpace = $('json-no-wrap').checked ? 'pre' : '';
+        updateJsonOutputMeta();
         showJsonMessage('JSON 格式正确', true);
+        recordToolUsage('json');
       } catch (e) { showJsonMessage('JSON 解析错误：' + e.message, false); }
     }
     function minifyJson() {
@@ -1904,8 +2292,15 @@
         const input = $('json-strip-comments').checked ? stripJsonComments($('json-input').value) : $('json-input').value;
         $('json-output').value = JSON.stringify(JSON.parse(input));
         $('json-output').style.whiteSpace = $('json-no-wrap').checked ? 'pre' : '';
+        updateJsonOutputMeta();
         showJsonMessage('JSON 已压缩', true);
+        recordToolUsage('json');
       } catch (e) { showJsonMessage('JSON 解析错误：' + e.message, false); }
+    }
+
+    function updateJsonOutputMeta() {
+      const text = $('json-output').value;
+      $('json-output-meta').textContent = text ? `${text.split(/\r?\n/).length} 行 · ${text.length} 字符` : '';
     }
 
     function addJsonCompareGroup() {
@@ -2019,7 +2414,7 @@
       ).join('\n\n');
     }
 
-    function compareJsonGroup(group) {
+    function compareJsonGroup(group, trackUsage = true) {
       const result = group.querySelector('[data-json-compare-result]');
       const status = group.querySelector('[data-json-compare-status]');
       const leftText = group.querySelector('[data-json-compare-side="left"]').value.trim();
@@ -2035,6 +2430,7 @@
         status.className = 'json-compare-status ' + (diffs.length ? 'bad' : 'ok');
         updateJsonCompareSummary();
         schedulePersistAppState();
+        if (trackUsage) recordToolUsage('jsoncompare');
         return { ok: true, diffCount: diffs.length };
       } catch (e) {
         result.textContent = 'JSON 解析失败：' + e.message;
@@ -2100,7 +2496,8 @@
         schedulePersistAppState();
       });
       $('jsoncompare-run-all').addEventListener('click', () => {
-        getJsonCompareGroups().forEach(compareJsonGroup);
+        const results = getJsonCompareGroups().map(group => compareJsonGroup(group, false));
+        if (results.some(result => result.ok)) recordToolUsage('jsoncompare');
         schedulePersistAppState();
       });
       $('jsoncompare-groups').addEventListener('click', event => {
@@ -2109,7 +2506,7 @@
         const group = btn.closest('.json-compare-group');
         const action = btn.dataset.jsonCompareAction;
         if (action === 'compare') compareJsonGroup(group);
-        else if (action === 'copy') copyValue(group.querySelector('[data-json-compare-result]').textContent);
+        else if (action === 'copy') copyValue(group.querySelector('[data-json-compare-result]').textContent, 'jsoncompare');
         else if (action === 'clear') clearJsonCompareGroup(group);
         else if (action === 'remove') removeJsonCompareGroup(group);
       });
@@ -2155,8 +2552,10 @@
       renderJsonNoteRecords();
     }
 
-    function updateJsonNoteStatus(message) {
+    function updateJsonNoteStatus(message, type = '') {
       const status = $('jsonnote-status');
+      status.className = 'stats' + (type ? ' ' + type : '');
+      status.title = message || '';
       if (message) {
         status.textContent = message;
         return;
@@ -2325,9 +2724,10 @@
         record.updatedAt = Date.now();
         saveJsonNoteRecords();
         renderJsonNoteRecords();
-        updateJsonNoteStatus(keepComments ? 'JSON 格式化成功，已保留注释' : 'JSON 格式化成功，已去掉注释');
+        updateJsonNoteStatus(`「${record.title}」已格式化，` + (keepComments ? '已保留注释' : '已去掉注释'), 'ok');
+        recordToolUsage('jsonnote');
       } catch (e) {
-        updateJsonNoteStatus('JSON 解析失败：' + e.message);
+        updateJsonNoteStatus('JSON 解析失败：' + e.message, 'bad');
       }
     }
 
@@ -2353,12 +2753,14 @@
         closeJsonNoteZoom();
         return;
       }
+      const changed = record.payload !== $('jsonnote-zoom-text').value;
       record.payload = $('jsonnote-zoom-text').value;
       record.updatedAt = Date.now();
       saveJsonNoteRecords();
       renderJsonNoteRecords();
       closeJsonNoteZoom();
-      updateJsonNoteStatus('已保存放大编辑内容');
+      updateJsonNoteStatus(`「${record.title}」已保存放大编辑内容`, 'ok');
+      if (changed && record.payload.trim()) recordToolUsage('jsonnote');
     }
 
     function formatJsonNoteZoom(keepComments = true) {
@@ -2368,9 +2770,11 @@
           : JSON.stringify(parseJsonWithComments($('jsonnote-zoom-text').value), null, 2);
         updateJsonCommentHighlight($('jsonnote-zoom-text'));
         if (!$('jsonnote-zoom-find').hidden && $('jsonnote-zoom-find-input').value) searchJsonNoteZoom(1, false);
-        updateJsonNoteStatus(keepComments ? 'JSON 格式化成功，已保留注释' : 'JSON 格式化成功，已去掉注释');
+        const record = jsonNoteRecords.find(item => item.id === jsonNoteZoomRecordId);
+        updateJsonNoteStatus(`「${record ? record.title : '当前报文'}」已格式化，` + (keepComments ? '已保留注释' : '已去掉注释'), 'ok');
+        recordToolUsage('jsonnote');
       } catch (e) {
-        updateJsonNoteStatus('JSON 解析失败：' + e.message);
+        updateJsonNoteStatus('JSON 解析失败：' + e.message, 'bad');
       }
     }
 
@@ -2381,8 +2785,8 @@
         record.remark ? `备注/批注：\n${record.remark}` : '',
         `JSON 报文：\n${record.payload}`
       ].filter(Boolean).join('\n\n');
-      copyValue(text);
-      updateJsonNoteStatus('已复制整条记录');
+      copyValue(text, 'jsonnote');
+      updateJsonNoteStatus('已复制整条记录', 'ok');
     }
 
     function exportJsonNotes() {
@@ -2398,7 +2802,8 @@
       a.download = 'json-note-records.json';
       a.click();
       URL.revokeObjectURL(a.href);
-      updateJsonNoteStatus(`已导出 ${jsonNoteRecords.length} 条记录`);
+      updateJsonNoteStatus(`已导出 ${jsonNoteRecords.length} 条记录`, 'ok');
+      if (jsonNoteRecords.length) recordToolUsage('jsonnote');
     }
 
     function importJsonNotes(file) {
@@ -2412,13 +2817,14 @@
           records.forEach(record => jsonNoteRecords.unshift(createJsonNoteRecord({ ...record, id: ++jsonNoteSeq, createdAt: Date.now(), updatedAt: Date.now() })));
           saveJsonNoteRecords();
           renderJsonNoteRecords();
-          updateJsonNoteStatus(`已导入 ${records.length} 条记录`);
+          updateJsonNoteStatus(`已导入 ${records.length} 条记录`, 'ok');
           $('jsonnote-import-file').value = '';
+          if (records.length) recordToolUsage('jsonnote');
         } catch (e) {
-          updateJsonNoteStatus('导入失败：' + e.message);
+          updateJsonNoteStatus('导入失败：' + e.message, 'bad');
         }
       };
-      reader.onerror = () => updateJsonNoteStatus('导入失败：文件读取错误');
+      reader.onerror = () => updateJsonNoteStatus('导入失败：文件读取错误', 'bad');
       reader.readAsText(file);
     }
 
@@ -2457,6 +2863,8 @@
         record[field] = event.target.value;
         record.updatedAt = Date.now();
         saveJsonNoteRecords();
+        clearTimeout(toolUsageTimers.jsonnote);
+        if (event.target.value.trim()) recordToolUsage('jsonnote', 600);
       });
       $('jsonnote-list').addEventListener('click', event => {
         const btn = event.target.closest('[data-json-note-action]');
@@ -2469,8 +2877,8 @@
         }
         else if (action === 'zoom') openJsonNoteZoom(record);
         else if (action === 'copy-payload') {
-          copyValue(record.payload);
-          updateJsonNoteStatus('已复制报文');
+          copyValue(record.payload, 'jsonnote');
+          updateJsonNoteStatus('已复制报文', 'ok');
         } else if (action === 'copy-record') copyJsonNoteRecord(record);
         else if (action === 'remove') {
           jsonNoteRecords = jsonNoteRecords.filter(item => item.id !== record.id);
@@ -2506,22 +2914,31 @@
       let value = btoa(unescape(encodeURIComponent($('base64-input').value)));
       if ($('base64-url-safe').checked) value = value.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
       $('base64-output').value = value;
+      if ($('base64-input').value) recordToolUsage('base64');
     }
     function base64Decode() {
       try {
         let value = $('base64-input').value.trim().replace(/-/g, '+').replace(/_/g, '/');
         while (value.length % 4) value += '=';
         $('base64-output').value = decodeURIComponent(escape(atob(value)));
+        if ($('base64-input').value.trim()) recordToolUsage('base64');
       } catch (e) { $('base64-output').value = '解码失败：' + e.message; }
     }
 
-    function urlEncode() { $('url-output').value = encodeURIComponent($('url-input').value); }
+    function urlEncode() {
+      $('url-output').value = encodeURIComponent($('url-input').value);
+      if ($('url-input').value) recordToolUsage('url');
+    }
     function urlDecode() {
-      try { $('url-output').value = decodeURIComponent($('url-input').value); }
+      try {
+        $('url-output').value = decodeURIComponent($('url-input').value);
+        if ($('url-input').value) recordToolUsage('url');
+      }
       catch (e) { $('url-output').value = '解码失败：' + e.message; }
     }
 
-    function makeSqlIn() {
+    function makeSqlIn(usageDelay = 0) {
+      clearTimeout(toolUsageTimers.sql);
       let items = $('sql-input').value.split(/[\n\r\t,，]+/).map(s => s.trim()).filter(Boolean);
       if ($('sql-distinct').checked) items = [...new Set(items)];
       const quote = $('sql-quote').checked;
@@ -2529,6 +2946,7 @@
       const body = values.join($('sql-wrap').checked ? ',\n' : ', ');
       $('sql-output').textContent = '(' + body + ')';
       $('sql-stats').textContent = '共生成 ' + values.length + ' 项';
+      if (values.length) recordToolUsage('sql', usageDelay);
     }
 
     function fillNow() {
@@ -2536,6 +2954,7 @@
       $('ts-input').value = now;
       $('date-input').value = formatDate(new Date(now));
       $('ts-output').textContent = '秒级：' + Math.floor(now / 1000) + '\n毫秒级：' + now;
+      recordToolUsage('timestamp');
     }
     function formatDate(date) {
       const p = n => String(n).padStart(2, '0');
@@ -2547,11 +2966,13 @@
       if (!Number.isFinite(num)) { $('ts-output').textContent = '请输入有效时间戳'; return; }
       const ms = raw.length <= 10 ? num * 1000 : num;
       $('ts-output').textContent = formatDate(new Date(ms)) + '\nISO：' + new Date(ms).toISOString();
+      if (raw) recordToolUsage('timestamp');
     }
     function dateToTimestamp() {
       const date = new Date($('date-input').value.replace(/-/g, '/'));
       if (Number.isNaN(date.getTime())) { $('ts-output').textContent = '请输入有效日期'; return; }
       $('ts-output').textContent = '秒级：' + Math.floor(date.getTime() / 1000) + '\n毫秒级：' + date.getTime();
+      recordToolUsage('timestamp');
     }
 
     function testRegex() {
@@ -2564,6 +2985,7 @@
         $('regex-output').innerHTML = matches.length
           ? matches.map((m, i) => `${i + 1}. ${escapeHtml(m[0])}`).join('\n')
           : '没有匹配结果';
+        if ($('regex-pattern').value) recordToolUsage('regex');
       } catch (e) { $('regex-output').textContent = '正则错误：' + e.message; }
     }
 
@@ -2576,6 +2998,7 @@
       if ($('html-images').checked) parts.push('图片：\n' + [...doc.querySelectorAll('img[src]')].map(img => `${img.alt || '图片'} -> ${img.src}`).join('\n'));
       $('html-output').value = parts.filter(Boolean).join('\n\n') || '未选择提取类型';
       $('html-stats').textContent = `链接 ${doc.querySelectorAll('a[href]').length} 个，图片 ${doc.querySelectorAll('img[src]').length} 个`;
+      if ($('html-input').value.trim() && parts.length) recordToolUsage('html');
     }
     function demoHtml() {
       $('html-input').value = `<!DOCTYPE html>
@@ -2604,15 +3027,18 @@
       const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
       $('color-output').textContent = `HEX：${hex.toUpperCase()}\nRGB：rgb(${r}, ${g}, ${b})`;
       $('color-chip').style.background = hex;
+      recordToolUsage('color');
     }
 
     async function makeHash() {
       const alg = document.querySelector('input[name="hash-alg"]:checked').value;
       const buffer = await crypto.subtle.digest(alg, new TextEncoder().encode($('hash-input').value));
       $('hash-output').value = [...new Uint8Array(buffer)].map(b => b.toString(16).padStart(2, '0')).join('');
+      recordToolUsage('hash');
     }
 
-    function convertBase() {
+    function convertBase(usageDelay = 0) {
+      clearTimeout(toolUsageTimers.base);
       const from = Number($('base-from').value);
       const to = Number($('base-to').value);
       const raw = $('base-input').value.trim().replace(/^0x/i, '').replace(/^0b/i, '').replace(/^0o/i, '');
@@ -2620,6 +3046,7 @@
       if (!Number.isFinite(num)) { $('base-output').textContent = '请输入有效数值'; return; }
       const prefix = to === 16 ? '0x' : to === 2 ? '0b' : to === 8 ? '0o' : '';
       $('base-output').textContent = prefix + num.toString(to).toUpperCase();
+      recordToolUsage('base', usageDelay);
     }
 
     function splitWords(text) {
@@ -2640,6 +3067,7 @@
         kebab: lower.join('-')
       }[type];
       $('case-output').value = out;
+      if (input) recordToolUsage('case');
     }
 
     function compareText() {
@@ -2662,6 +3090,7 @@
         }
       }
       $('diff-output').textContent = diffCount ? `发现 ${diffCount} 处差异：\n\n${rows.join('\n\n')}` : '两段文本一致';
+      if ($('diff-left').value || $('diff-right').value) recordToolUsage('diff');
     }
 
     function jsonToCsv() {
@@ -2680,6 +3109,7 @@
         const rows = [keys.map(esc).join(delimiter), ...data.map(item => keys.map(k => esc(item?.[k])).join(delimiter))];
         $('jsoncsv-output').value = ($('jsoncsv-bom').checked ? '\uFEFF' : '') + rows.join('\n');
         $('jsoncsv-stats').textContent = `已转换 ${data.length} 行，${keys.length} 个字段`;
+        recordToolUsage('jsoncsv');
       } catch (e) {
         $('jsoncsv-output').value = '转换失败：' + e.message;
         $('jsoncsv-stats').textContent = '';
@@ -2693,6 +3123,7 @@
       reader.onload = () => {
         $('filebase64-output').value = reader.result;
         $('filebase64-stats').textContent = `${file.name}，${file.size} 字节`;
+        recordToolUsage('filebase64');
       };
       reader.onerror = () => $('filebase64-stats').textContent = '文件读取失败';
       reader.readAsDataURL(file);
@@ -2709,6 +3140,7 @@
         a.download = $('filebase64-name').value || 'download.bin';
         a.click();
         URL.revokeObjectURL(a.href);
+        if (raw) recordToolUsage('filebase64');
       } catch (e) { $('filebase64-stats').textContent = '转换失败：' + e.message; }
     }
 
@@ -2771,12 +3203,12 @@
         copyDataUrl.type = 'button';
         copyDataUrl.className = 'btn btn-primary';
         copyDataUrl.textContent = '复制完整 Base64';
-        copyDataUrl.addEventListener('click', () => copyValue(item.dataUrl));
+        copyDataUrl.addEventListener('click', () => copyValue(item.dataUrl, 'imagebase64'));
         const copyBase64 = document.createElement('button');
         copyBase64.type = 'button';
         copyBase64.className = 'btn';
         copyBase64.textContent = '复制纯 Base64';
-        copyBase64.addEventListener('click', () => copyValue(item.base64));
+        copyBase64.addEventListener('click', () => copyValue(item.base64, 'imagebase64'));
         const remove = document.createElement('button');
         remove.type = 'button';
         remove.className = 'btn btn-danger';
@@ -2819,6 +3251,7 @@
         const items = await Promise.all(imageFiles.map(readImageAsBase64));
         imageBase64Items.push(...items);
         renderImageBase64Results();
+        recordToolUsage('imagebase64');
       } catch (e) {
         setImageBase64Status('转换失败：' + e.message, 'bad');
       }
@@ -2841,7 +3274,7 @@
         return;
       }
       const text = imageBase64Items.map(item => type === 'base64' ? item.base64 : item.dataUrl).join('\n');
-      copyValue(text);
+      copyValue(text, 'imagebase64');
       setImageBase64Status(`已复制 ${imageBase64Items.length} 张图片`);
     }
 
@@ -2922,6 +3355,7 @@
       if ($('md5-short').checked) value = value.slice(8, 24);
       if ($('md5-upper').checked) value = value.toUpperCase();
       $('md5-output').value = value;
+      recordToolUsage('md5');
     }
 
     function bytesToBase64(bytes) {
@@ -2944,6 +3378,7 @@
         const key = await aesKey($('aes-password').value, salt, mode);
         const encrypted = await crypto.subtle.encrypt({ name: 'AES-' + mode, iv }, key, new TextEncoder().encode($('aes-input').value));
         $('aes-output').value = JSON.stringify({ mode, salt: bytesToBase64(salt), iv: bytesToBase64(iv), data: bytesToBase64(new Uint8Array(encrypted)) });
+        recordToolUsage('aes');
       } catch (e) { $('aes-output').value = '加密失败：' + e.message; }
     }
     async function aesDecrypt() {
@@ -2953,6 +3388,7 @@
         const key = await aesKey($('aes-password').value, base64ToBytes(payload.salt), mode);
         const decrypted = await crypto.subtle.decrypt({ name: 'AES-' + mode, iv: base64ToBytes(payload.iv) }, key, base64ToBytes(payload.data));
         $('aes-output').value = new TextDecoder().decode(decrypted);
+        recordToolUsage('aes');
       } catch (e) { $('aes-output').value = '解密失败：' + e.message; }
     }
 
@@ -2968,6 +3404,7 @@
         rows.push(value);
       }
       $('uuid-output').value = rows.join('\n');
+      recordToolUsage('uuid');
     }
     function uuidv7() {
       const bytes = crypto.getRandomValues(new Uint8Array(16));
@@ -3028,10 +3465,14 @@
       try {
         const obj = input.trim().startsWith('{') || input.trim().startsWith('[') ? JSON.parse(input) : simpleYamlToObject(input);
         $('yaml-output').value = objectToYaml(obj);
+        if (input.trim()) recordToolUsage('yaml');
       } catch (e) { $('yaml-output').value = '格式化失败：' + e.message; }
     }
     function yamlToJson() {
-      try { $('yaml-output').value = JSON.stringify(simpleYamlToObject($('yaml-input').value), null, 2); }
+      try {
+        $('yaml-output').value = JSON.stringify(simpleYamlToObject($('yaml-input').value), null, 2);
+        if ($('yaml-input').value.trim()) recordToolUsage('yaml');
+      }
       catch (e) { $('yaml-output').value = '转换失败：' + e.message; }
     }
 
@@ -3176,6 +3617,7 @@
       if (res.openBraces > 0) warn = `，警告：有 ${res.openBraces} 个 { 未闭合`;
       else if (res.openBraces < 0) warn = `，警告：有 ${-res.openBraces} 个多余的 }`;
       stats.textContent = `${srcLines} 行 → ${res.linesOut} 行${warn}`;
+      if (!warn) recordToolUsage('nginx');
     }
 
     // ===== 数据同步（GitHub）=====
@@ -3416,6 +3858,7 @@
         const broadcast = (network | (~mask >>> 0)) >>> 0;
         const hosts = cidr >= 31 ? Math.max(0, 2 ** (32 - cidr)) : Math.max(0, 2 ** (32 - cidr) - 2);
         $('ip-output').textContent = `网络地址：${intToIp(network)}\n广播地址：${intToIp(broadcast)}\n子网掩码：${intToIp(mask)}\n可用主机数：${hosts}\n首个可用：${cidr >= 31 ? intToIp(network) : intToIp(network + 1)}\n最后可用：${cidr >= 31 ? intToIp(broadcast) : intToIp(broadcast - 1)}`;
+        recordToolUsage('ip');
       } catch (e) { $('ip-output').textContent = '计算失败：' + e.message; }
     }
 
@@ -3436,7 +3879,8 @@
       });
       if (unitData[type][1]) $('unit-to').selectedIndex = 1;
     }
-    function convertUnit() {
+    function convertUnit(usageDelay = 0) {
+      clearTimeout(toolUsageTimers.unit);
       const value = Number($('unit-value').value);
       const type = $('unit-type').value;
       if (!Number.isFinite(value)) { $('unit-output').textContent = '请输入有效数值'; return; }
@@ -3449,6 +3893,7 @@
         result = value * Number($('unit-from').value) / Number($('unit-to').value);
       }
       $('unit-output').textContent = String(Math.round(result * 1e12) / 1e12);
+      if ($('unit-value').value.trim()) recordToolUsage('unit', usageDelay);
     }
 
     function readDelimiter(value) {
@@ -3467,6 +3912,7 @@
       if ($('splitter-distinct').checked) items = [...new Set(items)];
       $('splitter-output').value = items.join(joiner);
       $('splitter-stats').textContent = `输出 ${items.length} 项`;
+      if ($('splitter-input').value) recordToolUsage('splitter');
     }
 
     function countText() {
@@ -3478,6 +3924,7 @@
       const chinese = (text.match(/[\u4e00-\u9fff]/g) || []).length;
       const paragraphs = text.trim() ? text.trim().split(/\n\s*\n/).length : 0;
       $('statistics-output').textContent = `字符数：${chars}\n不含空白字符：${charsNoSpace}\n行数：${lines}\n段落数：${paragraphs}\n英文/数字词数：${words}\n汉字数：${chinese}`;
+      if (text) recordToolUsage('statistics');
     }
 
     function loadHistory() {
@@ -3498,6 +3945,7 @@
         saveHistory(items);
         msg.textContent = '已添加到历史记录';
         msg.className = 'alert show ok';
+        recordToolUsage('clipboard');
       } catch (e) {
         msg.textContent = '读取失败：' + e.message;
         msg.className = 'alert show bad';
@@ -3509,7 +3957,7 @@
         <div class="history-item">
           <div class="history-meta">${new Date(item.time).toLocaleString()}</div>
           <div class="result-box">${escapeHtml(item.text.slice(0, 500))}</div>
-          <div class="actions"><button class="btn" onclick="copyValue(loadHistory().reverse()[${i}].text)">复制</button></div>
+          <div class="actions"><button class="btn" onclick="copyValue(loadHistory().reverse()[${i}].text, 'clipboard')">复制</button></div>
         </div>`).join('') : '<p class="helper-text">暂无历史记录</p>';
     }
     function exportHistory() {
@@ -3519,6 +3967,7 @@
       a.download = 'clipboard-history.json';
       a.click();
       URL.revokeObjectURL(a.href);
+      if (loadHistory().length) recordToolUsage('clipboard');
     }
     function clearHistory() {
       if (confirm('确定清空剪贴板历史吗？')) {
@@ -3528,8 +3977,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      initWorkspacePresentation();
+      initTheme();
       const appState = loadAppState();
       restoringAppState = true;
+      initToolUsage();
       initToolTabs(appState);
       generatePasswords();
       fillNow();
@@ -3540,10 +3992,13 @@
       initJsonNotes();
       initImageBase64();
       restoreFormState(appState.formState);
+      updateJsonOutputMeta();
+      filterToolMenus();
       restoringAppState = false;
       initAppStateCache();
       persistAppState();
-      ['sql-input','sql-quote','sql-distinct','sql-wrap'].forEach(id => $(id).addEventListener(id === 'sql-input' ? 'input' : 'change', makeSqlIn));
+      $('json-output').addEventListener('input', updateJsonOutputMeta);
+      ['sql-input','sql-quote','sql-distinct','sql-wrap'].forEach(id => $(id).addEventListener(id === 'sql-input' ? 'input' : 'change', () => makeSqlIn(600)));
       $('sql-output').addEventListener('keydown', event => {
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') {
           event.preventDefault();
@@ -3551,8 +4006,8 @@
         }
       });
       $('sql-output').addEventListener('click', event => event.currentTarget.focus());
-      ['base-input','base-from','base-to'].forEach(id => $(id).addEventListener(id === 'base-input' ? 'input' : 'change', convertBase));
-      ['unit-value','unit-from','unit-to'].forEach(id => $(id).addEventListener('input', convertUnit));
+      ['base-input','base-from','base-to'].forEach(id => $(id).addEventListener(id === 'base-input' ? 'input' : 'change', () => convertBase(600)));
+      ['unit-value','unit-from','unit-to'].forEach(id => $(id).addEventListener('input', () => convertUnit(600)));
       $('open-sync-modal').addEventListener('click', openSyncModal);
       $('sync-modal-close').addEventListener('click', closeSyncModal);
       $('sync-modal').addEventListener('click', event => { if (event.target === $('sync-modal')) closeSyncModal(); });
